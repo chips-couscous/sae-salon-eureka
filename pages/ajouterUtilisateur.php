@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salon Eureka</title>
+    <title>Salon Eureka - Ajouter un utilisateur</title>
 
     <!-- css -->
     <link rel="stylesheet" href="../css/main.css">
@@ -65,7 +65,7 @@
 
     <div class="container">
         <div class="container-content">
-            <span class="titre-panel-ouvert"><span>Gestion des entreprises ></span> Ajouter une entreprise</span>
+            <span class="titre-panel-ouvert"><span>BIEN LE BONJOUR JEUNES GENS</span>
         </div>
 
         <div class="container-asyde">
@@ -103,7 +103,7 @@
                         <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion des utilisateurs</span>
                         <nav>
                             <ul>
-                                <li class="hover-underline-static"><a href="./ajouterUtilisateur.php">Ajouter un utilisateur</a></li>
+                                <li class="hover-underline-static">Ajouter un utilisateur</li>
                                 <li class="hover-underline-static">Modifier un utilisateur</li>
                                 <li class="hover-underline-static">Supprimer un utilisateur</li>
                                 <li class="hover-underline-static">Retrouver un mot de passe</li>
