@@ -99,6 +99,14 @@
             </div>
 
             <!-- Zone de prévisualisation de l'ajout final --> 
+            <div class="previsualisation">
+                <table class="tablePrevisualisation">
+                    
+                </table>
+            </div>
+
+            <button class="valider">Valider les ajouts</button>
+
         </div>
 
         <div class="container-asyde">

@@ -1,3 +1,5 @@
+@import url(./main.css);
+
 /* Contient la mise en forme des pages de gestion des utilisateurs */
 
 .zoneImporterEtudiant {
@@ -30,4 +32,33 @@ form {
 }
 .form-item input[type=submit] {
     width: 300px;
+}
+
+/* Prévisualisation */
+.previsualisation {
+    width: 95%;
+    height: 400px;
+    background-color: #D9D9D9;
+    overflow: auto;
+}
+.tablePrevisualisation {
+    margin: 10px;
+    width: 100%;
+    text-align: center;
+}
+td {
+    border-right: solid #E2E2E2 2px;
+    padding-bottom: 6px;
+}
+
+.valider {
+    border: none;
+    background-color: var(--c-primaire);
+    color: var(--c-light);
+    cursor: pointer;
+    border-radius: 3px;
+    margin: 15px;
+    width: 30%;
+    height: 40px;
+    font-weight: 500;
 }
