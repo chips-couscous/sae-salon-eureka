@@ -8,9 +8,11 @@
     <title>Salon Eureka - Ajouter un utilisateur</title>
 
     <!-- css -->
+    <link rel="stylesheet" href="../css/connexion.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/compte.css">
+    <link rel="stylesheet" href="../css/utilisateur.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -65,7 +67,38 @@
 
     <div class="container">
         <div class="container-content">
-            <span class="titre-panel-ouvert"><span>BIEN LE BONJOUR JEUNES GENS</span>
+            <!-- Zone d'importation d'une liste d'utilisateur -->
+            <div class="zoneImporterEtudiant">
+                <span>Déposer un fichier ou</span>&nbsp;<button class="btnImporterEtudiant">importer</button>
+            </div>
+
+            <!-- Zone d'ajout manuel -->
+            <div class="ajoutManuel">
+                <span>Ajouter manuellement un utilisateur :</span><br>
+                <form action="post">
+                    <div class="form-item bm15 ">
+                        <input type="text" name="nom" id="nom" autocomplete="off" required>
+                        <label for="nom">Nom</label>
+                    </div>
+                    <div class="form-item bm15">
+                        <input type="text" name="prenom" id="prenom" autocomplete="off" required>
+                        <label for="prenom">Prénom</label>
+                    </div>
+                    <div class="form-item bm15">
+                        <input type="text" name="mail" id="mail" autocomplete="off" required>
+                        <label for="mail">Mail</label>
+                    </div>
+                    <div class="form-item bm15">
+                        <input type="text" name="filiere" id="filiere" autocomplete="off" required>
+                        <label for="filiere">Filiere</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="submit" value="Ajouter">
+                  </div>
+                </form>
+            </div>
+
+            <!-- Zone de prévisualisation de l'ajout final --> 
         </div>
 
         <div class="container-asyde">
