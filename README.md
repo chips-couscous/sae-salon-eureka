@@ -1,4 +1,4 @@
-# Salon Eureka - Application Java
+# Salon Eureka - Site internet
 
 Ce projet est un site internet appelée "Salon Eureka", conçu pour la prise de rendez-vous destinée à des étudiants avec des entreprises dans un forum.
 L'étudiant sera capable de consulter les entreprises recherchant des alternants de sa filière. Il pourra ajouter un souhait ainsi que les consulter, mais aussi le retirer.
