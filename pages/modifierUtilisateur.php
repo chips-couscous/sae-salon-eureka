@@ -93,7 +93,7 @@
                 </form>
             </div>
             <!-- Zone d'affichage des utilisateurs -->
-            <div>
+            <div class="bordureListeUtilisateurs">
                 <?php //Ecrire la requête avec la fonction pour afficher la liste des utilisateurs ?>
                 <h1>Ici les utilisateurs mais avec SQL</h1>
             </div>
