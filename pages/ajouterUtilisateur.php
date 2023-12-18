@@ -75,24 +75,32 @@
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
                 <span>Ajouter manuellement un utilisateur :</span><br>
-                <form action="post">
-                    <div class="form-item bm15 ">
+                <form action="post" class="formAjouterManuel">
+                    <div class="form-item bm15 nom">
                         <input type="text" name="nom" id="nom" autocomplete="off" required>
                         <label for="nom">Nom</label>
                     </div>
-                    <div class="form-item bm15">
+                    <div class="form-item bm15 prenom">
                         <input type="text" name="prenom" id="prenom" autocomplete="off" required>
                         <label for="prenom">Prénom</label>
                     </div>
-                    <div class="form-item bm15">
+                    <div class="form-item bm15 mail">
                         <input type="text" name="mail" id="mail" autocomplete="off" required>
                         <label for="mail">Mail</label>
                     </div>
-                    <div class="form-item bm15">
+                    <div class="form-item bm15 mdp">
+                        <input type="password" name="mdp" id="mdp" autocomplete="off" required>
+                        <label for="mdp">Mot de passe</label>
+                    </div>
+                    <div class="form-item bm15 filiere">
                         <input type="text" name="filiere" id="filiere" autocomplete="off" required>
                         <label for="filiere">Filiere</label>
                     </div>
-                    <div class="form-item">
+                    <div class="form-item bm15 status">
+                        <input type="text" name="status" id="status" autocomplete="off" required>
+                        <label for="status">Status</label>
+                    </div>
+                    <div class="form-item ajouter">
                         <input type="submit" value="Ajouter">
                   </div>
                 </form>
