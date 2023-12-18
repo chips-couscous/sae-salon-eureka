@@ -7,10 +7,10 @@
     <title>Salon Eureka</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/entreprise.css">
-    <link rel="stylesheet" href="css/connexion.css">
+    <link rel="stylesheet" href="static/css/main.css">
+    <link rel="stylesheet" href="static/css/header.css">
+    <link rel="stylesheet" href="static/css/entreprise.css">
+    <link rel="stylesheet" href="static/css/connexion.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -44,7 +44,7 @@
                 <li>
                   <i class="fa-regular fa-circle-user ic-wm-el-header"></i>
                   <div class="header-compte">
-                    <span class="hover-underline-active"><a href="./pages/compte.html">Thomas Lemaire</a></span>
+                    <span class="hover-underline-active"><a href="./panel/compte.html">Thomas Lemaire</a></span>
                     <!-- VIDE SI PAS CO -->
                     <span class="badge-status">étudiant</span>
                   </div>
@@ -97,7 +97,7 @@
               <div class="carte-entreprise">
                 <div class="recto">
                   <div class="identite">
-                    <img src="./img/sopra.png" alt="Logo sopra" draggable="false">
+                    <img src="static/img/logo_entreprise/sopra.png" alt="Logo sopra" draggable="false">
                     <span>Sopra</span>
                   </div>
                   <div class="tags">
@@ -132,7 +132,7 @@
               <div class="carte-entreprise">
                 <div class="recto">
                   <div class="identite">
-                    <img src="./img/carre_boir.png" alt="Logo sopra" draggable="false">
+                    <img src="static/img/logo_entreprise/carre_boir.png" alt="Logo sopra" draggable="false">
                     <span>Carré noir</span>
                   </div>
                   <div class="tags">
@@ -168,7 +168,7 @@
               <div class="carte-entreprise">
                 <div class="recto">
                   <div class="identite">
-                    <img src="./img/dragon_rouge.png" alt="Logo sopra" draggable="false">
+                    <img src="static/img/logo_entreprise/dragon_rouge.png" alt="Logo sopra" draggable="false">
                     <span>Dragon Rouge</span>
                   </div>
                   <div class="tags">
@@ -205,7 +205,7 @@
               <div class="carte-entreprise">
                 <div class="recto">
                   <div class="identite">
-                    <img src="./img/credit_agricole.png" alt="Logo sopra" draggable="false">
+                    <img src="static/img/logo_entreprise/credit_agricole.png" alt="Logo sopra" draggable="false">
                     <span>Crédit Agricole</span>
                   </div>
                   <div class="tags">
@@ -242,7 +242,7 @@
               <div class="carte-entreprise">
                 <div class="recto">
                   <div class="identite">
-                    <img src="./img/bosch.jpg" alt="Logo sopra" draggable="false">
+                    <img src="static/img/logo_entreprise/bosch.jpg" alt="Logo sopra" draggable="false">
                     <span>Bosch</span>
                   </div>
                   <div class="tags">
@@ -278,7 +278,7 @@
               <div class="carte-entreprise">
                 <div class="recto">
                   <div class="identite">
-                    <img src="./img/ragt.png" alt="Logo sopra" draggable="false">
+                    <img src="static/img/logo_entreprise/ragt.png" alt="Logo sopra" draggable="false">
                     <span>RAGT</span>
                   </div>
                   <div class="tags">
@@ -314,7 +314,7 @@
               <div class="carte-entreprise">
                 <div class="recto">
                   <div class="identite">
-                    <img src="./img/linov.webp" alt="Logo sopra" draggable="false">
+                    <img src="static/img/logo_entreprise/linov.webp" alt="Logo sopra" draggable="false">
                     <span>Linov</span>
                   </div>
                   <div class="tags">
@@ -349,7 +349,7 @@
       </div>
     </div>
 
-    <script src="./js/header.js"></script>
-    <script src="./js/entreprise.js"></script>
+    <script src="static/js/header.js"></script>
+    <script src="static/js/entreprise.js"></script>
   </body>
 </html>
