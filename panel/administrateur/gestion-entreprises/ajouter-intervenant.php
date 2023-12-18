@@ -1,3 +1,6 @@
+<?php
+    require('../../../static/module_php/panel/g_utilisateurs.php');
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -84,6 +87,10 @@
                         <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
                         <label for="entreprise">Entreprise *</label>
                     </div>
+                    <div class="form-item bm15">
+                        <input type="text" name="filiere" id="filiere" autocomplete="off" required>
+                        <label for="filiere">Filiere *</label>
+                    </div>
                     <div class="form-item">
                         <input type="submit" value="Ajouter">
                   </div>
@@ -93,8 +100,45 @@
             <!-- Zone de prévisualisation de l'ajout final --> 
             <div class="previsualisation">
                 <table class="tablePrevisualisation">
+					<tr>
+						<!--- Contenu -->
+						<th>
+							<!--- Colonne nom -->
+							Nom
+						</th>
+						<th>
+							<!--- Colonne Fonction -->
+							Fonction    
+						</th>
+						<th>
+							<!--- Colonne Entreprise -->
+							Entreprise
+						</th>
+						<th>
+							<!--- Colonne Filiere -->
+							Filiere
+						</th>							
+					</tr>
+					<?php       
+					// Récupération des intervenants
+					$listeIntervenants=listeDesIntervenants(); 
+
+					// Boucle afficher la liste des intervenants
+					foreach($listeIntervenants as $intervenant) {
+						$nom=$intervenant['nom'];
+						$fonction=$intervenant['fonction']; 
+						$entreprise=$intervenant['entreprise']; 
+						$filiere=$intervenant['filiere'];
                     
-                </table>
+						echo "<tr>";
+						echo "<td>".$nom."</td>";
+						echo "<td>".$fonction."</td>";
+						echo "<td>".$entreprise."</td>";
+                        echo "<td>".$filiere."</td>";
+						echo "</tr>";   
+					}							
+					?>
+				</table>        
             </div>
 
             <button class="valider">Valider les ajouts</button>

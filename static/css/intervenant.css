@@ -13,11 +13,15 @@ form {
 }
 .form-item{
     margin-top: 10px;
-    width: 350px;
+    width: 300px;
     float: left;
 }
 
 .form-item input {
+    width: 250px;
+}
+
+.form-item input[type=submit] {
     width: 300px;
 }
 
