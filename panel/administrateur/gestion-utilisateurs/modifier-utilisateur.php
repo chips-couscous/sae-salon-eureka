@@ -1,3 +1,7 @@
+<?php
+    require('../../../static/module_php/panel/g_utilisateurs.php');
+    
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -94,8 +98,29 @@
             </div>
             <!-- Zone d'affichage des utilisateurs -->
             <div class="bordureListeUtilisateurs">
-                <?php //Ecrire la requête avec la fonction pour afficher la liste des utilisateurs ?>
-                <h1>Ici les utilisateurs mais avec SQL</h1>
+                <table>
+                    <tr>
+                        <th>Id</th>
+                        <th>Prenom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Mot de passe</th>
+                        <th>Statut</th>
+                    </tr>
+                    <?php 
+                        $listeUtilisateurs = listeDesUtilisateurs();
+                        foreach ($listeUtilisateurs as $liste) {
+                            echo "</tr>";
+                            echo "<td>". $liste['idUtilisateur'] . "</td>";
+                            echo "<td>". $liste['prenomUtilisateur'] . "</td>";
+                            echo "<td>". $liste['nomUtilisateur'] . "</td>";
+                            echo "<td>". $liste['mailUtilisateur'] . "</td>";
+                            echo "<td>". $liste['mdpUtilisateur'] . "</td>";
+                            echo "<td>". $liste['statutUtilisateur'] . "</td>";
+                            echo "</tr>";
+                        }
+                    ?>
+                </table>
             </div>
 
             <div>
