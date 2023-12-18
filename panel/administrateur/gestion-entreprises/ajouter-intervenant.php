@@ -5,12 +5,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supprimer un utilisateur</title>
+    <title>Salon Eureka</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/connexion.css">
+    <link rel="stylesheet" href="../../../static/css/main.css">
+    <link rel="stylesheet" href="../../../static/css/header.css">
+    <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/intervenant.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -65,7 +67,38 @@
 
     <div class="container">
         <div class="container-content">
-            <span class="titre-panel-ouvert"><span>ICI CA SUPPRIME OU QUOI</span> SUPPRIMER UN UTILISATEUR ICI</span>
+            <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Ajouter un intervenant</span>
+            <!-- Zone d'ajout manuel -->
+            <div class="ajoutManuel">
+                <span>Ajouter manuellement un intervenant :</span><br>
+                <form action="post">
+                    <div class="form-item bm15 ">
+                        <input type="text" name="nom" id="nom" autocomplete="off" required>
+                        <label for="nom">Nom *</label>
+                    </div>
+                    <div class="form-item bm15">
+                        <input type="text" name="fonction" id="fonction" autocomplete="off" required>
+                        <label for="fonction">Fonction</label>
+                    </div>
+                    <div class="form-item bm15">
+                        <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
+                        <label for="entreprise">Entreprise *</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="submit" value="Ajouter">
+                  </div>
+                </form>
+            </div>
+
+            <!-- Zone de prévisualisation de l'ajout final --> 
+            <div class="previsualisation">
+                <table class="tablePrevisualisation">
+                    
+                </table>
+            </div>
+
+            <button class="valider">Valider les ajouts</button>
+
         </div>
 
         <div class="container-asyde">
@@ -104,8 +137,8 @@
                         <nav>
                             <ul>
                                 <li class="hover-underline-static">Ajouter un utilisateur</li>
-                                <li class="hover-underline-static"><a href="./modifierUtilisateur.php">Modifier un utilisateur</a></li>
-                                <li class="hover-underline-static"><a href="./supprimerUtilisateur.php">Supprimer un utilisateur</a></li>
+                                <li class="hover-underline-static">Modifier un utilisateur</li>
+                                <li class="hover-underline-static">Supprimer un utilisateur</li>
                                 <li class="hover-underline-static">Retrouver un mot de passe</li>
                             </ul>
                         </nav>
@@ -118,9 +151,9 @@
                                 <li class="hover-underline-static">Ajouter une entreprise</li>
                                 <li class="hover-underline-static">Modifier une entreprise</li>
                                 <li class="hover-underline-static">Supprimer une entreprise</li>
-                                <li class="hover-underline-static">Ajouter un intervenant</li>
-                                <li class="hover-underline-static">Modifier un intervenant</li>
-                                <li class="hover-underline-static">Supprimer un intervenant</li>
+                                <li class="hover-underline-static"><a href="#">Ajouter un intervenant</a></li>
+                                <li class="hover-underline-static"><a href="./modifier-intervenant.php">Modifier un intervenant</a></li>
+                                <li class="hover-underline-static"><a href="./supprimer-intervenant.php">Supprimer un intervenant</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -143,14 +176,13 @@
                             </ul>
                         </nav>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="../js/header.js"></script>
-    <script src="../js/compte.js"></script>
+    <script src="../../../static/js/header.js"></script>
+    <script src="../../../static/js/compte.js"></script>
 </body>
 
 </html>

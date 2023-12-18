@@ -5,14 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salon Eureka - Ajouter un utilisateur</title>
+    <title>Salon Eureka</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../css/connexion.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/compte.css">
-    <link rel="stylesheet" href="../css/utilisateur.css">
+    <link rel="stylesheet" href="../../../static/css/main.css">
+    <link rel="stylesheet" href="../../../static/css/header.css">
+    <link rel="stylesheet" href="../../../static/css/compte.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -67,54 +65,7 @@
 
     <div class="container">
         <div class="container-content">
-            <!-- Zone d'importation d'une liste d'utilisateur -->
-            <div class="zoneImporterEtudiant">
-                <span>Déposer un fichier ou</span>&nbsp;<button class="btnImporterEtudiant">importer</button>
-            </div>
-
-            <!-- Zone d'ajout manuel -->
-            <div class="ajoutManuel">
-                <span>Ajouter manuellement un utilisateur :</span><br>
-                <form action="post" class="formAjouterManuel">
-                    <div class="form-item bm15 nom">
-                        <input type="text" name="nom" id="nom" autocomplete="off" required>
-                        <label for="nom">Nom</label>
-                    </div>
-                    <div class="form-item bm15 prenom">
-                        <input type="text" name="prenom" id="prenom" autocomplete="off" required>
-                        <label for="prenom">Prénom</label>
-                    </div>
-                    <div class="form-item bm15 mail">
-                        <input type="text" name="mail" id="mail" autocomplete="off" required>
-                        <label for="mail">Mail</label>
-                    </div>
-                    <div class="form-item bm15 mdp">
-                        <input type="password" name="mdp" id="mdp" autocomplete="off" required>
-                        <label for="mdp">Mot de passe</label>
-                    </div>
-                    <div class="form-item bm15 filiere">
-                        <input type="text" name="filiere" id="filiere" autocomplete="off" required>
-                        <label for="filiere">Filiere</label>
-                    </div>
-                    <div class="form-item bm15 status">
-                        <input type="text" name="status" id="status" autocomplete="off" required>
-                        <label for="status">Status</label>
-                    </div>
-                    <div class="form-item ajouter">
-                        <input type="submit" value="Ajouter">
-                  </div>
-                </form>
-            </div>
-
-            <!-- Zone de prévisualisation de l'ajout final --> 
-            <div class="previsualisation">
-                <table class="tablePrevisualisation">
-                    
-                </table>
-            </div>
-
-            <button class="valider">Valider les ajouts</button>
-
+            <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Modifier un intervenant</span>
         </div>
 
         <div class="container-asyde">
@@ -167,9 +118,9 @@
                                 <li class="hover-underline-static">Ajouter une entreprise</li>
                                 <li class="hover-underline-static">Modifier une entreprise</li>
                                 <li class="hover-underline-static">Supprimer une entreprise</li>
-                                <li class="hover-underline-static">Ajouter un intervenant</li>
-                                <li class="hover-underline-static">Modifier un intervenant</li>
-                                <li class="hover-underline-static">Supprimer un intervenant</li>
+                                <li class="hover-underline-static"><a href="./ajouter-intervenant.php">Ajouter un intervenant</a></li>
+                                <li class="hover-underline-static"><a href="#">Modifier un intervenant</a></li>
+                                <li class="hover-underline-static"><a href="./supprimer-intervenant.php">Supprimer un intervenant</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -198,8 +149,8 @@
         </div>
     </div>
 
-    <script src="../js/header.js"></script>
-    <script src="../js/compte.js"></script>
+    <script src="../../../static/js/header.js"></script>
+    <script src="../../../static/js/compte.js"></script>
 </body>
 
 </html>

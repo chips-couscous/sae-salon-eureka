@@ -5,14 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier un utilisateur</title>
+    <title>Salon Eureka</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../css/connexion.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/compte.css">
-    <link rel="stylesheet" href="../css/utilisateur.css">
+    <link rel="stylesheet" href="../../../static/css/main.css">
+    <link rel="stylesheet" href="../../../static/css/header.css">
+    <link rel="stylesheet" href="../../../static/css/compte.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -67,42 +65,7 @@
 
     <div class="container">
         <div class="container-content">
-            <!-- Zone de modification -->
-            <div>
-                <span>Modification d'un utilisateur :</span><br>
-                <form action="post">
-                    <div class="form-item">
-                        <input type="text" name="nomUtilisateur" id="nomUtilisateur" autocomplete="off" required>
-                        <label for="nomUtilisateur" placeholder="Entrez un pseudo">Rechercher un utilisateur</label></input>
-                    </div>
-                    <div class="form-item">
-                        <select name="filiere" id="filiere">
-                            <option value="">Choisir une filière</option>
-                            <?php // Ecrire avec la requête SQL al liste des filières ?>
-                        </select>
-                    </div>
-                    <div class="form-item">
-                        <select name="typeUtilisateur" id="typeUtilisateur">
-                            <option value="">Choisir un type d'utilisateur</option>
-                            <?php // Ecrire avec la requête SQL avec gestinnaire et utilisateur ?>
-                        </select>
-                    </div>
-                    <div class="form-item">
-                        <input type="submit" value="Trier">
-                    </div>
-                </form>
-            </div>
-            <!-- Zone d'affichage des utilisateurs -->
-            <div class="bordureListeUtilisateurs">
-                <?php //Ecrire la requête avec la fonction pour afficher la liste des utilisateurs ?>
-                <h1>Ici les utilisateurs mais avec SQL</h1>
-            </div>
-
-            <div>
-                <?php //Ecrire la requête avec la fonction pour afficher la liste des utilisateurs ?>
-                <h1>Ici les données préremplies en fonction de l'utilisateur choisi</h1>
-            </div>
-
+            <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Supprimer un intervenant</span>
         </div>
 
         <div class="container-asyde">
@@ -141,8 +104,8 @@
                         <nav>
                             <ul>
                                 <li class="hover-underline-static">Ajouter un utilisateur</li>
-                                <li class="hover-underline-static"><a href="./modifierUtilisateur.php">Modifier un utilisateur</a></li>
-                                <li class="hover-underline-static"><a href="./supprimerUtilisateur.php">Supprimer un utilisateur</a></li>
+                                <li class="hover-underline-static">Modifier un utilisateur</li>
+                                <li class="hover-underline-static">Supprimer un utilisateur</li>
                                 <li class="hover-underline-static">Retrouver un mot de passe</li>
                             </ul>
                         </nav>
@@ -155,9 +118,9 @@
                                 <li class="hover-underline-static">Ajouter une entreprise</li>
                                 <li class="hover-underline-static">Modifier une entreprise</li>
                                 <li class="hover-underline-static">Supprimer une entreprise</li>
-                                <li class="hover-underline-static">Ajouter un intervenant</li>
-                                <li class="hover-underline-static">Modifier un intervenant</li>
-                                <li class="hover-underline-static">Supprimer un intervenant</li>
+                                <li class="hover-underline-static"><a href="./ajouter-intervenant.php">Ajouter un intervenant</a></li>
+                                <li class="hover-underline-static"><a href="./modifier-intervenant.php">Modifier un intervenant</a></li>
+                                <li class="hover-underline-static"><a href="#">Supprimer un intervenant</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -186,8 +149,8 @@
         </div>
     </div>
 
-    <script src="../js/header.js"></script>
-    <script src="../js/compte.js"></script>
+    <script src="../../../static/js/header.js"></script>
+    <script src="../../../static/js/compte.js"></script>
 </body>
 
 </html>
