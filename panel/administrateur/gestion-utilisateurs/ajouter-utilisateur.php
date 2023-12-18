@@ -8,11 +8,11 @@
     <title>Salon Eureka - Ajouter un utilisateur</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../css/connexion.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/compte.css">
-    <link rel="stylesheet" href="../css/utilisateur.css">
+    <link rel="stylesheet" href="../../../static/css/connexion.css">
+    <link rel="stylesheet" href="../../../static/css/main.css">
+    <link rel="stylesheet" href="../../../static/css/header.css">
+    <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/utilisateur.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -38,7 +38,7 @@
                     <nav>
                         <ul>
                             <li class="hover-underline-active">informations du forum</li>
-                            <li class="hover-underline-active"><a href="./../index.html">liste des entreprises</a></li>
+                            <li class="hover-underline-active"><a href="../../../index.php">liste des entreprises</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -75,7 +75,6 @@
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
                 <span>Ajouter manuellement un utilisateur :</span><br>
-                <form action="post" class="formAjouterManuel">
                     <div class="form-item bm15 nom">
                         <input type="text" name="nom" id="nom" autocomplete="off" required>
                         <label for="nom">Nom</label>
@@ -101,15 +100,14 @@
                         <label for="status">Status</label>
                     </div>
                     <div class="form-item ajouter">
-                        <input type="submit" value="Ajouter">
+                        <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
                   </div>
-                </form>
             </div>
 
             <!-- Zone de prévisualisation de l'ajout final --> 
             <div class="previsualisation">
-                <table class="tablePrevisualisation">
-                    
+                <table class="tablePrevisualisation" id="tablePrevisualisation">
+                    <!-- Affichage des différents utilisateurs --> 
                 </table>
             </div>
 
@@ -198,8 +196,9 @@
         </div>
     </div>
 
-    <script src="../js/header.js"></script>
-    <script src="../js/compte.js"></script>
+    <script src="../../../static/js/header.js"></script>
+    <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/ajouter-utilisateur.js"></script>
 </body>
 
 </html>

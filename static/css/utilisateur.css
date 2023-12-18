@@ -30,9 +30,6 @@ form {
 .form-item input{
     width: 250px;
 }
-.form-item input[type=submit] {
-    width: 300px;
-}
 
 /* Prévisualisation */
 .previsualisation {
@@ -61,6 +58,10 @@ td {
     width: 30%;
     height: 40px;
     font-weight: 500;
+}
+.ajouterManuel {
+    margin: initial;
+    width: 95%;
 }
 
 
