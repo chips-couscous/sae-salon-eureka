@@ -8,11 +8,11 @@
     <title>Salon Eureka</title>
 
     <!-- css -->
+    <link rel="stylesheet" href="../css/gestionEntreprise.css">
     <link rel="stylesheet" href="../css/connexion.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/compte.css">
-    <link rel="stylesheet" href="../css/gestion-entreprise.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -69,32 +69,34 @@
         <div class="container-content">
             <span class="titre-panel-ouvert"><span>Gestion des entreprises ></span> Ajouter une entreprise</span>
             <?php
-                $host="localhost";
-                $user="root";
-                $pass="root";
-                $db="salon_eureka_cps";
-                $charset="utf8mb4";
+                try {
+                    $host="localhost";
+                    $user="root";
+                    $pass="root";
+                    $db="salon_eureka_cps";
+                    $charset="utf8mb4";
         
-                $dsn="mysql:host=$host;dbname=$db;charset=$charset";
+                    $dsn="mysql:host=$host;dbname=$db;charset=$charset";
         
-                $options = [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, 
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, 
-                    PDO::ATTR_EMULATE_PREPARES => false
-                ];
-                $dsn="mysql:host=$host;dbname=$db;charset=$charset";
+                    $options = [
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, 
+                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, 
+                        PDO::ATTR_EMULATE_PREPARES => false
+                    ];
+                    $dsn="mysql:host=$host;dbname=$db;charset=$charset";
         
-                $pdo = new PDO($dsn, $user, $pass, $options);
-                #if (isset($_POST['nomE']) && $_POST['nomE'] == "") {
-                #    $stmt = $pdo->prepare("INSERT INTO (nom_entreprise, codep_entreprise, lieu_alter_entreprise, description_entreprise, site_entreprise, secteur_entreprise)se_entreprises 
-                #                       VALUES (:nomE, :codePE, :lieualterE, :descrE, :siteE, :secteurE,)");
-                #    $stmt->bindParam("nomE", $_POST["nomE"]);
-                #    $stmt->bindParam("codePE", $_POST["codePostal"]);
-                #    $stmt->bindParam("lieuAlterE", $_POST["nomE"]);
-                #    $stmt->bindParam("descrE", $_POST["description"]);
-                #    $stmt->bindParam("nomE", $_POST["nomE"]);
-                #    $stmt->lastInsertId();
-                #}
+                    $pdo = new PDO($dsn, $user, $pass, $options);
+
+                    #if (isset($_POST['nomE']) && $_POST['nomE'] == "") {
+                    #    $stmt = $pdo->prepare("INSERT INTO (nom_entreprise, codep_entreprise, lieu_alter_entreprise, description_entreprise, site_entreprise, secteur_entreprise)se_entreprises 
+                    #                       VALUES (:nomE, :codePE, :lieualterE, :descrE, :siteE, :secteurE,)");
+                    #    $stmt->bindParam("nomE", $_POST["nomE"]);
+                    #    $stmt->bindParam("codePE", $_POST["codePostal"]);
+                    #    $stmt->bindParam("lieuAlterE", $_POST["nomE"]);
+                    #    $stmt->bindParam("descrE", $_POST["description"]);
+                    #    $stmt->bindParam("nomE", $_POST["nomE"]);
+                    #    $stmt->lastInsertId();
+                    #}
                 
             ?>
             <form action="./ajouter-entreprise.php" method="post">
@@ -122,23 +124,34 @@
                     <input type="text" name="siteInternet" id="SiteInternet" autocomplete="off" required>
                     <label for="SiteInternet">Site internet</label>
                 </div>
-                <select name="secteur" id="Secteur">
-                    <?php
-                        $stmt = $pdo->prepare("SELECT * FROM se_secteur");
-                        $secteurActivites = $stmt->execute();
-                        foreach ($secteursActivites as $value) {
-                    ?>
-                    <option name="<?php echo $value[0]; ?>"> <?php echo $value[1]; ?> </option>
-                    <?php 
-                        } 
-                    ?>
-                </select>
+                <div class="form-item bm15">
+                    <input type="text" name="secteurActivites" id="SecteurActivites" autocomplete="off" required>
+                    <label for="SecteurActivites">Secteur d'activité</label>
+                    <div class="result-box">
+                        <ul>
+                        <?php
+                            $requete = $pdo->prepare("SELECT nom_secteur FROM se_secteur");
+                            $requete->execute();
+                            while($value = $requete->fetch()) {    
+                        ?>
+                        <li> <?php echo $value["nom_secteur"] ?> </li>
+                        <?php 
+                            }
+                        ?>
+                        </ul>
+                    </div> 
+                </div>
                 <div class="form-item">
                     <input type="submit" value="Ajouter">
                 </div>
             </form>
         </div>
-
+                <?php
+                    } catch (PDOException $e){
+                        $e -> getMessage();
+                        echo "<h1>Erreur de connexion à la base de données</h1>";
+                    }
+                ?>
         <div class="container-asyde">
             <div class="asyde-content">
                 <div class="asyde-navigation">
@@ -222,6 +235,7 @@
 
     <script src="../js/header.js"></script>
     <script src="../js/compte.js"></script>
+    <script src="../js/autocomplete.js"></script>
 </body>
 
 </html>
