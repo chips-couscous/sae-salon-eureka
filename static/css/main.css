@@ -1,0 +1,99 @@
+@import url(./base.css);
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+:root {
+    --c-light: #fff;
+    --c-dark : #000;
+    --c-primaire: #33477B;
+    --c-squelette: #dadada;
+
+    /* taille des espacements entre les éléments de naviguation dans le header */
+    --wm-el-header: 30px;
+    /* dimension padding droit & gauche du header */
+    --wp-lr-header: 150px;
+    /* hauteur du header */
+    --hh-header: 100px;
+
+    /* font primaire */
+    --f-primaire: 'Roboto';
+}
+
+::selection {
+    background-color: var(--c-primaire);
+    color: var(--c-light);
+}
+
+html {
+    overflow-x: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    height: 100vh;
+    width: 100vw;
+
+    overflow-x: hidden;
+    max-width: 100%;
+
+    position: relative;
+    left: 0;
+    top: 0;
+
+    -webkit-tap-highlight-color: #00000000; 
+
+    font-family: var(--f-primaire);
+    
+    z-index: 0;
+}
+
+a {
+    text-decoration: none;
+    color: var(--c-light);
+}
+
+.hover-underline-static:hover {
+    text-decoration: underline;
+}
+
+.hover-underline-active,
+.hover-underline-static {
+    display: inline-block;
+    position: relative;
+    text-decoration: none;
+    cursor: pointer;
+
+    user-select: none;
+}
+
+.hover-underline-active::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    border-radius: 5px;
+    height: 0.05em;
+    bottom: 0;
+    left: 0;
+    background: currentcolor;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+
+.hover-underline-active:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+body .container {
+    top: var(--hh-header);
+    position: absolute;
+    width: 100%;
+    z-index: 0;
+}
+
+input:focus {
+    outline: none !important;
+}
+
