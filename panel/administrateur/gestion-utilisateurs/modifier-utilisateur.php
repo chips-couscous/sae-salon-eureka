@@ -1,3 +1,7 @@
+<?php
+    require('../../../static/module_php/panel/g_utilisateurs.php');
+    
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -78,24 +82,52 @@
                     <div class="form-item">
                         <select name="filiere" id="filiere">
                             <option value="">Choisir une filière</option>
-                            <?php // Ecrire avec la requête SQL al liste des filières ?>
+                            <?php 
+                                $filiere = listeDesFilieres();
+                                foreach($filiere as $listeFiliere) {
+                                    echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                                }
+                            ?>
                         </select>
                     </div>
                     <div class="form-item">
                         <select name="typeUtilisateur" id="typeUtilisateur">
                             <option value="">Choisir un type d'utilisateur</option>
-                            <?php // Ecrire avec la requête SQL avec gestinnaire et utilisateur ?>
+                            <?php 
+                                $statut = listeStatut();
+                                foreach($statut as $listeStatut) {
+                                    echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
+                                }
+                            ?>
                         </select>
-                    </div>
-                    <div class="form-item">
-                        <input type="submit" value="Trier">
                     </div>
                 </form>
             </div>
             <!-- Zone d'affichage des utilisateurs -->
-            <div class="bordureListeUtilisateurs">
-                <?php //Ecrire la requête avec la fonction pour afficher la liste des utilisateurs ?>
-                <h1>Ici les utilisateurs mais avec SQL</h1>
+            <div class="listeUtilisateurs">
+                <table class="tablePrevisualisation" id="TablePrevisualisation"> 
+                    <tr>
+                        <th>Identifiant</th>
+                        <th>Prenom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Mot de passe</th>
+                        <th>Statut</th>
+                    </tr>
+                    <?php 
+                        $listeUtilisateurs = listeDesUtilisateurs();
+                        foreach ($listeUtilisateurs as $liste) {
+                            echo "</tr>";
+                            echo "<td>". $liste['idUtilisateur'] . "</td>";
+                            echo "<td>". $liste['prenomUtilisateur'] . "</td>";
+                            echo "<td>". $liste['nomUtilisateur'] . "</td>";
+                            echo "<td>". $liste['mailUtilisateur'] . "</td>";
+                            echo "<td>". $liste['mdpUtilisateur'] . "</td>";
+                            echo "<td>". $liste['statutUtilisateur'] . "</td>";
+                            echo "</tr>";
+                        }
+                    ?>
+                </table>
             </div>
 
             <div>
@@ -188,6 +220,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/panel/modificationUtilisateurs.js"></script>
 </body>
 
 </html>

@@ -81,16 +81,8 @@
                         <label for="nom">Nom *</label>
                     </div>
                     <div class="form-item bm15">
-                        <input type="text" name="fonction" id="fonction" autocomplete="off" required>
-                        <label for="fonction">Fonction</label>
-                    </div>
-                    <div class="form-item bm15">
                         <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
                         <label for="entreprise">Entreprise *</label>
-                    </div>
-                    <div class="form-item bm15">
-                        <input type="text" name="filiere" id="filiere" autocomplete="off" required>
-                        <label for="filiere">Filiere *</label>
                     </div>
                     <div class="form-item">
                         <input type="submit" value="Ajouter">
@@ -100,7 +92,7 @@
 
             <!-- Zone de prévisualisation de l'ajout final --> 
             <div class="previsualisation">
-                <table class="tablePrevisualisation">
+                <table class="tablePrevisualisation" id="TablePrevisualisation">
 					<tr>
 						<!--- Contenu -->
 						<th>
@@ -227,6 +219,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/panel/modificationIntervenants.js"></script>
 </body>
 
 </html>
