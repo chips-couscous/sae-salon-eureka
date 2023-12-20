@@ -68,7 +68,7 @@
     <div class="container">
         <div class="container-content">
             <!-- Zone d'importation d'une liste d'utilisateur -->
-            <div class="zoneImporterEtudiant">
+            <div id="zoneImporterEtudiant" class="zoneImporterEtudiant">
                 <span>Déposer un fichier ou</span>&nbsp;<input type="file" name="importerEtudiant" id="importerEtudiant" class="btnImporterEtudiant" accept=".csv">
             </div>
 
