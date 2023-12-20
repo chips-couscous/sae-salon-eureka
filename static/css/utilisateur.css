@@ -64,6 +64,10 @@ td {
     width: 95%;
 }
 
+.form-item input.erreur {
+    border-color: red;
+}
+
 
 
 /* Modification des utilisateurs */

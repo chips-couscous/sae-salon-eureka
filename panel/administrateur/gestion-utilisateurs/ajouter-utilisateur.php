@@ -69,34 +69,34 @@
         <div class="container-content">
             <!-- Zone d'importation d'une liste d'utilisateur -->
             <div class="zoneImporterEtudiant">
-                <span>Déposer un fichier ou</span>&nbsp;<button class="btnImporterEtudiant">importer</button>
+                <span>Déposer un fichier ou</span>&nbsp;<input type="file" name="importerEtudiant" id="importerEtudiant" class="btnImporterEtudiant" accept=".csv">
             </div>
 
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
                 <span>Ajouter manuellement un utilisateur :</span><br>
                     <div class="form-item bm15 nom">
-                        <input type="text" name="nom" id="nom" autocomplete="off" required>
+                        <input type="text" name="nom" id="nom" autocomplete="off" class="" required>
                         <label for="nom">Nom</label>
                     </div>
                     <div class="form-item bm15 prenom">
-                        <input type="text" name="prenom" id="prenom" autocomplete="off" required>
+                        <input type="text" name="prenom" id="prenom" autocomplete="off" class="" required>
                         <label for="prenom">Prénom</label>
                     </div>
                     <div class="form-item bm15 mail">
-                        <input type="text" name="mail" id="mail" autocomplete="off" required>
+                        <input type="text" name="mail" id="mail" autocomplete="off" class="" required>
                         <label for="mail">Mail</label>
                     </div>
                     <div class="form-item bm15 mdp">
-                        <input type="password" name="mdp" id="mdp" autocomplete="off" required>
+                        <input type="password" name="mdp" id="mdp" autocomplete="off" class="" required>
                         <label for="mdp">Mot de passe</label>
                     </div>
                     <div class="form-item bm15 filiere">
-                        <input type="text" name="filiere" id="filiere" autocomplete="off" required>
+                        <input type="text" name="filiere" id="filiere" autocomplete="off" class="" required>
                         <label for="filiere">Filiere</label>
                     </div>
                     <div class="form-item bm15 status">
-                        <input type="text" name="status" id="status" autocomplete="off" required>
+                        <input type="text" name="status" id="status" autocomplete="off" class="" required>
                         <label for="status">Status</label>
                     </div>
                     <div class="form-item ajouter">
@@ -107,7 +107,8 @@
             <!-- Zone de prévisualisation de l'ajout final --> 
             <div class="previsualisation">
                 <table class="tablePrevisualisation" id="tablePrevisualisation">
-                    <!-- Affichage des différents utilisateurs --> 
+                    <!-- Affichage des différents utilisateurs -->
+                    <tr><td>Prénom</td><td>Nom</td><td>Mail</td><td>Mot de passe</td><td>Status</td><td>Filiere</td></tr> 
                 </table>
             </div>
 
