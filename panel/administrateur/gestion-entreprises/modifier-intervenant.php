@@ -8,9 +8,9 @@
     <title>Salon Eureka</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/main.css">
+    <link rel="stylesheet" href="../../../static/css/header.css">
+    <link rel="stylesheet" href="../../../static/css/compte.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -65,7 +65,7 @@
 
     <div class="container">
         <div class="container-content">
-            <span class="titre-panel-ouvert"><span>Gestion des entreprises ></span> Supprimer une entreprise</span>
+            <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Modifier un intervenant</span>
         </div>
 
         <div class="container-asyde">
@@ -118,9 +118,9 @@
                                 <li class="hover-underline-static">Ajouter une entreprise</li>
                                 <li class="hover-underline-static">Modifier une entreprise</li>
                                 <li class="hover-underline-static">Supprimer une entreprise</li>
-                                <li class="hover-underline-static">Ajouter un intervenant</li>
-                                <li class="hover-underline-static">Modifier un intervenant</li>
-                                <li class="hover-underline-static">Supprimer un intervenant</li>
+                                <li class="hover-underline-static"><a href="./ajouter-intervenant.php">Ajouter un intervenant</a></li>
+                                <li class="hover-underline-static"><a href="#">Modifier un intervenant</a></li>
+                                <li class="hover-underline-static"><a href="./supprimer-intervenant.php">Supprimer un intervenant</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -149,8 +149,8 @@
         </div>
     </div>
 
-    <script src="../js/header.js"></script>
-    <script src="../js/compte.js"></script>
+    <script src="../../../static/js/header.js"></script>
+    <script src="../../../static/js/compte.js"></script>
 </body>
 
 </html>
