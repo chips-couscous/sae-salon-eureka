@@ -53,3 +53,48 @@ function afficherDonnees(donnees) {
         `;
     }
 }
+
+// Récupérer toutes les lignes de la table
+var lignes = displayTable.getElementsByTagName("tr");
+
+// Ajouter un gestionnaire d'événements à chaque ligne
+for (var i = 0; i < lignes.length; i++) {
+    console.log(1);
+  lignes[i].addEventListener("click", function() {
+    // Appeler la fonction lorsque la ligne est cliquée
+    estCliquee(this);
+  });
+}
+
+// Récupérer toutes les lignes de la table
+var champsModifs = document.getElementById("modifCliquee");
+
+// Fonction à appeler lorsqu'une ligne est cliquée
+function estCliquee(ligne) {
+    console.log("test");
+    champsModifs.innerHTML = ``;
+    champsModifs.innerHTML += `
+        <span>Modifier l'intervenant :</span><br>
+            <form action="post">
+                <div class="form-item bm15 ">
+                    <input type="text" name="nom" id="nom" autocomplete="off" required>
+                    <label for="nom">Nom *</label>
+                </div>
+                <div class="form-item bm15">
+                    <input type="text" name="fonction" id="fonction" autocomplete="off" required>
+                    <label for="fonction">Fonction *</label>
+                </div>
+                <div class="form-item bm15">
+                    <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
+                    <label for="entreprise">Entreprise *</label>
+                </div>
+                <div class="form-item bm15">
+                    <input type="text" name="filiere" id="filiere" autocomplete="off" required>
+                    <label for="filiere">Filiere *</label>
+                </div>
+                <div class="form-item">
+                    <input type="submit" value="Ajouter">
+                </div>
+            </form>`;
+    return true;
+}

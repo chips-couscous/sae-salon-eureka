@@ -135,6 +135,10 @@
             </div>
 
             <button class="valider">Valider les ajouts</button>
+
+            <div id="modifCliquee">
+            </div>
+
         </div>
         <div class="container-asyde">
             <div class="asyde-content">
