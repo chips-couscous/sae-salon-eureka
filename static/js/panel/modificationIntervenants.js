@@ -71,7 +71,7 @@ var champsModifs = document.getElementById("modifCliquee");
 
 // Fonction à appeler lorsqu'une ligne est cliquée
 function estCliquee(ligne) {
-    console.log("test");
+    console.log(ligne);
     champsModifs.innerHTML = ``;
     champsModifs.innerHTML += `
         <span>Modifier l'intervenant :</span><br>
@@ -80,6 +80,8 @@ function estCliquee(ligne) {
                     <input type="text" name="nom" id="nom" autocomplete="off" required>
                     <label for="nom">Nom *</label>
                 </div>
+                <select>` 
+                += `</select>
                 <div class="form-item bm15">
                     <input type="text" name="fonction" id="fonction" autocomplete="off" required>
                     <label for="fonction">Fonction *</label>

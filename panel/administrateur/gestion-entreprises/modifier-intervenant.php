@@ -74,7 +74,7 @@
             <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Modifier un intervenant</span>
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
-                <span>Ajouter manuellement un intervenant :</span><br>
+                <span>Rechercher un intervenant :</span><br>
                 <form action="post">
                     <div class="form-item bm15 ">
                         <input type="text" name="nom" id="nom" autocomplete="off" required>
@@ -84,9 +84,6 @@
                         <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
                         <label for="entreprise">Entreprise *</label>
                     </div>
-                    <div class="form-item">
-                        <input type="submit" value="Ajouter">
-                  </div>
                 </form>
             </div>
 
