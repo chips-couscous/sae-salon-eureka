@@ -1,17 +1,26 @@
 @import url(./main.css);
 
-.result-box ul {
-    border-top: 1px solid #999;
-    padding: 15px 10px;
-}
-
-.result-box ul li {
-    list-style: none;
+.form-item select{
+    display: block;
+    width: 400px;
+    height: 40px;
+    background: transparent;
+    border: solid 1px #ccc;
+    transition: all .3s ease;
+    padding: 0 15px;
     border-radius: 3px;
-    padding: 15px 10px;
-    cursor: pointer;
-}
+  }
 
-.result-box ul li:hover{
-    background: #e9f3ff;
-}
+  .form-item .grise{
+    position: absolute;
+    cursor: text;
+    z-index: 2;
+    top: 13px;
+    left: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    background: #fff;
+    padding: 0 10px;
+    color: #999;
+    transition: all .3s ease;
+  }

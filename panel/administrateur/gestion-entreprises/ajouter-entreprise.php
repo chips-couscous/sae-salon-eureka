@@ -8,11 +8,11 @@
     <title>Salon Eureka</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../css/gestionEntreprise.css">
-    <link rel="stylesheet" href="../css/connexion.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/connexion.css">
+    <link rel="stylesheet" href="../../../static/css/main.css">
+    <link rel="stylesheet" href="../../../static/css/header.css">
+    <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/gestionEntreprise.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -87,16 +87,31 @@
         
                     $pdo = new PDO($dsn, $user, $pass, $options);
 
-                    #if (isset($_POST['nomE']) && $_POST['nomE'] == "") {
-                    #    $stmt = $pdo->prepare("INSERT INTO (nom_entreprise, codep_entreprise, lieu_alter_entreprise, description_entreprise, site_entreprise, secteur_entreprise)se_entreprises 
-                    #                       VALUES (:nomE, :codePE, :lieualterE, :descrE, :siteE, :secteurE,)");
-                    #    $stmt->bindParam("nomE", $_POST["nomE"]);
-                    #    $stmt->bindParam("codePE", $_POST["codePostal"]);
-                    #    $stmt->bindParam("lieuAlterE", $_POST["nomE"]);
-                    #    $stmt->bindParam("descrE", $_POST["description"]);
-                    #    $stmt->bindParam("nomE", $_POST["nomE"]);
-                    #    $stmt->lastInsertId();
-                    #}
+                    if (isset($_POST['nomE']) && $_POST['nomE'] != "") {
+
+                        # insertion d'un secteur d'activité
+                        # TODO le faire que si le secteur d'activité n'existe pas
+                        #$stmt = $pdo->prepare("INSERT INTO se_secteur (nom_secteur) VALUES (:nomSecteur)");
+                        #$stmt->bindParam("nomSecteur", $_POST["secteurActivites"]);
+                        #$stmt->execute();
+
+                        # Récupération id_secteur 
+                        $requete = $pdo->prepare("SELECT id_secteur FROM se_secteur WHERE nom_secteur LIKE \":nomSecteur\"");
+                        $requete->bindParam("nomSecteur", $_POST["secteurActivites"]);
+                        $requete->execute();
+                        $numSecteur = $requete->fetchAll();
+
+                        # Insertion des données relatives à l'entreprise
+                        $stmt = $pdo->prepare("INSERT INTO se_entreprise (nom_entreprise, codep_entreprise, lieu_alter_entreprise, description_entreprise, site_entreprise, categorie_entreprise, secteur_entreprise)
+                                           VALUES (:nomE, :codePE, :lieualterE, :descrE, :siteE, :categorieE :secteurE)");
+                        #$stmt->bindParam("nomE", $_POST["nomE"]);
+                        #$stmt->bindParam("codePE", $_POST["codePostal"]);
+                        #$stmt->bindParam("lieuAlterE", $_POST["nomE"]);
+                        #$stmt->bindParam("descrE", $_POST["description"]);
+                        #$stmt->bindParam("siteE", $_POST["SiteInternet"]);
+                        #$stmt->bindParam("categorieE", $_POST["SiteInternet"]);
+                        #$stmt->bindParam("secteurE", $numSecteur);
+                    }
                 
             ?>
             <form action="./ajouter-entreprise.php" method="post">
@@ -109,16 +124,20 @@
                     <label for="Description">Description</label>
                 </div>
                 <div class="form-item bm15">
-                    <input type="text" name="identifiant" id="Identifiant" autocomplete="off" required>
-                    <label for="Identifiant">Lieu de l'alternance</label>
-                </div>
-                <div class="form-item bm15">
                     <input type="text" name="codePostal" id="CodePostal" autocomplete="off" required>
                     <label for="CodePostal">Code Postal </label>
                 </div>
                 <div class="form-item bm15">
-                    <input type="text" name="identifiant" id="Identifiant" autocomplete="off" required>
-                    <label for="Identifiant">Secteur d'activité</label>
+                    <input type="text" name="lieuAlternance" id="LieuAlternance" autocomplete="off" required>
+                    <label for="LieuAlternance">Lieu de l'alternance</label>
+                </div>
+                <div class="form-item bm15">
+                    <select name="tailleEntreprise" id="TailleEntreprise" autocomplete="off" required>
+                        <option value="" class="grise">catégorie de l'entreprise</option>
+                        <option value="0">1 - 50</option>
+                        <option value="1">51 - 100</option>
+                        <option value="2">+100</option>
+                    </select>
                 </div>
                 <div class="form-item bm15">
                     <input type="text" name="siteInternet" id="SiteInternet" autocomplete="off" required>
@@ -127,19 +146,6 @@
                 <div class="form-item bm15">
                     <input type="text" name="secteurActivites" id="SecteurActivites" autocomplete="off" required>
                     <label for="SecteurActivites">Secteur d'activité</label>
-                    <div class="result-box">
-                        <ul>
-                        <?php
-                            $requete = $pdo->prepare("SELECT nom_secteur FROM se_secteur");
-                            $requete->execute();
-                            while($value = $requete->fetch()) {    
-                        ?>
-                        <li> <?php echo $value["nom_secteur"] ?> </li>
-                        <?php 
-                            }
-                        ?>
-                        </ul>
-                    </div> 
                 </div>
                 <div class="form-item">
                     <input type="submit" value="Ajouter">
@@ -233,9 +239,9 @@
         </div>
     </div>
 
-    <script src="../js/header.js"></script>
-    <script src="../js/compte.js"></script>
-    <script src="../js/autocomplete.js"></script>
+    <script src="../../../static/js/header.js"></script>
+    <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/autocomplete.js"></script>
 </body>
 
 </html>
