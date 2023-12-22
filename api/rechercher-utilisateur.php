@@ -33,7 +33,7 @@ try {
     }
     // Ajout de conditions supplémentaires pour la filière, si nécessaire
     if (!empty($filiere)) {
-        $sql .= " AND se_statut.id_statut = :filiere";
+        $sql .= " AND se_appartient.filiere_appartient = :filiere";
         $params["filiere"] = $filiere;
     }
 

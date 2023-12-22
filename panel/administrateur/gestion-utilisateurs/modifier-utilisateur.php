@@ -103,7 +103,7 @@
                 
             </div>
             <!-- Zone d'affichage des utilisateurs -->
-            <div class="listeUtilisateurs">
+            <div class="listeUtilisateurs">7
                 <table class="tableListeUtilisateur" id="tableListeUtilisateur"> 
                     <tr>
                         <th>Identifiant</th>
@@ -130,54 +130,57 @@
                     ?>
                 </table>
             </div>
-
-            <div class="affichageModificationCache" id="affichageModification">
-                <div class="form-item">
-                    <input type="text" name="prenomUtilisateur" id="prenomUtilisateur" autocomplete="off" value="" required>
-                        <label for="prenomUtilisateur">Prenom</label>
-                </div>
-                <div class="form-item">
-                    <input type="text" name="nomUtilisateur" id="nomUtilisateur" autocomplete="off" value="" required>
-                    <label for="nomUtilisateur">Nom</label>
-                 </div>
-                 <div class="form-item">
-                    <input type="text" name="mailUtilisateur" id="mailUtilisateur" autocomplete="off" value="" required>
-                    <label for="mailUtilisateur">Email</label>
-                </div>
-                 <div class="form-item">
-                    <input type="text" name="mdpUtilisateur" id="mdpUtilisateur" autocomplete="off" value="" required>
-                    <label for="mdpUtilisateur">Mot de passe</label>
-                </div>
-                <br>
-                <div class="form-item">
-                    <select name="statutUtilisateur" id="statutUtilisateur" required> 
-                        <?php 
-                            $statut = listeStatut();
-                            foreach($statut as $listeStatut) {
-                                echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
-                            }
-                        ?>
-                    </select>
-                </div>
-                <div class="form-item" id="ItemSelecteFiliere">
-                    <div id="toutesLesFilieres">
-                        <select name="filiereUtilisateur" id="filiereUtilisateur" required>
+                      
+                <div class="affichageModificationCache" id="affichageModification">
+                    <div class="form-item">
+                        <input type="text" name="prenomUtilisateur" id="prenomUtilisateur" autocomplete="off" value="" required>
+                            <label for="prenomUtilisateur">Prenom</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="nomUtilisateur" id="nomUtilisateur" autocomplete="off" value="" required>
+                        <label for="nomUtilisateur">Nom</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="mailUtilisateur" id="mailUtilisateur" autocomplete="off" value="" required>
+                        <label for="mailUtilisateur">Email</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="mdpUtilisateur" id="mdpUtilisateur" autocomplete="off" value="" required>
+                        <label for="mdpUtilisateur">Mot de passe</label>
+                    </div>
+                    <br>
+                    <div class="form-item">
+                        <select name="statutUtilisateur" id="statutUtilisateur" required> 
                             <?php 
-                                $filiere = listeDesFilieres();
-                                foreach($filiere as $listeFiliere) {
-                                    echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                                $statut = listeStatut();
+                                foreach($statut as $listeStatut) {
+                                    echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
                                 }
+                                
                             ?>
                         </select>
                     </div>
+                    <div class="form-item" id="ItemSelecteFiliere">
+                        <div id="toutesLesFilieres">
+                            <select name="filiereUtilisateur" id="filiereUtilisateur" required>
+                                <?php 
+                                    $filiere = listeDesFilieres();
+                                    foreach($filiere as $listeFiliere) {
+                                        echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="affichageModificationCache form-item" id="boutonAjouterFiliere">
+                        <button class="boutonAjoutFiliere"> + </button>
+                    </div>
+                    <div class="form-item">
+                        <input type="submit" value="Modifier">
+                    </div>
                 </div>
-                <div class="affichageModificationCache form-item" id="boutonAjouterFiliere">
-                    <button class="boutonAjoutFiliere"> + </button>
-                </div>
-                <div class="form-item">
-                    <input type="submit" value="Modifier">
-                </div>
-            </div>
+            
+            
 
         </div>
 
