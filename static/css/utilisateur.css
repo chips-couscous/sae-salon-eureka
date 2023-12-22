@@ -80,13 +80,52 @@ td {
 
 /* Modification des utilisateurs */
 
-.bordureListeUtilisateurs {
-    border: 10px;
-    border: solid;
-    border-color: #33477B;
-    border-radius: 2px;
+.listeUtilisateurs {
     margin-top: 1%;
-    height: 20%;
+    height: 25%;
     width: 95%;
+    background-color: #D9D9D9;
+    overflow: auto;
+}
+.cliquable {
+    padding: 2%;
+}
+
+.cliquable:hover {
+    cursor: pointer;
+}
+
+.tableListeUtilisateur {
+    margin: 10px;
+    width: 100%;
     text-align: center;
+}
+
+.affichageModification {
+    margin: 2%;
+}
+
+.affichageModificationCache {
+    visibility: hidden;
+}
+
+.afficherAjout {
+    visibility: visible;
+}
+
+.boutonAjoutFiliere {
+    text-align: center;
+    cursor: pointer;
+    color : white;
+    width: 35px;
+    height: 35px;
+    border: none;
+    float: left;
+    background-color: #33477B;
+}
+select {
+    border: none;
+    background-color: #dadada;
+    height: 35px;
+    width: 250px;
 }
