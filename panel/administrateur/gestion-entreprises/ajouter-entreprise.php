@@ -86,32 +86,7 @@
                     $dsn="mysql:host=$host;dbname=$db;charset=$charset";
         
                     $pdo = new PDO($dsn, $user, $pass, $options);
-
-                    if (isset($_POST['nomE']) && $_POST['nomE'] != "") {
-
-                        # insertion d'un secteur d'activité
-                        # TODO le faire que si le secteur d'activité n'existe pas
-                        #$stmt = $pdo->prepare("INSERT INTO se_secteur (nom_secteur) VALUES (:nomSecteur)");
-                        #$stmt->bindParam("nomSecteur", $_POST["secteurActivites"]);
-                        #$stmt->execute();
-
-                        # Récupération id_secteur 
-                        $requete = $pdo->prepare("SELECT id_secteur FROM se_secteur WHERE nom_secteur LIKE \":nomSecteur\"");
-                        $requete->bindParam("nomSecteur", $_POST["secteurActivites"]);
-                        $requete->execute();
-                        $numSecteur = $requete->fetchAll();
-
-                        # Insertion des données relatives à l'entreprise
-                        $stmt = $pdo->prepare("INSERT INTO se_entreprise (nom_entreprise, codep_entreprise, lieu_alter_entreprise, description_entreprise, site_entreprise, categorie_entreprise, secteur_entreprise)
-                                           VALUES (:nomE, :codePE, :lieualterE, :descrE, :siteE, :categorieE :secteurE)");
-                        #$stmt->bindParam("nomE", $_POST["nomE"]);
-                        #$stmt->bindParam("codePE", $_POST["codePostal"]);
-                        #$stmt->bindParam("lieuAlterE", $_POST["nomE"]);
-                        #$stmt->bindParam("descrE", $_POST["description"]);
-                        #$stmt->bindParam("siteE", $_POST["SiteInternet"]);
-                        #$stmt->bindParam("categorieE", $_POST["SiteInternet"]);
-                        #$stmt->bindParam("secteurE", $numSecteur);
-                    }
+                    $formValide = true;
                 
             ?>
             <form action="./ajouter-entreprise.php" method="post">
@@ -126,6 +101,14 @@
                 <div class="form-item bm15">
                     <input type="text" name="codePostal" id="CodePostal" autocomplete="off" required>
                     <label for="CodePostal">Code Postal </label>
+                    <?php
+                        if (isset($_POST["codePostal"])) {
+                            $codeP = (int)($_POST["codePostal"]);
+                            if ($codeP == 0 || strlen($codeP) != 5) {
+                                $formValide = false;
+                            }
+                        }
+                    ?>
                 </div>
                 <div class="form-item bm15">
                     <input type="text" name="lieuAlternance" id="LieuAlternance" autocomplete="off" required>
@@ -142,6 +125,12 @@
                 <div class="form-item bm15">
                     <input type="text" name="siteInternet" id="SiteInternet" autocomplete="off" required>
                     <label for="SiteInternet">Site internet</label>
+                    <?php
+                        #$regex = "/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,4}$/";
+                        #if (isset($_POST["lieuAlternance"]) && !preg_match($regex, $_POST["lieuAlternance"])) {
+                        #    $formValide = false;
+                        #}
+                    ?>
                 </div>
                 <div class="form-item bm15">
                     <input type="text" name="secteurActivites" id="SecteurActivites" autocomplete="off" required>
@@ -150,6 +139,40 @@
                 <div class="form-item">
                     <input type="submit" value="Ajouter">
                 </div>
+                <?php
+                    if (isset($_POST['nomE']) && $_POST['nomE'] != "" && $formValide == true) {
+                        
+                        # insertion d'un secteur d'activité
+                        # TODO le faire que si le secteur d'activité n'existe pas
+                        #$stmt = $pdo->prepare("INSERT INTO se_secteur (nom_secteur) VALUES (:nomSecteur)");
+                        #$stmt->bindParam("nomSecteur", $_POST["secteurActivites"]);
+                        #$stmt->execute();
+
+                        # Récupération id_secteur 
+                        # TODO revoir les requêtes
+                        $requete = $pdo->prepare("SELECT id_secteur FROM se_secteur");
+                        #$requete->bindParam("nomS", $_POST["secteurActivites"]);
+                        $requete->execute();
+                        $numSecteur = $requete->fetchAll();
+
+                        # Insertion des données relatives à l'entreprise
+                        $stmt = $pdo->prepare("INSERT INTO se_entreprise (nom_entreprise, codep_entreprise, lieu_alter_entreprise, description_entreprise, site_entreprise, categorie_entreprise, secteur_entreprise)
+                                           VALUES (:nomE, :codePE, :lieuAlterE, :descrE, :siteE, :categorieE, :secteurE)");
+                        $stmt->bindParam("nomE", $_POST["nomE"]);
+                        $stmt->bindParam("codePE", $codeP);
+                        $stmt->bindParam("lieuAlterE", $_POST["lieuAlternance"]);
+                        $stmt->bindParam("descrE", $_POST["description"]);
+                        $stmt->bindParam("siteE", $_POST["siteInternet"]);
+                        $stmt->bindParam("categorieE", $_POST["tailleEntreprise"]);
+                        #$stmt->bindParam("secteurE", $numSecteur["id_secteur"]);
+                        #$stmt->execute();
+
+                        echo "<h1>insertion</h1>";
+                        var_dump($numSecteur);
+                    } else if (isset($codeP)) {
+                        echo "<h1>formulaire pas valide</h1>";
+                    }
+                ?>
             </form>
         </div>
                 <?php

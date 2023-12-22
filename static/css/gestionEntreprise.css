@@ -10,17 +10,3 @@
     padding: 0 15px;
     border-radius: 3px;
   }
-
-  .form-item .grise{
-    position: absolute;
-    cursor: text;
-    z-index: 2;
-    top: 13px;
-    left: 10px;
-    font-size: 12px;
-    font-weight: bold;
-    background: #fff;
-    padding: 0 10px;
-    color: #999;
-    transition: all .3s ease;
-  }
