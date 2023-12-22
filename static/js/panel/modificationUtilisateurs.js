@@ -60,7 +60,7 @@ function afficherDonnees(donnees) {
             <td>${utilisateur['nom_utilisateur']}</td>
             <td>${utilisateur['mail_utilisateur']}</td>
             <td>${utilisateur['mdp_utilisateur']}</td>
-            <td>${utilisateur['libelle_filiere']}</td>
+            <td>${utilisateur['filieres']}</td>
             <td>${utilisateur['libelle_statut']}</td>
         </tr>
         `;

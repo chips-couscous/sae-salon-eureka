@@ -1,4 +1,5 @@
 @import url(./main.css);
+
 /* Contient la mise en forme des pages de gestion des utilisateurs */
 
 .zoneImporterEtudiant {
@@ -6,6 +7,7 @@
     height: 202px;
     border: dashed #E2E2E2 2px;
     border-radius: 3px;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -27,9 +29,6 @@ form {
 }
 .form-item input{
     width: 250px;
-}
-.form-item input[type=submit] {
-    width: 300px;
 }
 
 /* Prévisualisation */
@@ -59,6 +58,14 @@ td {
     width: 30%;
     height: 40px;
     font-weight: 500;
+}
+.ajouterManuel {
+    margin: initial;
+    width: 95%;
+}
+
+.form-item input.erreur {
+    border-color: red;
 }
 
 
