@@ -220,7 +220,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
-    <script src="../../../static/js/panel/modificationIntervenants.js"></script>
+    <script src="../../../static/js/panel/modificationIntervenants.js" type="module"></script>
 </body>
 
 </html>
