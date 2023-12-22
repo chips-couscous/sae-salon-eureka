@@ -239,7 +239,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
-    <script src="../../../static/js/ajouter-utilisateur.js"></script>
+    <script src="../../../static/js/panel/ajouter-utilisateur.js"></script>
 </body>
 
 </html>
