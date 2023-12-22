@@ -1,3 +1,41 @@
+<?php
+    /* Récupération des utilisateurs */
+    $donneeCookie = "";
+    $tableauUtilisateurs = null;
+    if (isset($_POST["enregistrer"]) && $_POST["enregistrer"] == "true") {
+        if (isset($_COOKIE["utilisateurs"])) {
+            $donneeCookie = $_COOKIE["utilisateurs"];
+
+            $tableauUtilisateurs = json_decode($donneeCookie);
+        }
+    }
+
+    /* Récupération de l'objet PDO */
+    require "../../../static/module_php/base_de_donnees.php";
+
+    /* Ecriture dans la base de données */
+    if ($tableauUtilisateurs != null) {
+        $insertionUtilisateurs = $pdo->prepare("INSERT INTO se_utilisateur (prenom_utilisateur,nom_utilisateur,mail_utilisateur,mdp_utilisateur,statut_utilisateur) VALUES (:prenom,:nom,:mail,:mdp,:statutU)");
+        $insertionFiliere = $pdo->prepare("INSERT INTO se_appartient VALUES (:idU,:idF)");
+        $recupererIDStatut = $pdo->prepare("SELECT id_statut FROM se_statut WHERE libelle_statut = :statut");
+    
+        foreach($tableauUtilisateurs as $objectUtilisateur) {
+            $utilisateur = (array)$objectUtilisateur;
+            $recupererIDStatut->bindParam("statut",$utilisateur["statut"]);
+            $recupererIDStatut->execute();
+            $idStatut = ($recupererIDStatut->fetch()["id_statut"]);
+            $insertionUtilisateurs->bindParam("prenom",$utilisateur["prenom"]);
+            $insertionUtilisateurs->bindParam("nom",$utilisateur["nom"]);
+            $insertionUtilisateurs->bindParam("mail",$utilisateur["mail"]);
+            $insertionUtilisateurs->bindParam("mdp",$utilisateur["mdp"]);
+            $insertionUtilisateurs->bindParam("statutU",$idStatut);
+            $insertionUtilisateurs->execute();
+        }
+
+        //TODO AFFICHER UN MESSAGE LORS DE L'INSERTION REUSSI ET UN MESSAGE SI ERREUR
+        // EMPECHER L'INSERTION EN DOUBLE !!
+    }
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -111,9 +149,11 @@
                     <tr><td>Prénom</td><td>Nom</td><td>Mail</td><td>Mot de passe</td><td>Status</td><td>Filiere</td></tr> 
                 </table>
             </div>
-
-            <button class="valider">Valider les ajouts</button>
-
+            
+            <form action="" method="post" class="formValider">
+                <input type="hidden" name="enregistrer" value="true">
+                <input type="submit" class="valider" value="Valider les ajouts">
+            </form>
         </div>
 
         <div class="container-asyde">

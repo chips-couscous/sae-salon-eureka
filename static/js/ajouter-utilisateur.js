@@ -9,6 +9,7 @@ var zoneSaisieStatus = document.getElementById("status");
 var zonePrevisualisation = document.getElementById("tablePrevisualisation");
 var btnImportFichier = document.getElementById("importerEtudiant");
 var zoneImportFichier = document.getElementById("zoneImporterEtudiant");
+var body = document.body;
 
 var tableauUtilisateurs = [];
 
@@ -20,10 +21,10 @@ var filiereCorrect;
 var statusCorrect;
 
 /* Ajout d'eventListener */
-btnAjouterManuel.addEventListener("click", ajouterUtilisateur);
+btnAjouterManuel.addEventListener("click", ajouterUtilisateurManuel);
 btnImportFichier.addEventListener("change", importerFichier);
 zoneImportFichier.addEventListener('drop', importDragAndDrop);
-zoneImportFichier.addEventListener('dragover', handleDragOver);
+body.addEventListener('dragover', dragOver);
 
 
 /* Affiche dans la zone de prévisualisation les différents utilisateurs importés ou ajoutés */
@@ -36,15 +37,24 @@ function afficherUtilisateur() {
         <td>${utilisateur["mail"]}</td>
         <td>${utilisateur["mdp"]}</td>
         <td>${utilisateur["filiere"]}</td>
-        <td>${utilisateur["status"]}</td>
+        <td>${utilisateur["statut"]}</td>
         </tr>`;
+
+        /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
+        ecritureCookie();
     });
+}
+
+/* Fait correspondre les données affichées et celles présentes dans le cookie*/
+function ecritureCookie() {
+    tableauUtilisateurJSON = JSON.stringify(tableauUtilisateurs);
+    document.cookie = 'utilisateurs = ' + tableauUtilisateurJSON;
 }
 
 /* Ajoute un utilisateur dans le tableau */
 function ajouterUtilisateur(donneesUtilisateur) {
     tableauUtilisateurs.unshift({"nom" : donneesUtilisateur[0],"prenom" : donneesUtilisateur[1],"mail" : donneesUtilisateur[2],
-    "mdp" : donneesUtilisateur[3],"filiere" : donneesUtilisateur[4],"status" : donneesUtilisateur[5]});
+    "mdp" : donneesUtilisateur[3],"filiere" : donneesUtilisateur[4],"statut" : donneesUtilisateur[5]});
 }
 
 /* Retourne true si l'utilisateur passé en paramètre a déjà été ajouté */
@@ -150,24 +160,31 @@ function lireFichier(fichier) {
 
 /* Lis le contenu du fichier et l'ajoute dans un tableau et l'affiche */
 function traiterFichier(contenuFichier) {
+    let nbUtilisateurNonAjoute = 0;
     let utilisateurs = contenuFichier.split("\r\n"); // Découpe le fichier pour obtenir un tableau d'utilisateur
     for (i = 1; i < utilisateurs.length; i++) {
         donneesUtilisateur = utilisateurs[i].split(";"); // Découpage des différentes données d'un utilisateur
         if (!estUtilisateurPresent(donneesUtilisateur)) {
             ajouterUtilisateur(donneesUtilisateur);
+        } else {
+            nbUtilisateurNonAjoute += 1;
         }
+    }
+    if (nbUtilisateurNonAjoute > 0) {
+        alert(nbUtilisateurNonAjoute + " utilisateurs déjà présent et non ajoutés\n");
     }
     afficherUtilisateur(); 
 }
 
 /* Evite le fonctionnement de base du navigateur concernant le drag and drop de fichier */
-function handleDragOver(event) {
+function dragOver(event) {
     event.preventDefault();
 }
 
 /* Récupère le chemin du fichier déposé */
 function importDragAndDrop(event) {
     event.preventDefault();
+    event.stopPropagation();
     let fichier = event.dataTransfer.files[0];
     lireFichier(fichier);
 }
