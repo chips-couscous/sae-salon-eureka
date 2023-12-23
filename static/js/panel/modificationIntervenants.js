@@ -165,51 +165,108 @@ function estCliquee(ligne) {
     // Construire la chaîne HTML dans une variable
     let htmlContent = `
         <span>Modifier l'intervenant :</span><br>
-        <form action="post">
+        <form id="formulaireModification" method="post" action="#">
             <div class="form-item bm15 ">
-                <input type="text" name="nom" id="nom" value="${listeChamps[0].innerText}" autocomplete="off" required>
-                <label for="nom">Nom *</label>
+                <input type="text" name="nom" id="nomModif" value="${listeChamps[0].innerText}" autocomplete="off" required>
+                <label for="nomModif">Nom *</label>
             </div>
-            <select name="fonction" id="fonction">`;
+            <div class="form-item bm15 ">
+                <select name="fonction" id="fonctionModif">`;
 
     for (var i = 0; i < tableauFonctions.length; i++) {
         htmlContent += `<option value="${tableauFonctions[i].fonction}"`;
         if (listeChamps[1].innerText == tableauFonctions[i].fonction) {
-            htmlContent += `selected`;
-        };
+            htmlContent += ` selected`;
+        }
         htmlContent += `>${tableauFonctions[i].fonction}</option>`;
     }
 
     htmlContent += `</select>
-                    <label for="fonction">Fonction *</label>
-                    <select name="entreprise" id="enterprise">`;
-    for (var i = 0; i < tableauFonctions.length; i++) {
+                    <label for="fonctionModif">Fonction *</label>
+                </div>
+                <div class="form-item bm15 ">
+                    <select name="entreprise" id="entrepriseModif">`;
+    for (var i = 0; i < tableauEntreprises.length; i++) {
         htmlContent += `<option value="${tableauEntreprises[i].entreprise}"`;
         if (listeChamps[2].innerText == tableauEntreprises[i].entreprise) {
-            htmlContent += `selected`;
-        };
+            htmlContent += ` selected`;
+        }
         htmlContent += `>${tableauEntreprises[i].entreprise}</option>`;
     }
 
     htmlContent += `</select>
-                    <label for="entreprise">Entreprise *</label>
-                    <select name="filiere" id="filiere">`;
+                    <label for="entrepriseModif">Entreprise *</label>
+                </div>
+                <div class="form-item bm15 ">
+                    <select name="filiere" id="filiereModif">`;
     for (var i = 0; i < tableauFilieres.length; i++) {
         htmlContent += `<option value="${tableauFilieres[i].filiere}"`;
         if (listeChamps[3].innerText == tableauFilieres[i].filiere) {
-            htmlContent += `selected`;
-        };
+            htmlContent += ` selected`;
+        }
         htmlContent += `>${tableauFilieres[i].filiere}</option>`;
     }
     htmlContent += `</select>
-                    <label for="filiere">Filiere *</label>`;
+                    <label for="filiereModif">Filiere *</label>
+                </div>
+                <div class="form-item">
+                    <input type="submit" value="Modifier">
+                </div>
+            </form>`;
 
     // Remplacez le contenu de champsModifs par la nouvelle chaîne HTML
     champsModifs.innerHTML = htmlContent;
 
-    champsModifs.innerHTML +=`<div class="form-item">
-                                  <input type="submit" value="Modifier">
-                              </div>
-                              </form>`;
+    ajouterEcouteurFormulaire();
+    
     return true;
+}
+
+// Fonction pour ajouter l'écouteur d'événements au formulaire
+function ajouterEcouteurFormulaire() {
+    let formulaireModification = document.getElementById("formulaireModification");
+
+    if (formulaireModification) {
+        formulaireModification.addEventListener("submit", function (event) {
+            event.preventDefault(); // Empêche le rechargement de la page
+
+            console.log("Formulaire soumis!"); // Ajoutez cette ligne pour vérifier
+
+            // Collectez les valeurs du formulaire
+            let nouveauNom = document.getElementById("nomModif").value;
+            let nouvelleFonction = document.getElementById("fonctionModif").value;
+            let nouvelleEntreprise = document.getElementById("entrepriseModif").value;
+            let nouvelleFiliere = document.getElementById("filiereModif").value;
+
+            // Effectuez une requête AJAX pour mettre à jour la base de données
+            mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntreprise, nouvelleFiliere);
+        });
+    }
+}
+
+function mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntreprise, nouvelleFiliere) {
+    console.log("Nom : " + nouveauNom);
+    console.log("nouvelleFonction : " + nouvelleFonction);
+    console.log("nouvelleEntreprise : " + nouvelleEntreprise);
+    console.log("nouvelleFiliere : " + nouvelleFiliere);
+
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                // Traitement après la mise à jour réussie
+                console.log("Mise à jour réussie !");
+            } else {
+                // Gestion des erreurs
+                console.error("Erreur lors de la mise à jour : " + this.status);
+            }
+        }
+    }
+
+    let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/mettre-a-jour-intervenant.php`;
+    requete += `?nom=${nouveauNom}&fonction=${nouvelleFonction}&entreprise=${nouvelleEntreprise}&filiere=${nouvelleFiliere}`;
+
+    console.log(requete);
+    xmlhttp.open("GET", requete, true);
+    xmlhttp.send();
 }

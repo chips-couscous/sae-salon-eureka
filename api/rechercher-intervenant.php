@@ -36,6 +36,8 @@ try {
     $req = $pdo->prepare($sql);
     $req->execute();
     
+    echo $req;
+
     $intervenant = $req->fetchAll();
 
     echo json_encode($intervenant);

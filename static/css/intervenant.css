@@ -68,3 +68,10 @@ td {
     width: 95%;
     text-align: center;
 }
+
+select {
+    border: none;
+    background-color: #dadada;
+    height: 35px;
+    width: 250px;
+}
