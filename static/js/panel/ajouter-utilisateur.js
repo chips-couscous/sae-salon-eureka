@@ -26,6 +26,26 @@ btnImportFichier.addEventListener("change", importerFichier);
 zoneImportFichier.addEventListener('drop', importDragAndDrop);
 body.addEventListener('dragover', dragOver);
 
+/* Si données déjà présentes dans cookie -> récupération */
+if (document.cookie != null) {
+    let contenuCookie = readCookie("utilisateurs");
+    if (contenuCookie != null) {
+        tableauUtilisateurs = JSON.parse(contenuCookie);
+        afficherUtilisateur();
+    }
+}
+
+/* Retourne le contenu du cookie "nom" ou null si il n'existe pas */
+function readCookie(nom) {
+	var nomCookie = nom + "=";
+	var listeCookies = document.cookie.split(';');
+	for(var i=0;i < listeCookies.length;i++) {
+		var cookie = listeCookies[i];
+		while (cookie.charAt(0)==' ') cookie = cookie.substring(1,cookie.length);
+		if (cookie.indexOf(nomCookie) == 0) return cookie.substring(nomCookie.length,cookie.length);
+	}
+	return null;
+}
 
 /* Affiche dans la zone de prévisualisation les différents utilisateurs importés ou ajoutés */
 function afficherUtilisateur() {

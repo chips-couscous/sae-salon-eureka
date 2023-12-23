@@ -78,6 +78,10 @@ td {
     padding: 0;
 }
 
+.erreurBD {
+    color: red;
+}
+
 /* Modification des utilisateurs */
 
 .listeUtilisateurs {
