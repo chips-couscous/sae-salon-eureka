@@ -12,11 +12,11 @@
     <title>Modifier un utilisateur</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../../../static/css/connexion.css">
+    <link rel="stylesheet" href="../../../static/css/utilisateur/connexion.css">
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
-    <link rel="stylesheet" href="../../../static/css/compte.css">
-    <link rel="stylesheet" href="../../../static/css/utilisateur.css">
+    <link rel="stylesheet" href="../../../static/css/panel.css">
+    <link rel="stylesheet" href="../../../static/css/modifierUtilisateur.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -72,7 +72,7 @@
     <div class="container">
         <div class="container-content">
             <!-- Zone de modification -->
-            <div>
+            <div class="zoneRecherche">
                 <span>Modification d'un utilisateur :</span><br>
                 <div class="form-item">
                     <input type="text" name="triUtilisateur" id="triUtilisateur" autocomplete="off" required>
@@ -100,7 +100,6 @@
                         ?>
                     </select>
                 </div>
-                
             </div>
             <!-- Zone d'affichage des utilisateurs -->
             <div class="listeUtilisateurs">

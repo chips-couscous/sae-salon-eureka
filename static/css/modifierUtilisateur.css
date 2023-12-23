@@ -17,16 +17,18 @@ td {
     border-right: solid #E2E2E2 2px;
     padding-bottom: 6px;
 }
-
 .form-item input.erreur {
     border-color: red;
 }
 
+
+
 /* Modification des utilisateurs */
 
 .listeUtilisateurs {
-    margin-top: 1%;
-    height: 25%;
+    vertical-align: top;
+    margin-top: 10px;
+    height: 50%;
     width: 95%;
     background-color: #D9D9D9;
     overflow: auto;
@@ -55,18 +57,20 @@ td {
 
 .afficherAjout {
     visibility: visible;
+    
 }
 
 .boutonAjoutFiliere {
     text-align: center;
     cursor: pointer;
-    color : white;
+    color: white;
     width: 35px;
     height: 35px;
     border: none;
-    float: left;
     background-color: #33477B;
+    line-height: 35px;
 }
+
 select {
     border: none;
     background-color: #dadada;

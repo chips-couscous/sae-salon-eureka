@@ -7,8 +7,7 @@ var zoneSaisieMdp = document.getElementById("mdp");
 var zoneSaisieFiliere = document.getElementById("filiere");
 var zoneSaisieStatus = document.getElementById("status");
 var zonePrevisualisation = document.getElementById("tablePrevisualisation");
-var btnImportFichier = document.getElementById("importerEtudiant");
-var zoneImportFichier = document.getElementById("zoneImporterEtudiant");
+var zoneImportFichier = document.getElementById("importerEtudiant");
 
 var tableauUtilisateurs = [];
 
@@ -21,59 +20,39 @@ var statusCorrect;
 
 /* Ajout d'eventListener */
 btnAjouterManuel.addEventListener("click", ajouterUtilisateur);
-btnImportFichier.addEventListener("change", importerFichier);
-zoneImportFichier.addEventListener('drop', importDragAndDrop);
-zoneImportFichier.addEventListener('dragover', handleDragOver);
-
-
-/* Affiche dans la zone de prévisualisation les différents utilisateurs importés ou ajoutés */
-function afficherUtilisateur() {
-    zonePrevisualisation.innerHTML = "<tr><td>Prénom</td><td>Nom</td><td>Mail</td><td>Mot de passe</td><td>Status</td><td>Filiere</td></tr>";
-    tableauUtilisateurs.forEach(utilisateur => {
-        zonePrevisualisation.innerHTML += `<tr>
-        <td>${utilisateur["prenom"]}</td>
-        <td>${utilisateur["nom"]}</td>
-        <td>${utilisateur["mail"]}</td>
-        <td>${utilisateur["mdp"]}</td>
-        <td>${utilisateur["filiere"]}</td>
-        <td>${utilisateur["status"]}</td>
-        </tr>`;
-    });
-}
-
-/* Ajoute un utilisateur dans le tableau */
-function ajouterUtilisateur(donneesUtilisateur) {
-    tableauUtilisateurs.unshift({"nom" : donneesUtilisateur[0],"prenom" : donneesUtilisateur[1],"mail" : donneesUtilisateur[2],
-    "mdp" : donneesUtilisateur[3],"filiere" : donneesUtilisateur[4],"status" : donneesUtilisateur[5]});
-}
-
-/* Retourne true si l'utilisateur passé en paramètre a déjà été ajouté */
-function estUtilisateurPresent(utilisateurATester) {
-    let estPresent = false;
-    tableauUtilisateurs.forEach(utilisateur => {
-        estPresent |= utilisateur["mail"] == utilisateurATester[2];
-    });
-    return estPresent;
-}
-
-  ///////////////////////////////////////////////////////////////////////
- //                Ajout manuel d'un utilisateur                      //
-///////////////////////////////////////////////////////////////////////
+zoneImportFichier.addEventListener("change", importerFichier);
 
 /* Ajoute un utilisateur au tableau de prévisualisation */
-function ajouterUtilisateurManuel() {
+function ajouterUtilisateur() {
     if (estChampsCorrects()) {
-        let utilisateur = [zoneSaisieNom.value, zoneSaisiePrenom.value, zoneSaisieMail.value, zoneSaisieMdp.value, zoneSaisieFiliere.value, zoneSaisieStatus.value];
-        if (!estUtilisateurPresent(utilisateur)) {
-            ajouterUtilisateur(utilisateur);
-            afficherUtilisateur();
-            viderSaisie();
-        } else {
-            alert("Utilisateur déjà présent !");
-        }
+        ajouterUtilisateurDansTableau();
+        afficherUtilisateur();
+        viderSaisie();
     } else {
         afficherChampsIncorrect();
     }
+}
+
+/* Affiche dans la zone de prévisualisation les différents utilisateurs importés ou ajoutés */
+function afficherUtilisateur() {
+    tableauUtilisateurs.forEach(utilisateur => {
+        zonePrevisualisation.innerHTML += `
+        <div class="row">
+            <div class="prenom"><span>${utilisateur["prenom"]}</span></div>
+            <div class="nom"><span>${utilisateur["nom"]}</span></div>
+            <div class="mail"><span>${utilisateur["mail"]}</span></div>
+            <div class="mot-de-passe"><span>${utilisateur["mdp"]}</span></div>
+            <div class="statut"><span>${utilisateur["filiere"]}</span></div>
+            <div class="filiere"><span>${utilisateur["status"]}</span></div>
+        </div>
+        `;
+    });
+}
+
+/* Ajoute dans le tableau d'utilisateur, l'utilisateur saisi manuellement */
+function ajouterUtilisateurDansTableau() {
+    tableauUtilisateurs.unshift({"nom" : zoneSaisieNom.value,"prenom" : zoneSaisiePrenom.value,"mail" : zoneSaisieMail.value,
+                            "mdp" : zoneSaisieMdp.value,"filiere" : zoneSaisieFiliere.value,"status" : zoneSaisieStatus.value});
 }
 
 /* Vide les zones de saisie manuelles*/
@@ -128,46 +107,21 @@ function afficherChampsIncorrect() {
     }
 }
 
-  ///////////////////////////////////////////////////////////////////////
- //              Importation d'un fichier d'utilisateurs              //
-///////////////////////////////////////////////////////////////////////
-
 /* Import un fichier contenant des utilisateurs */
 function importerFichier() {
-    lireFichier(this.files[0]);
-    btnImportFichier.value="";
-}
-
-/* Lis le fichier passé en paramètre */
-function lireFichier(fichier) {
     let fileReader = new FileReader();
+    var contenuFichier = "test";
     fileReader.onload = function() {
-        let contenuFichier = fileReader.result; // Récupère le contenu du fichier
+        console.log("1");
+        contenuFichier = fileReader.result;
         traiterFichier(contenuFichier);
     }
-    fileReader.readAsText(fichier);  // Lit le fichier
+    fileReader.readAsText(this.files[0]);
+        
+    zoneImportFichier.value="";
 }
 
-/* Lis le contenu du fichier et l'ajoute dans un tableau et l'affiche */
-function traiterFichier(contenuFichier) {
-    let utilisateurs = contenuFichier.split("\r\n"); // Découpe le fichier pour obtenir un tableau d'utilisateur
-    for (i = 1; i < utilisateurs.length; i++) {
-        donneesUtilisateur = utilisateurs[i].split(";"); // Découpage des différentes données d'un utilisateur
-        if (!estUtilisateurPresent(donneesUtilisateur)) {
-            ajouterUtilisateur(donneesUtilisateur);
-        }
-    }
-    afficherUtilisateur(); 
-}
+/* Lis le contenu du fichier et l'ajoute dans un tableau */
+function traiterFichier() {
 
-/* Evite le fonctionnement de base du navigateur concernant le drag and drop de fichier */
-function handleDragOver(event) {
-    event.preventDefault();
-}
-
-/* Récupère le chemin du fichier déposé */
-function importDragAndDrop(event) {
-    event.preventDefault();
-    let fichier = event.dataTransfer.files[0];
-    lireFichier(fichier);
 }
