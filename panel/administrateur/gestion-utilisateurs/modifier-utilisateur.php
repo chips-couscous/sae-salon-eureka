@@ -1,3 +1,7 @@
+<?php
+    require('../../../static/module_php/panel/g_utilisateurs.php');
+    
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -70,38 +74,113 @@
             <!-- Zone de modification -->
             <div>
                 <span>Modification d'un utilisateur :</span><br>
-                <form action="post">
-                    <div class="form-item">
-                        <input type="text" name="nomUtilisateur" id="nomUtilisateur" autocomplete="off" required>
-                        <label for="nomUtilisateur" placeholder="Entrez un pseudo">Rechercher un utilisateur</label></input>
-                    </div>
-                    <div class="form-item">
-                        <select name="filiere" id="filiere">
-                            <option value="">Choisir une filière</option>
-                            <?php // Ecrire avec la requête SQL al liste des filières ?>
-                        </select>
-                    </div>
-                    <div class="form-item">
-                        <select name="typeUtilisateur" id="typeUtilisateur">
-                            <option value="">Choisir un type d'utilisateur</option>
-                            <?php // Ecrire avec la requête SQL avec gestinnaire et utilisateur ?>
-                        </select>
-                    </div>
-                    <div class="form-item">
-                        <input type="submit" value="Trier">
-                    </div>
-                </form>
+                <div class="form-item">
+                    <input type="text" name="triUtilisateur" id="triUtilisateur" autocomplete="off" required>
+                    <label for="triUtilisateur" placeholder="Entrez un pseudo">Rechercher un utilisateur</label>
+                </div>
+                <div class="form-item">
+                    <select name="filiere" id="filiere">
+                        <option value="">Choisir une filière</option>
+                        <?php 
+                            $filiere = listeDesFilieres();
+                            foreach($filiere as $listeFiliere) {
+                                echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <select name="typeUtilisateur" id="typeUtilisateur">
+                        <option value="">Choisir un type d'utilisateur</option>
+                        <?php 
+                            $statut = listeStatut();
+                            foreach($statut as $listeStatut) {
+                                echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
+                
             </div>
             <!-- Zone d'affichage des utilisateurs -->
-            <div class="bordureListeUtilisateurs">
-                <?php //Ecrire la requête avec la fonction pour afficher la liste des utilisateurs ?>
-                <h1>Ici les utilisateurs mais avec SQL</h1>
+            <div class="listeUtilisateurs">7
+                <table class="tableListeUtilisateur" id="tableListeUtilisateur"> 
+                    <tr>
+                        <th>Identifiant</th>
+                        <th>Prenom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Mot de passe</th>
+                        <th>Filiere</th>
+                        <th>Statut</th>
+                    </tr>
+                    <?php 
+                        $listeUtilisateurs = listeDesUtilisateurs();
+                        foreach ($listeUtilisateurs as $liste) {
+                            echo "<tr class='cliquable item-utilisateur'>";
+                            echo "<td>". $liste['idUtilisateur'] . "</td>";
+                            echo "<td>". $liste['prenomUtilisateur'] . "</td>";
+                            echo "<td>". $liste['nomUtilisateur'] . "</td>";
+                            echo "<td>". $liste['mailUtilisateur'] . "</td>";
+                            echo "<td>". $liste['mdpUtilisateur'] . "</td>";
+                            echo "<td>". $liste['libelleFiliere'] . "</td>";
+                            echo "<td>". $liste['statutUtilisateur'] . "</td>";
+                            echo "</tr>";
+                        }
+                    ?>
+                </table>
             </div>
-
-            <div>
-                <?php //Ecrire la requête avec la fonction pour afficher la liste des utilisateurs ?>
-                <h1>Ici les données préremplies en fonction de l'utilisateur choisi</h1>
-            </div>
+                      
+                <div class="affichageModificationCache" id="affichageModification">
+                    <div class="form-item">
+                        <input type="text" name="prenomUtilisateur" id="prenomUtilisateur" autocomplete="off" value="" required>
+                            <label for="prenomUtilisateur">Prenom</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="nomUtilisateur" id="nomUtilisateur" autocomplete="off" value="" required>
+                        <label for="nomUtilisateur">Nom</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="mailUtilisateur" id="mailUtilisateur" autocomplete="off" value="" required>
+                        <label for="mailUtilisateur">Email</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="mdpUtilisateur" id="mdpUtilisateur" autocomplete="off" value="" required>
+                        <label for="mdpUtilisateur">Mot de passe</label>
+                    </div>
+                    <br>
+                    <div class="form-item">
+                        <select name="statutUtilisateur" id="statutUtilisateur" required> 
+                            <?php 
+                                $statut = listeStatut();
+                                foreach($statut as $listeStatut) {
+                                    echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
+                                }
+                                
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-item" id="ItemSelecteFiliere">
+                        <div id="toutesLesFilieres">
+                            <select name="filiereUtilisateur" id="filiereUtilisateur" required>
+                                <?php 
+                                    $filiere = listeDesFilieres();
+                                    foreach($filiere as $listeFiliere) {
+                                        echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="affichageModificationCache form-item" id="boutonAjouterFiliere">
+                        <button class="boutonAjoutFiliere"> + </button>
+                    </div>
+                    <div class="form-item">
+                        <input type="submit" value="Modifier">
+                    </div>
+                </div>
+            
+            
 
         </div>
 
@@ -188,6 +267,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/panel/modificationUtilisateurs.js"></script>
 </body>
 
 </html>

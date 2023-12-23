@@ -1,3 +1,70 @@
+<?php
+    /* Récupération des utilisateurs */
+    $donneeCookie = "";
+    $tableauUtilisateurs = null;
+    if (isset($_POST["enregistrer"]) && $_POST["enregistrer"] == "true") {
+        if (isset($_COOKIE["utilisateurs"])) {
+            $donneeCookie = $_COOKIE["utilisateurs"];
+
+            $tableauUtilisateurs = json_decode($donneeCookie);
+        }
+    }
+
+    /* Récupération de l'objet PDO */
+    require "../../../static/module_php/base_de_donnees.php";
+
+    /* Ecriture dans la base de données */
+    if ($tableauUtilisateurs != null && $pdo != null) {
+        $insertionUtilisateurs = $pdo->prepare("INSERT INTO se_utilisateur (prenom_utilisateur,nom_utilisateur,mail_utilisateur,mdp_utilisateur,statut_utilisateur) VALUES (:prenom,:nom,:mail,:mdp,:statutU)");
+        $insertionFiliere = $pdo->prepare("INSERT INTO se_appartient VALUES (:idU,:idF)");
+        $recupererIDStatut = $pdo->prepare("SELECT id_statut FROM se_statut WHERE libelle_statut = :statut");
+        $recupererIDFiliere = $pdo->prepare("SELECT id_filiere FROM se_filiere WHERE libelle_filiere = :filiere");
+    
+        try {
+            $pdo->beginTransaction();
+            foreach($tableauUtilisateurs as $objectUtilisateur) {
+                $utilisateur = (array)$objectUtilisateur;
+
+                /* Récupération de l'id du statut */
+                $recupererIDStatut->bindParam("statut",$utilisateur["statut"]);
+                $recupererIDStatut->execute();
+                $idStatut = $recupererIDStatut->fetch()["id_statut"];
+
+                /* Insertion de l'utilisateur */
+                $insertionUtilisateurs->bindParam("prenom",$utilisateur["prenom"]);
+                $insertionUtilisateurs->bindParam("nom",$utilisateur["nom"]);
+                $insertionUtilisateurs->bindParam("mail",$utilisateur["mail"]);
+                $insertionUtilisateurs->bindParam("mdp",$utilisateur["mdp"]);
+                $insertionUtilisateurs->bindParam("statutU",$idStatut);
+                $insertionUtilisateurs->execute();
+
+                /* Récupération de l'id de l'utilisateur */
+                $idUtilisateur = $pdo->lastInsertId();
+
+                /* Récupération de l'id de la filiaire */
+                $recupererIDFiliere->bindParam("filiere",$utilisateur["filiere"]);
+                $recupererIDFiliere->execute();
+                $idFiliere = $recupererIDFiliere->fetch()["id_filiere"];
+
+                /* Insertion de la filiaire */
+                $insertionFiliere->bindParam("idU",$idUtilisateur);
+                $insertionFiliere->bindParam("idF",$idFiliere);
+                $insertionFiliere->execute();
+            }
+            $pdo->commit();
+            /* Message indiquant la réussite de l'insertion dans la bdd */
+            ?><script>alert("SUCCES ! Tous les utilisateurs ont bien été importés !");</script><?php
+        } catch (PDOException $e) {
+            $pdo->rollback();
+            /* Message d'erreur */
+            var_dump($idFiliere);
+            var_dump($idStatut);
+            ?><script>alert("ERREUR ! \n Impossible d'ajouter les utilisateurs !");</script><?php
+        }
+
+        // EMPECHER L'INSERTION EN DOUBLE !! Proposer une modif de la bd pour passer l'email en cle primaire -> evite doublons
+    }
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -67,9 +134,22 @@
 
     <div class="container">
         <div class="container-content">
+
+            <?php
+            /* Affichage d'un message si la BD est innaccessible */
+            if ($pdo == null) {
+                ?><h1 class="erreurBD">Base de donnée non accessible, peut entraîner des problèmes</h1><?php
+            }
+            ?>
+
             <!-- Zone d'importation d'une liste d'utilisateur -->
+<<<<<<< HEAD
             <div class="zoneImporterEtudiant">
                 <span>Déposer un fichier ou</span>&nbsp;<input type="file" name="importerEtudiant" id="importerEtudiant" class="btnImporterEtudiant" accept=".csv" value="Importer">
+=======
+            <div id="zoneImporterEtudiant" class="zoneImporterEtudiant">
+                <span>Déposer un fichier ou</span>&nbsp;<input type="file" name="importerEtudiant" id="importerEtudiant" class="btnImporterEtudiant" accept=".csv">
+>>>>>>> 3dc5fdcec6a97e0285660c4c5ba5e31114003aa4
             </div>
 
             <!-- Zone d'ajout manuel -->
@@ -118,9 +198,11 @@
             
                 </div>
             </div>
-
-            <button class="valider">Valider les ajouts</button>
-
+            
+            <form action="" method="post" class="formValider">
+                <input type="hidden" name="enregistrer" value="true">
+                <input type="submit" class="valider" value="Valider les ajouts">
+            </form>
         </div>
 
         <div class="container-asyde">
@@ -206,7 +288,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
-    <script src="../../../static/js/ajouter-utilisateur.js"></script>
+    <script src="../../../static/js/panel/ajouter-utilisateur.js"></script>
 </body>
 
 </html>
