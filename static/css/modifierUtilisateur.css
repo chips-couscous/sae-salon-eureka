@@ -1,23 +1,5 @@
 @import url(./main.css);
 
-/* Contient la mise en forme des pages de gestion des utilisateurs */
-
-.zoneImporterEtudiant {
-    min-width: 95%;
-    height: 202px;
-    border: dashed #E2E2E2 2px;
-    border-radius: 3px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-.ajoutManuel {
-    min-width: 95%;
-    padding: 15px;
-}
 /* Placement des différents inputs pour la saisie manuelle */
 form {
     display: initial;
@@ -31,44 +13,14 @@ form {
     width: 250px;
 }
 
-/* Prévisualisation */
-.previsualisation {
-    width: 95%;
-    height: 400px;
-    background-color: #D9D9D9;
-    overflow: auto;
-}
-.tablePrevisualisation {
-    margin: 10px;
-    width: 100%;
-    text-align: center;
-}
 td {
     border-right: solid #E2E2E2 2px;
     padding-bottom: 6px;
 }
 
-.valider {
-    border: none;
-    background-color: var(--c-primaire);
-    color: var(--c-light);
-    cursor: pointer;
-    border-radius: 3px;
-    margin: 15px;
-    width: 30%;
-    height: 40px;
-    font-weight: 500;
-}
-.ajouterManuel {
-    margin: initial;
-    width: 95%;
-}
-
 .form-item input.erreur {
     border-color: red;
 }
-
-
 
 /* Modification des utilisateurs */
 
@@ -103,20 +55,18 @@ td {
 
 .afficherAjout {
     visibility: visible;
-    
 }
 
 .boutonAjoutFiliere {
     text-align: center;
     cursor: pointer;
-    color: white;
+    color : white;
     width: 35px;
     height: 35px;
     border: none;
+    float: left;
     background-color: #33477B;
-    line-height: 35px;
 }
-
 select {
     border: none;
     background-color: #dadada;
