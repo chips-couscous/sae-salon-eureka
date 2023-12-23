@@ -1,0 +1,125 @@
+@import url(./main.css);
+
+/* Contient la mise en forme des pages de gestion des utilisateurs */
+
+.zoneImporterEtudiant {
+    min-width: 100%;
+    height: 150px;
+    border: dashed #E2E2E2 2px;
+    border-radius: 3px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.ajoutManuel {
+    width: 100%;
+    margin: 15px 0;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    row-gap: 20px;
+    column-gap: 20px;
+}
+/* Placement des différents inputs pour la saisie manuelle */
+.form-item{
+    margin: 0;
+    width: calc(100% - 30px);
+    float: left;
+}
+.form-item input{
+    width: 100%;
+}
+
+/* Prévisualisation */
+.previsualisation {
+    width: 100%;
+    height: 400px;
+    overflow-x: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    font-size: 13px;
+
+    border-radius: 3px;
+}
+
+.previsualisation .item{
+    overflow-y: scroll;
+}
+
+.previsualisation .titre{
+    background-color: #e2e2e2 !important;
+}
+.previsualisation .titre div{
+    display: flex;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 14px;
+}
+.previsualisation .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.previsualisation .row:nth-child(2n){
+    background-color: rgb(246, 246, 246);
+}
+.previsualisation .row:nth-child(2n+1){
+    background-color: #f1f1f1;
+}
+
+.previsualisation .row div {
+    padding: 15px 10px;
+    width: calc(100% / 6);
+}
+
+.previsualisation .item .row:hover {
+    cursor: pointer;
+    background-color: #e2e2e2;
+}
+
+.tablePrevisualisation {
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.valider {
+    border: none;
+    background-color: var(--c-primaire);
+    color: var(--c-light);
+    cursor: pointer;
+    border-radius: 3px;
+    width: 30%;
+    height: 40px;
+    font-weight: 500;
+}
+.ajouterManuel {
+    margin: initial;
+    width: 95%;
+}
+
+.form-item input.erreur {
+    border-color: red;
+}
+
+
+
+/* Modification des utilisateurs */
+
+.bordureListeUtilisateurs {
+    border: 10px;
+    border: solid;
+    border-color: #33477B;
+    border-radius: 2px;
+    margin-top: 1%;
+    height: 20%;
+    width: 95%;
+    text-align: center;
+}

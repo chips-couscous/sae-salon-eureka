@@ -21,3 +21,4 @@ function connexionBaseDeDonnees() {
         return null;
     }
 }
+

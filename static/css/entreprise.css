@@ -1,0 +1,398 @@
+:root {
+    --w-carte: 210px;
+    --h-carte: 300px;
+    --h-recherche: 30px;
+    --h-description: 150px;
+}
+
+.container {
+    padding: 40px 0 0 0;
+    display: flex;
+    justify-content: center;
+}
+
+.rechercher-entreprise {
+    padding: 8px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 12px;
+}
+
+.rechercher-entreprise input {
+    height: var(--h-recherche);
+    width: calc((var(--w-carte) + 8px) * 3 - 2px);
+    border-radius: 3px;
+    padding: 3px 5px;
+    border: 1px solid var(--c-primaire);
+    color: var(--c-primaire);
+}
+
+.rechercher-entreprise .btn-filtrer {
+    height: var(--h-recherche);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: var(--w-carte);
+    background-color: var(--c-primaire);
+    color: var(--c-light);
+    border-radius: 3px;
+    padding: 4px 0;
+
+    cursor: pointer;
+}
+
+.liste-filtres {
+    padding: 8px;
+    margin: 0 0 10px 0;
+}
+
+.liste-filtres #ChoixFiltres {
+    height: 100%;
+    display: none;
+    margin-bottom: 10px;
+}
+
+.liste-filtres #ChoixFiltres.active {
+    display: block;
+}
+
+.liste-filtres #ChoixFiltres input{
+    height: var(--h-recherche);
+    width: calc(var(--w-carte) - 8px);
+    border-radius: 3px;
+    padding: 3px 5px;
+    border: 1px solid var(--c-primaire);
+    color: var(--c-primaire);
+}
+
+.liste-filtres #ChoixFiltres select{
+    height: 38px;
+    width: var(--w-carte);
+    border-radius: 3px;
+    padding: 3px 5px;
+    margin: 0 0 0 8px;
+    border: 1px solid var(--c-primaire);
+    color: var(--c-primaire);
+}
+
+.liste-filtres .filtres-actifs {
+    max-width: calc((var(--w-carte) + 12px) * 4);
+    overflow-x: hidden;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.liste-filtres .filtres-actifs .filtre-actif {
+    border: 1px solid var(--c-primaire);
+    color: var(--c-primaire);
+    font-weight: 500;
+    border-radius: 3px;
+    font-size: 14px;
+    padding: 2px 5px;
+    margin: 0 10px 0 0;
+    user-select: none;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-width: fit-content;
+    white-space: nowrap;
+
+    transition: .1s ease-in-out 0s all;
+}
+
+.liste-filtres .filtres-actifs .filtre-actif:hover {
+    color: var(--c-light);
+    background-color: var(--c-primaire);
+}
+
+.liste-filtres .filtres-actifs .filtre-actif span {
+    order: 2;
+}
+
+.liste-filtres .filtres-actifs .filtre-actif .croix-suppression {
+    order: 0;
+    margin: 0 5px 0 0;
+    cursor: pointer;
+}
+
+.liste-entreprise {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    
+    z-index: 0;
+}
+
+.liste-entreprise .carte {
+    margin: 8px;
+}
+
+.liste-entreprise .carte .entreprise-container {
+    position: relative;
+    width: var(--w-carte);
+    height: var(--h-carte);
+    z-index: 0;
+}
+
+.carte .entreprise-container .carte-entreprise {
+    width: 100%;
+    height: 100%;
+
+    background-color: #fff;
+    border: solid 1px #dedede;
+    border-radius: 3px;
+    
+    user-select: none;
+
+    position: absolute;
+    transition: all 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+.carte .entreprise-container:hover .carte-entreprise{
+    transform: rotateY(180deg);
+    z-index: 0;
+}
+
+.carte .entreprise-container .carte-entreprise .recto,
+.carte .entreprise-container .carte-entreprise .verso {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    height: calc(100% - 2 * 15px);
+    width: calc(100% - 2 * 15px);
+    background-color: #fff;
+    backface-visibility: hidden;
+    z-index: 0;
+}
+
+.carte .entreprise-container .carte-entreprise .verso {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    transform: rotateY(-180deg);
+    font-size: 12px;
+}
+
+.carte .entreprise-container .carte-entreprise .recto .identite {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    
+    height: 50%;
+
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 500;
+    z-index: 0;
+}
+
+.carte .entreprise-container .carte-entreprise .recto img {
+    width: 50%;
+    aspect-ratio: 3/2;
+    object-fit: contain;
+
+    margin: 0 0 20px 0;
+}
+
+.carte .entreprise-container .carte-entreprise .recto .tags {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+
+    height: 50%;
+
+    font-size: 14px;
+    z-index: 0;
+}
+
+.carte .entreprise-container .carte-entreprise .recto .tags span {
+    margin: 0 0 8px 0;
+}
+
+.carte .entreprise-container .carte-entreprise .recto .tags span i {
+    font-size: .8rem;
+    margin: 0 5px 0 1px;
+}
+
+.carte .entreprise-container .carte-entreprise .verso .description-container {
+    height: var(--h-description);
+    overflow: hidden;
+    text-align: justify;
+    position: relative;
+}
+
+.carte .entreprise-container .carte-entreprise .verso .description-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: -webkit-linear-gradient( bottom , #fff, #ffffff00);
+    background: linear-gradient(to top, #fff, #ffffff00);
+}
+
+.carte .entreprise-container .carte-entreprise .verso .description-container .description-content.defilement {
+    animation: defilementAnimation 20s linear infinite; /* 20s pour la durée de l'animation, ajustez selon vos besoins */
+}
+
+@keyframes defilementAnimation {
+    0% {
+        transform: translateY(0);
+    }
+    15% {
+        transform: translateY(0);
+    }
+    85% {
+        transform: translateY(calc(-100% + var(--h-description) - 40px)); /* Ajustez la valeur pour changer la distance du défilement */
+    }
+    100% {
+        transform: translateY(calc(-100% + var(--h-description) - 40px));
+    }
+}
+
+.carte .entreprise-container .carte-entreprise .verso .fin-verso {
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.carte .entreprise-container .carte-entreprise .verso .fin-verso .lien-site a {
+    text-decoration: none;
+    color: #000;
+}
+
+.carte .entreprise-container .carte-entreprise .verso .fin-verso .btn-souhait{
+    background-color: var(--c-primaire);
+    border-radius: 3px;
+    color: var(--c-light);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 30px;
+
+    cursor: pointer;
+}
+
+
+@media screen and (max-width: 1536px) {
+    .liste-entreprise {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .rechercher-entreprise input {
+        width: calc((var(--w-carte) + 8px) * 2 - 10px);
+    }
+
+    .liste-filtres .filtres-actifs {
+        max-width: calc((var(--w-carte) + 8px) * 3 + 8px);
+    }
+}
+
+@media screen and (max-width: 1124px) {
+    .liste-entreprise {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .rechercher-entreprise {
+        flex-direction: column;
+        justify-content: space-between;
+        height: calc(var(--h-recherche) * 3);
+    }
+
+    .rechercher-entreprise .btn-filtrer {
+        width: 100%;
+    }
+
+    .liste-filtres .filtres-actifs {
+        max-width: calc((var(--w-carte) + 8px) * 2);
+    }
+}
+
+@media screen and (max-width: 660px) {
+    .rechercher-entreprise input {
+        width: 300px;
+    }
+
+    .liste-filtres #ChoixFiltres input{
+        width: 300px;
+    }
+    
+    .liste-filtres #ChoixFiltres select{
+        width: 312px;
+        margin: 8px 0 0 0;
+    }
+
+    .container .container-content {
+        max-width: 330px;
+    }
+
+    .liste-entreprise {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .liste-entreprise .carte .entreprise-container {
+        width: 100%;
+        height: 120px;
+    }
+
+    .carte .entreprise-container .carte-entreprise .recto {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .carte .entreprise-container .carte-entreprise .recto .identite {
+        width: 50%;
+        font-size: 12px;
+    }
+
+    .carte .entreprise-container .carte-entreprise .recto .identite img {
+        width: 40%;
+    }
+
+    .carte .entreprise-container .carte-entreprise .recto .tags {
+        width: 50%;
+        height: 100%;
+        justify-content: center;
+        font-size: 11px;
+    }
+
+    .carte .entreprise-container .carte-entreprise .recto .tags span {
+        margin: 4px 0;
+    }
+
+    .carte .entreprise-container .carte-entreprise .verso .fin-verso {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .carte .entreprise-container .carte-entreprise .verso .description-container,
+    .carte .entreprise-container .carte-entreprise .verso .lien-site {
+        display: none;
+    }
+
+    .carte .entreprise-container:hover .carte-entreprise {
+        transform: rotateY(0);
+    }
+
+    .carte .entreprise-container .carte-entreprise.turn {
+        transform: rotateY(180deg);
+        z-index: 0;
+    }
+}
