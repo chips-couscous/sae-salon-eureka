@@ -4,8 +4,8 @@ require "../static/module_php/panel/base_de_donnees.php";
 $pdo = connexionBaseDeDonnees();
 
 try {
-    $nom = isset($_REQUEST['nom']) ? "\"".$_REQUEST['nom'] . "%\"" : "";
-    $entreprise = isset($_REQUEST['entreprise']) ? "\"".$_REQUEST['entreprise'] . "%\"" : "";
+    $nom = isset($_REQUEST['nom']) ? $_REQUEST['nom'] . "%" : "";
+    $entreprise = isset($_REQUEST['entreprise']) ? $_REQUEST['entreprise'] . "%" : "";
     $params = array();
     
     $sql = "SELECT se_intervenant.nom_intervenant AS nom, 
@@ -21,24 +21,28 @@ try {
             ON se_intervient.filiere_intervient = se_filiere.id_filiere
             WHERE 1";
     
-    if (!empty($nom) && $nom != "%") {
-        $sql .= " AND se_intervenant.nom_intervenant LIKE $nom";
+    if (!empty($nom)) {
+        $sql .= " AND se_intervenant.nom_intervenant LIKE :nom";
         $params["nom"] = $nom;
     }
     if (!empty($entreprise)) {
-        $sql .= " AND se_entreprise.nom_entreprise LIKE $entreprise";
+        $sql .= " AND se_entreprise.nom_entreprise LIKE :entreprise";
         $params["entreprise"] = $entreprise;
     }
 
-    $sql.= " ORDER BY se_intervenant.nom_intervenant 
+    $sql .= " ORDER BY se_intervenant.nom_intervenant 
              LIMIT 0, 25";
-    
-    $req = $pdo->prepare($sql);
-    $req->execute();
-    
-    echo $req;
 
-    $intervenant = $req->fetchAll();
+    // Préparation de la requête avec des paramètres nommés
+    $req = $pdo->prepare($sql);
+
+    // Liaison des valeurs aux paramètres
+    $req->bindParam(":nom", $params["nom"]);
+    $req->bindParam(":entreprise", $params["entreprise"]);
+
+    $req->execute();
+
+    $intervenant = $req->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode($intervenant);
 } catch (\Throwable $th) {

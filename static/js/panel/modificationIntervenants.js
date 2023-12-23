@@ -14,13 +14,17 @@ function chargerDonnees(filtreNom, filtreEntreprise) {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if(this.readyState == 4 && this.status == 200) {
-            console.log(this.responseText);
-            let jsonResponse = JSON.parse(this.responseText);
-            afficherDonnees(jsonResponse);
+            if (this.responseText.trim() !== "") {
+                let jsonResponse = JSON.parse(this.responseText);
+                afficherDonnees(jsonResponse);
+            } else {
+                console.error("Réponse JSON vide.");
+            }
         }
     }
      
     let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/rechercher-intervenant.php?nom=${filtreNom}&entreprise=${filtreEntreprise}`;
+    console.log(requete);
     xmlhttp.open("GET", requete, true);
     xmlhttp.send();
 }
@@ -54,17 +58,36 @@ function afficherDonnees(donnees) {
     }
 }
 
-// Récupérer toutes les lignes de la table
-var lignes = displayTable.getElementsByTagName("tr");
+// Fonction pour attacher les gestionnaires d'événements
+function attacherGestionnaires() {
+    var lignes = displayTable.getElementsByTagName("tr");
 
-// Ajouter un gestionnaire d'événements à chaque ligne
-for (var i = 0; i < lignes.length; i++) {
-    console.log(1);
-  lignes[i].addEventListener("click", function() {
-    // Appeler la fonction lorsque la ligne est cliquée
-    estCliquee(this);
-  });
+    for (var i = 0; i < lignes.length; i++) {
+        lignes[i].addEventListener("click", function() {
+            // Appeler la fonction lorsque la ligne est cliquée
+            estCliquee(this);
+        });
+    }
 }
+
+// Appeler la fonction lors du chargement initial
+attacherGestionnaires();
+
+displayTable.addEventListener("click", function(event) {
+    var target = event.target;
+
+    // Remonter jusqu'à l'élément <tr> en utilisant parentNode
+    while (target.tagName !== "TR") {
+        target = target.parentNode;
+        // Vérifier si on atteint l'élément racine
+        if (!target) {
+            return;
+        }
+    }
+
+    // Appeler la fonction lorsque la ligne est cliquée
+    estCliquee(target);
+});
 
 // script.js
 
