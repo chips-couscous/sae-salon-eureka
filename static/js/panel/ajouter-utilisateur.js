@@ -31,6 +31,9 @@ if (document.cookie != null) {
     let contenuCookie = readCookie("utilisateurs");
     if (contenuCookie != null) {
         tableauUtilisateurs = JSON.parse(contenuCookie);
+        if (typeof tableauUtilisateurs != 'object') {
+            tableauUtilisateurs = [];
+        }
         afficherUtilisateur();
     }
 }
@@ -49,19 +52,20 @@ function readCookie(nom) {
 
 /* Affiche dans la zone de prévisualisation les différents utilisateurs importés ou ajoutés */
 function afficherUtilisateur() {
-    zonePrevisualisation.innerHTML = "<tr><td>Prénom</td><td>Nom</td><td>Mail</td><td>Mot de passe</td><td>Status</td><td>Filiere</td></tr>";
+    zonePrevisualisation.innerHTML = "";
+    let indiceTableau = 0; // indice de l'utilisateur dans le tableau utilisé pour la suppression
     tableauUtilisateurs.forEach(utilisateur => {
-        zonePrevisualisation.innerHTML += `<tr>
-        <td>${utilisateur["prenom"]}</td>
-        <td>${utilisateur["nom"]}</td>
-        <td>${utilisateur["mail"]}</td>
-        <td>${utilisateur["mdp"]}</td>
-        <td>${utilisateur["filiere"]}</td>
-        <td>${utilisateur["statut"]}</td>
-        </tr>`;
-
-        /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
-        ecritureCookie();
+        zonePrevisualisation.innerHTML +=
+        `<div class="row">
+            <div class="prenom"><span>${utilisateur["prenom"]}</span></div>
+            <div class="nom"><span>${utilisateur["nom"]}</span></div>
+            <div class="mail"><span>${utilisateur["mail"]}</span></div>
+            <div class="mot-de-passe"><span>${utilisateur["mdp"]}</span></div>
+            <div class="statut"><span>${utilisateur["filiere"]}</span></div>
+            <div class="filiere"><span>${utilisateur["statut"]}</span></div>
+            <div class="btnSup"><button class="supprimerUtilisateur" onclick="supprimerUtilisatuer(${indiceTableau});">&#x274C;</button></div>
+        </div>`;
+        indiceTableau += 1;
     });
 }
 
@@ -75,6 +79,18 @@ function ecritureCookie() {
 function ajouterUtilisateur(donneesUtilisateur) {
     tableauUtilisateurs.unshift({"nom" : donneesUtilisateur[0],"prenom" : donneesUtilisateur[1],"mail" : donneesUtilisateur[2],
     "mdp" : donneesUtilisateur[3],"filiere" : donneesUtilisateur[4],"statut" : donneesUtilisateur[5]});
+
+    /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
+    ecritureCookie();
+}
+
+/* Supprime l'utilisateur présent en paramètre */
+function supprimerUtilisatuer(i) {
+    tableauUtilisateurs.splice(i,1);
+    
+    /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
+    ecritureCookie();
+    afficherUtilisateur();
 }
 
 /* Retourne true si l'utilisateur passé en paramètre a déjà été ajouté */
@@ -191,7 +207,7 @@ function traiterFichier(contenuFichier) {
         }
     }
     if (nbUtilisateurNonAjoute > 0) {
-        alert(nbUtilisateurNonAjoute + " utilisateurs déjà présent et non ajoutés\n");
+        alert(nbUtilisateurNonAjoute + " utilisateurs sont déjà présent et n'ont pas été ajoutés\n");
     }
     afficherUtilisateur(); 
 }

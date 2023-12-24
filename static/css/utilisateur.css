@@ -123,6 +123,10 @@
     color: red;
 }
 
+div.nom,.prenom,.mail,.mot-de-passe,.statut,.filiere,.btnSup {
+    text-align: center;
+}
+
 /* Modification des utilisateurs */
 
 .listeUtilisateurs {

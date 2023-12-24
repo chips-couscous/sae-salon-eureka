@@ -13,6 +13,10 @@
     /* Récupération de l'objet PDO */
     require "../../../static/module_php/base_de_donnees.php";
 
+    if ($pdo == null) {
+        ?><script>alert("Base de données non accessible !");</script><?php
+    }
+
     /* Ecriture dans la base de données */
     if ($tableauUtilisateurs != null && $pdo != null) {
         $insertionUtilisateurs = $pdo->prepare("INSERT INTO se_utilisateur (prenom_utilisateur,nom_utilisateur,mail_utilisateur,mdp_utilisateur,statut_utilisateur) VALUES (:prenom,:nom,:mail,:mdp,:statutU)");
@@ -56,13 +60,13 @@
             ?><script>alert("SUCCES ! Tous les utilisateurs ont bien été importés !");</script><?php
         } catch (PDOException $e) {
             $pdo->rollback();
-            /* Message d'erreur */
-            var_dump($idFiliere);
-            var_dump($idStatut);
-            ?><script>alert("ERREUR ! \n Impossible d'ajouter les utilisateurs !");</script><?php
+            ?>
+            <script>
+                alert("ERREUR ! Impossible d'ajouter les utilisateurs !\n\n Vérifiez les status ou les filieres."
+                        + "\n Utilisateur peut être déjà présent dans la base de données");
+            </script>
+            <?php
         }
-
-        // EMPECHER L'INSERTION EN DOUBLE !! Proposer une modif de la bd pour passer l'email en cle primaire -> evite doublons
     }
 ?>
 <!DOCTYPE html>
@@ -138,12 +142,12 @@
             <?php
             /* Affichage d'un message si la BD est innaccessible */
             if ($pdo == null) {
-                ?><h1 class="erreurBD">Base de donnée non accessible, peut entraîner des problèmes</h1><?php
+                ?><h1 class="erreurBD">Base de données non accessible, peut entraîner des problèmes</h1><?php
             }
             ?>
 
             <!-- Zone d'importation d'une liste d'utilisateur -->
-            <div class="zoneImporterEtudiant">
+            <div class="zoneImporterEtudiant" id="zoneImporterEtudiant">
                 <span>Déposer un fichier ou</span>&nbsp;<input type="file" name="importerEtudiant" id="importerEtudiant" class="btnImporterEtudiant" accept=".csv" value="Importer">
             </div>
 
@@ -187,6 +191,7 @@
                     <div class="mot-de-passe"><span>Mot de passe</span></div>
                     <div class="statut"><span>Statut</span></div>
                     <div class="filiere"><span>Filiere</span></div>
+                    <div class="btnSup"></div>
                 </div>
 
                 <div class="item" id="tablePrevisualisation">
