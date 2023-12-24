@@ -77,3 +77,9 @@ select {
     height: 35px;
     width: 250px;
 }
+
+
+/* Suppression d'un utilisateur */ 
+.affichageUtilisateur .form-item {
+    flex-direction: row;
+}
