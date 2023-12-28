@@ -8,11 +8,10 @@
     <title>Salon Eureka</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../css/compte.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/entreprise.css">
-    <link rel="stylesheet" href="../css/connexion.css">
+    <link rel="stylesheet" href="../../../static/css/connexion.css">
+    <link rel="stylesheet" href="../../../static/css/main.css">
+    <link rel="stylesheet" href="../../../static/css/header.css">
+    <link rel="stylesheet" href="../../../static/css/compte.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -68,142 +67,100 @@
     <div class="container">
         <div class="container-content">
             <span class="titre-panel-ouvert"><span>Gestion des entreprises ></span> Modifier une entreprise</span>
-            <form>
+            <form action="" method="post">
                 <div class="form-item bm15">
-                    <input type="text" name="entreprise" id="Entreprise" autocomplete="off" required>
+                    <input type="text" name="entreprise" id="Entreprise" autocomplete="off" onkeyup="javascript:load_data(this.value)" required/>
                     <label for="Entreprise">Rechercher une entreprise</label>
                     <input type="submit" value="Chercher"/>
+                    <span id="resultats"></span>
                 </div>
             </form>
-            <div class="liste-entreprise">
-                <?php
-                    $stmt = $pdo->prepare("SELECT nom_entreprise, logo_entreprise, description_entreprise, nom_secteur
-                                           FROM se_entreprise
-                                           JOIN se_possede
-                                           ON entreprise_possede = id_entreprise
-                                           JOIN se_secteur
-                                           ON secteur_possede = id_secteur
-                                           WHERE nom_entreprise LIKE \"%:nomE\"");
-                    if (isset($_POST["entreprise"])) {
-                        $stmt->bindParam("nomE", $_POST["nomE"]);
-                        $listeEntreprises = $stmt->execute();
-                        foreach($listeEntreprises as $value) {
-                            echo '<div class="carte">
-                                <div class="entreprise-container">
-                                    <div class="carte-entreprise">
-                                        <div class="recto">
-                                            <div class="identite">
-                                                <img src="../img/sopra.png" alt="Logo sopra" draggable="false">
-                                                <span>Sopra</span>
-                                            </div>
-                                            <div class="tags">
-                                                <span><i class="fa-solid fa-location-dot"></i>Rodez</span>
-                                                <span><i class="fa-solid fa-tag"></i>Informatique</span>
-                                                <span><i class="fa-solid fa-users"></i>10-100</span>
-                                            </div>
-                                        </div>
-                                        <div class="verso">
-                                            <div class="description-container">
-                                                <div class="description-content">
-                                                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis, enim consequuntur! Ad vero exercitationem quidem, nesciunt deleniti fugit odio magni. Qui officiis consequatur, explicabo autem eaque ducimus beatae earum dignissimos ?
-                                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ducimus officiis tenetur saepe recusandae quia delectus eaque aliquid doloribus repudiandae minus. Libero assumenda dolore nostrum quam officiis quibusdam itaque nisi corporis.
-                                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto maxime quisquam facere. Rerum modi quam aut ducimus laborum, velit unde autem! Voluptate ducimus reiciendis est. Quasi autem facere ad doloribus?
-                                                </div>
-                                            </div>
-                                            <div class="fin-verso">
-                                            <div class="lien-site">
-                                                <a href="#" class="hover-underline-active">Sopra.com</a>
-                                            </div>
-                                            <div class="btn-souhait">
-                                                <span>Ajouter aux souhaits</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>';
-                        }
-                    } 
-                ?>
-            </div>
         </div>
-    </div>
 
-    <div class="container-asyde">
-        <div class="asyde-content">
-            <div class="asyde-navigation">
-                <div class="panel">
-                    <div class="titre-content">
-                        <span class="titre">Paramètres</span>
-                        <span class="badge-status">administrateur</span>
+        <div class="container-asyde">
+            <div class="asyde-content">
+                <div class="asyde-navigation">
+
+                    <div class="panel">
+                        <div class="titre-content">
+                            <span class="titre">Paramètres</span>
+                            <span class="badge-status">administrateur</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right" id="clickToOpenPanel"></i>
                     </div>
-                    <i class="fa-solid fa-arrow-right" id="clickToOpenPanel"></i>
-                </div>
-                <div class="groupe-navigation">
-                    <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion du compte</span>
-                    <nav>
-                        <ul>
-                            <li class="hover-underline-static">Mon compte</li>
-                        </ul>
-                    </nav>
-                </div>   
-                <div class="groupe-navigation">
-                    <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion du salon</span>
-                    <nav>
-                        <ul>
-                            <li class="hover-underline-static">Préparer le salon</li>
-                            <li class="hover-underline-static">Réinitialiser le salon</li>
-                        </ul>
-                    </nav>
-                </div>
 
-                <div class="groupe-navigation">
-                    <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion des utilisateurs</span>
-                    <nav>
-                        <ul>
-                            <li class="hover-underline-static">Ajouter un utilisateur</li>
-                            <li class="hover-underline-static">Modifier un utilisateur</li>
-                            <li class="hover-underline-static">Supprimer un utilisateur</li>
-                            <li class="hover-underline-static">Retrouver un mot de passe</li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="groupe-navigation">
-                    <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion des entreprises</span>
-                    <nav>
-                        <ul>
-                            <li class="hover-underline-static">Ajouter une entreprise</li>
-                            <li class="hover-underline-static">Modifier une entreprise</li>
-                            <li class="hover-underline-static">Supprimer une entreprise</li>
-                            <li class="hover-underline-static">Ajouter un intervenant</li>
-                            <li class="hover-underline-static">Modifier un intervenant</li>
-                            <li class="hover-underline-static">Supprimer un intervenant</li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="groupe-navigation">
-                    <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion des emplois du temps</span>
-                    <nav>
-                        <ul>
-                            <li class="hover-underline-static">Générer les emplois du temps</li>
-                            <li class="inclickable">Voir un emploi du temps</li>
-                            <li class="inclickable">Entreprises rejetées</li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="groupe-navigation">
-                    <nav>
-                        <ul>
-                            <li class="hover-underline-static"><i class="fa-solid fa-right-from-bracket"></i> Se déconnecter</li>
-                        </ul>
-                    </nav>
-                </div>
+                    <div class="groupe-navigation">
+                        <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion du compte</span>
+                        <nav>
+                            <ul>
+                                <li class="hover-underline-static">Mon compte</li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div class="groupe-navigation">
+                        <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion du salon</span>
+                        <nav>
+                            <ul>
+                                <li class="hover-underline-static">Préparer le salon</li>
+                                <li class="hover-underline-static">Réinitialiser le salon</li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div class="groupe-navigation">
+                        <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion des utilisateurs</span>
+                        <nav>
+                            <ul>
+                                <li class="hover-underline-static">Ajouter un utilisateur</li>
+                                <li class="hover-underline-static">Modifier un utilisateur</li>
+                                <li class="hover-underline-static">Supprimer un utilisateur</li>
+                                <li class="hover-underline-static">Retrouver un mot de passe</li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div class="groupe-navigation">
+                        <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion des entreprises</span>
+                        <nav>
+                            <ul>
+                                <li class="hover-underline-static"><a href="./ajouter-entreprise.php">Ajouter une entreprise</a></li>
+                                <li class="hover-underline-static"><a href="./modifier-entreprise.php">Modifier une entreprise</a></li>
+                                <li class="hover-underline-static">Supprimer une entreprise</li>
+                                <li class="hover-underline-static">Ajouter un intervenant</li>
+                                <li class="hover-underline-static">Modifier un intervenant</li>
+                                <li class="hover-underline-static">Supprimer un intervenant</li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div class="groupe-navigation">
+                        <span class="titre-navigation-asyde"><i class="fa-solid fa-chevron-up"></i>Gestion des emplois du temps</span>
+                        <nav>
+                            <ul>
+                                <li class="hover-underline-static">Générer les emplois du temps</li>
+                                <li class="inclickable">Voir un emploi du temps</li>
+                                <li class="inclickable">Entreprises rejetées</li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div class="groupe-navigation">
+                        <nav>
+                            <ul>
+                                <li class="hover-underline-static"><i class="fa-solid fa-right-from-bracket"></i> Se déconnecter</li>
+                            </ul>
+                        </nav>
+                    </div>
+                    
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="../js/header.js"></script>
-    <script src="../js/compte.js"></script>
+    <script src="../../../static/js/header.js"></script>
+    <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/panel/modifier-entreprise.js"></script>
 </body>
 
 </html>

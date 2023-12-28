@@ -70,22 +70,8 @@
             <span class="titre-panel-ouvert"><span>Gestion des entreprises ></span> Ajouter une entreprise</span>
             <?php
                 try {
-                    $host="localhost";
-                    $user="root";
-                    $pass="root";
-                    $db="salon_eureka_cps";
-                    $charset="utf8mb4";
-        
-                    $dsn="mysql:host=$host;dbname=$db;charset=$charset";
-        
-                    $options = [
-                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, 
-                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, 
-                        PDO::ATTR_EMULATE_PREPARES => false
-                    ];
-                    $dsn="mysql:host=$host;dbname=$db;charset=$charset";
-        
-                    $pdo = new PDO($dsn, $user, $pass, $options);
+                    require ('../../../static/module_php/panel/base_de_donnees.php');
+                    $pdo = connexionBaseDeDonnees();
                     $formValide = true;
                 
             ?>
@@ -150,8 +136,8 @@
 
                         # Récupération id_secteur 
                         # TODO revoir les requêtes
-                        $requete = $pdo->prepare("SELECT id_secteur FROM se_secteur");
-                        #$requete->bindParam("nomS", $_POST["secteurActivites"]);
+                        $requete = $pdo->prepare("SELECT id_secteur FROM se_secteur WHERE nom_secteur = :nomS");
+                        $requete->bindParam("nomS", $_POST["secteurActivites"]);
                         $requete->execute();
                         $numSecteur = $requete->fetchAll();
 
@@ -164,11 +150,11 @@
                         $stmt->bindParam("descrE", $_POST["description"]);
                         $stmt->bindParam("siteE", $_POST["siteInternet"]);
                         $stmt->bindParam("categorieE", $_POST["tailleEntreprise"]);
-                        #$stmt->bindParam("secteurE", $numSecteur["id_secteur"]);
+                        $stmt->bindParam("secteurE", $numSecteur[0]["id_secteur"]);
                         #$stmt->execute();
 
                         echo "<h1>insertion</h1>";
-                        var_dump($numSecteur);
+                        var_dump($numSecteur[0]["id_secteur"]);
                     } else if (isset($codeP)) {
                         echo "<h1>formulaire pas valide</h1>";
                     }
@@ -229,7 +215,7 @@
                         <nav>
                             <ul>
                                 <li class="hover-underline-static">Ajouter une entreprise</li>
-                                <li class="hover-underline-static">Modifier une entreprise</li>
+                                <a href="./modifier-entreprise.php"><li class="hover-underline-static">Modifier une entreprise</li></a>
                                 <li class="hover-underline-static">Supprimer une entreprise</li>
                                 <li class="hover-underline-static">Ajouter un intervenant</li>
                                 <li class="hover-underline-static">Modifier un intervenant</li>
