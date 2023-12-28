@@ -89,6 +89,37 @@
         } 
     }
 
+    
+    function suppressionUtilisateurs($id) {
+        global $pdo;
+        try{ 
+            $connecte=false;
+            $maRequete = $pdo->prepare("DELETE FROM se_appartient WHERE utilisateur_appartient  = :id");
+            $maRequete2 = $pdo->prepare("DELETE FROM se_utilisateur WHERE id_utilisateur  = :id");
+            $maRequete->bindValue(':id', $id);
+            $maRequete2->bindValue(':id', $id);
+            $maRequete->execute();
+            $maRequete2->execute();
+        }
+        catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return ;
+        } 
+    }
+
+    
+    function modificationUtilisateur($id) { // Rajouter tous les parametres de la fonction
+        global $pdo;
+        try{ 
+            $connecte=false;
+            //Ecrire la fonction 
+        }
+        catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return ;
+        } 
+    }
+
     function rechercherUtilisateur($searchQuery, $filiere, $typeUtilisateur) {
 
         // Requête pour récupérer les utilisateurs correspondant à la recherche
