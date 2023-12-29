@@ -1,72 +1,28 @@
 <?php
-    /* Récupération des utilisateurs */
-    $donneeCookie = "";
-    $tableauUtilisateurs = null;
-    if (isset($_POST["enregistrer"]) && $_POST["enregistrer"] == "true") {
-        if (isset($_COOKIE["utilisateurs"])) {
-            $donneeCookie = $_COOKIE["utilisateurs"];
+    /* Accès aux différentes méthodes en lien avec la BD */
+    require "../../../static/module_php/panel/a_utilisateur.php";
 
-            $tableauUtilisateurs = json_decode($donneeCookie);
-        }
-    }
+    $bdConnecte = estBDConnecte(); // Vérification de la connection à la BD
+    $tableauUtilisateurs = recupererCookie();
+    $estBtnValideClique = isset($_POST["enregistrer"]) && $_POST["enregistrer"] == true;
 
-    /* Récupération de l'objet PDO */
-    require "../../../static/module_php/base_de_donnees.php";
-
-    if ($pdo == null) {
+    if (!$bdConnecte) {
         ?><script>alert("Base de données non accessible !");</script><?php
     }
 
-    /* Ecriture dans la base de données */
-    if ($tableauUtilisateurs != null && $pdo != null) {
-        $insertionUtilisateurs = $pdo->prepare("INSERT INTO se_utilisateur (prenom_utilisateur,nom_utilisateur,mail_utilisateur,mdp_utilisateur,statut_utilisateur) VALUES (:prenom,:nom,:mail,:mdp,:statutU)");
-        $insertionFiliere = $pdo->prepare("INSERT INTO se_appartient VALUES (:idU,:idF)");
-        $recupererIDStatut = $pdo->prepare("SELECT id_statut FROM se_statut WHERE libelle_statut = :statut");
-        $recupererIDFiliere = $pdo->prepare("SELECT id_filiere FROM se_filiere WHERE libelle_filiere = :filiere");
-    
-        try {
-            $pdo->beginTransaction();
-            foreach($tableauUtilisateurs as $objectUtilisateur) {
-                $utilisateur = (array)$objectUtilisateur;
+    /* Insertion dans la BD */
+    if ($tableauUtilisateurs != null && $bdConnecte && $estBtnValideClique) {
 
-                /* Récupération de l'id du statut */
-                $recupererIDStatut->bindParam("statut",$utilisateur["statut"]);
-                $recupererIDStatut->execute();
-                $idStatut = $recupererIDStatut->fetch()["id_statut"];
-
-                /* Insertion de l'utilisateur */
-                $insertionUtilisateurs->bindParam("prenom",$utilisateur["prenom"]);
-                $insertionUtilisateurs->bindParam("nom",$utilisateur["nom"]);
-                $insertionUtilisateurs->bindParam("mail",$utilisateur["mail"]);
-                $insertionUtilisateurs->bindParam("mdp",$utilisateur["mdp"]);
-                $insertionUtilisateurs->bindParam("statutU",$idStatut);
-                $insertionUtilisateurs->execute();
-
-                /* Récupération de l'id de l'utilisateur */
-                $idUtilisateur = $pdo->lastInsertId();
-
-                /* Récupération de l'id de la filiaire */
-                $recupererIDFiliere->bindParam("filiere",$utilisateur["filiere"]);
-                $recupererIDFiliere->execute();
-                $idFiliere = $recupererIDFiliere->fetch()["id_filiere"];
-
-                /* Insertion de la filiaire */
-                $insertionFiliere->bindParam("idU",$idUtilisateur);
-                $insertionFiliere->bindParam("idF",$idFiliere);
-                $insertionFiliere->execute();
-            }
-            $pdo->commit();
-            /* Message indiquant la réussite de l'insertion dans la bdd */
+        if (insererBD($tableauUtilisateurs)) {
             ?><script>alert("SUCCES ! Tous les utilisateurs ont bien été importés !");</script><?php
-        } catch (PDOException $e) {
-            $pdo->rollback();
+        } else {
             ?>
             <script>
                 alert("ERREUR ! Impossible d'ajouter les utilisateurs !\n\n Vérifiez les status ou les filieres."
                         + "\n Utilisateur peut être déjà présent dans la base de données");
             </script>
             <?php
-        }
+        }        
     }
 ?>
 <!DOCTYPE html>
@@ -141,7 +97,7 @@
 
             <?php
             /* Affichage d'un message si la BD est innaccessible */
-            if ($pdo == null) {
+            if (!$bdConnecte) {
                 ?><h1 class="erreurBD">Base de données non accessible, peut entraîner des problèmes</h1><?php
             }
             ?>
