@@ -45,15 +45,20 @@ function insererBD($tableauUtilisateurs) {
             /* Récupération de l'id de l'utilisateur */
             $idUtilisateur = $pdo->lastInsertId();
 
-            /* Récupération de l'id de la filiaire */
-            $recupererIDFiliere->bindParam("filiere",$utilisateur["filiere"]);
-            $recupererIDFiliere->execute();
-            $idFiliere = $recupererIDFiliere->fetch()["id_filiere"];
+            /* Insertion de chaques filiaires */
+            $filieres = explode("/", $utilisateur["filiere"]);
 
-            /* Insertion de la filiaire */
-            $insertionFiliere->bindParam("idU",$idUtilisateur);
-            $insertionFiliere->bindParam("idF",$idFiliere);
-            $insertionFiliere->execute();
+            foreach ($filieres as $filiere) {
+                /* Récupération de l'id de la filiaire */
+                $recupererIDFiliere->bindParam("filiere",$filiere);
+                $recupererIDFiliere->execute();
+                $idFiliere = $recupererIDFiliere->fetch()["id_filiere"];
+
+                /* Insertion de la filiaire */
+                $insertionFiliere->bindParam("idU",$idUtilisateur);
+                $insertionFiliere->bindParam("idF",$idFiliere);
+                $insertionFiliere->execute();
+            }
         }
 
         $pdo->commit();
@@ -80,4 +85,42 @@ function recupererCookie() {
         }
     }
     return null;
+}
+
+/* Retourne la liste des filières présentes dans la BD */
+function getListeFiliere() {
+    global $pdo;
+    $listeFiliere = null;
+
+    $requete = $pdo->prepare("SELECT id_filiere, libelle_filiere
+                                        FROM se_filiere");
+    if ($requete->execute()) {
+        $requete->setFetchMode(PDO::FETCH_OBJ);
+        while ($ligne=$requete->fetch()) {			
+            $filiere['idFiliere'] = $ligne->id_filiere;
+            $filiere['libelleFiliere'] = $ligne->libelle_filiere;
+            $listeFiliere[] = $filiere;
+        }
+    }
+
+    return $listeFiliere;
+}
+
+/* Retourne la liste des statut présents dans la BD */
+function getListeStatut() {
+    global $pdo;
+    $listeStatut = null;
+
+    $requete = $pdo->prepare("SELECT id_statut, libelle_statut
+                                        FROM se_statut");
+    if ($requete->execute()) {
+        $requete->setFetchMode(PDO::FETCH_OBJ);
+        while ($ligne=$requete->fetch()) {			
+            $statut['idStatut'] = $ligne->id_statut;
+            $statut['libelleStatut'] = $ligne->libelle_statut;
+            $listeStatut[] = $statut;
+        }
+    }
+
+    return $listeStatut;
 }

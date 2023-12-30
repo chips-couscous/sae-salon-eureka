@@ -5,7 +5,7 @@ var zoneSaisiePrenom = document.getElementById("prenom");
 var zoneSaisieMail = document.getElementById("mail");
 var zoneSaisieMdp = document.getElementById("mdp");
 var zoneSaisieFiliere = document.getElementById("filiere");
-var zoneSaisieStatus = document.getElementById("status");
+var zoneSaisieStatus = document.getElementById("statut");
 var zonePrevisualisation = document.getElementById("tablePrevisualisation");
 var btnImportFichier = document.getElementById("importerEtudiant");
 var zoneImportFichier = document.getElementById("zoneImporterEtudiant");
@@ -128,8 +128,8 @@ function viderSaisie() {
     zoneSaisiePrenom.value = "";
     zoneSaisieMail.value = "";
     zoneSaisieMdp.value = "";
-    zoneSaisieFiliere.value = "";
-    zoneSaisieStatus.value = "";
+    zoneSaisieFiliere.value = -1;
+    zoneSaisieStatus.value = -1;
 }
 
 /* Vérifie que tous les champs d'ajout manuel ont été rempli et respectent le bon format */
@@ -146,8 +146,8 @@ function estChampsCorrects() {
     prenomCorrect = zoneSaisiePrenom.value.length > 0;
     mailCorrect = zoneSaisieMail.value.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
     mdpCorrect = zoneSaisieMdp.value.length > 0;
-    filiereCorrect = zoneSaisieFiliere.value.length > 0;
-    statusCorrect = zoneSaisieStatus.value.length > 0;
+    filiereCorrect = zoneSaisieFiliere.value != -1;
+    statusCorrect = zoneSaisieStatus.value != -1;
 
     return  nomCorrect && prenomCorrect && mailCorrect && mdpCorrect && filiereCorrect && statusCorrect;
 }

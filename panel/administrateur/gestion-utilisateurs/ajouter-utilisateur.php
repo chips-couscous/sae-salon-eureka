@@ -125,13 +125,28 @@
                     <input type="password" name="mdp" id="mdp" autocomplete="off" class="" required>
                     <label for="mdp">Mot de passe</label>
                 </div>
-                <div class="form-item bm15 filiere">
-                    <input type="text" name="filiere" id="filiere" autocomplete="off" class="" required>
-                    <label for="filiere">Filiere</label>
+                <div class="form-item bm15 statut">
+                    <select name="statut" id="statut">
+                        <option value="-1">Statut</option>
+                        <?php
+                        foreach(getListeStatut() as $statut) {
+                            ?><option value="<?php echo $statut['libelleStatut'];?>"><?php echo $statut['libelleStatut'];?></option><?php
+                        }
+                        ?>
+                    </select>
                 </div>
-                <div class="form-item bm15 status">
-                    <input type="text" name="status" id="status" autocomplete="off" class="" required>
-                    <label for="status">Status</label>
+                <div class="form-item bm15 filiere" id="divFiliere">
+                    <select name="filiere" id="filiere">
+                        <option value="-1">Filiere</option>
+                        <?php
+                        foreach(getListeFiliere() as $filiere) {
+                            ?><option value="<?php echo $filiere['libelleFiliere'];?>"><?php echo $filiere['libelleFiliere'];?></option><?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="cacher form-item" id="boutonAjouterFiliere">
+                    <p class="boutonAjoutFiliere"> + </p>
                 </div>
                 <div class="form-item ajouter">
                     <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
@@ -145,8 +160,8 @@
                     <div class="nom"><span>Nom</span></div>
                     <div class="mail"><span>Mail</span></div>
                     <div class="mot-de-passe"><span>Mot de passe</span></div>
-                    <div class="statut"><span>Statut</span></div>
-                    <div class="filiere"><span>Filiere</span></div>
+                    <div class="statut"><span>Filiere</span></div>
+                    <div class="filiere"><span>Statut</span></div>
                     <div class="btnSup"></div>
                 </div>
 
