@@ -108,8 +108,8 @@ function estUtilisateurPresent(utilisateurATester) {
 
 /* Ajoute un utilisateur au tableau de prévisualisation */
 function ajouterUtilisateurManuel() {
-    if (estChampsCorrects()) {
-        let utilisateur = [zoneSaisieNom.value, zoneSaisiePrenom.value, zoneSaisieMail.value, zoneSaisieMdp.value, zoneSaisieFiliere.value, zoneSaisieStatus.value];
+    let utilisateur = [zoneSaisieNom.value, zoneSaisiePrenom.value, zoneSaisieMail.value, zoneSaisieMdp.value, zoneSaisieFiliere.value, zoneSaisieStatus.value];
+    if (estChampsCorrects(utilisateur)) {
         if (!estUtilisateurPresent(utilisateur)) {
             ajouterUtilisateur(utilisateur);
             afficherUtilisateur();
@@ -133,7 +133,7 @@ function viderSaisie() {
 }
 
 /* Vérifie que tous les champs d'ajout manuel ont été rempli et respectent le bon format */
-function estChampsCorrects() {
+function estChampsCorrects(utilisateur) {
     /* Enlève le bord rouge indiquant une erreur */
     zoneSaisieNom.classList.remove("erreur");
     zoneSaisiePrenom.classList.remove("erreur");
@@ -142,12 +142,22 @@ function estChampsCorrects() {
     zoneSaisieFiliere.classList.remove("erreur");
     zoneSaisieStatus.classList.remove("erreur");
 
-    nomCorrect = zoneSaisieNom.value.length > 0;
-    prenomCorrect = zoneSaisiePrenom.value.length > 0;
-    mailCorrect = zoneSaisieMail.value.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-    mdpCorrect = zoneSaisieMdp.value.length > 0;
-    filiereCorrect = zoneSaisieFiliere.value != -1;
-    statusCorrect = zoneSaisieStatus.value != -1;
+    return estUtilisateurCorrect(utilisateur);
+}
+
+/* Vérifie que l'utilisateur rentré en paramètre est correct */
+function estUtilisateurCorrect(utilisateur) {
+
+    if (typeof utilisateur != 'object' || utilisateur.length != 6) {
+        return false;
+    }
+
+    nomCorrect = utilisateur[0].length > 0;
+    prenomCorrect = utilisateur[1].length > 0;
+    mailCorrect = utilisateur[2].toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    mdpCorrect = utilisateur[3].length > 0;
+    filiereCorrect = utilisateur[4] != -1;
+    statusCorrect = utilisateur[5] != -1;
 
     return  nomCorrect && prenomCorrect && mailCorrect && mdpCorrect && filiereCorrect && statusCorrect;
 }
@@ -200,14 +210,18 @@ function traiterFichier(contenuFichier) {
     let utilisateurs = contenuFichier.split("\r\n"); // Découpe le fichier pour obtenir un tableau d'utilisateur
     for (i = 1; i < utilisateurs.length; i++) {
         donneesUtilisateur = utilisateurs[i].split(";"); // Découpage des différentes données d'un utilisateur
-        if (!estUtilisateurPresent(donneesUtilisateur)) {
+
+        if (estUtilisateurCorrect(donneesUtilisateur) && !estUtilisateurPresent(donneesUtilisateur)) {
             ajouterUtilisateur(donneesUtilisateur);
         } else {
             nbUtilisateurNonAjoute += 1;
         }
     }
-    if (nbUtilisateurNonAjoute > 0) {
-        alert(nbUtilisateurNonAjoute + " utilisateurs sont déjà présent et n'ont pas été ajoutés\n");
+    if (nbUtilisateurNonAjoute > 0 && nbUtilisateurNonAjoute < utilisateurs.length) {
+        alert(nbUtilisateurNonAjoute + " utilisateur(s) déjà présent ou incorrect(s) et non ajouté(s)\n");
+    }
+    if (utilisateurs.length <= 1 || nbUtilisateurNonAjoute >= utilisateurs.length) {
+        alert("Fichier incorrect");
     }
     afficherUtilisateur(); 
 }
