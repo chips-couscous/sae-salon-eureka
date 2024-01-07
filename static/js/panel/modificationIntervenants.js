@@ -89,8 +89,6 @@ displayTable.addEventListener("click", function(event) {
     estCliquee(target);
 });
 
-// script.js
-
 function chargerFonctions() {
     return new Promise((resolve, reject) => {
         let xmlhttp = new XMLHttpRequest();
@@ -268,10 +266,6 @@ function ajouterEcouteurFormulaire() {
 }
 
 function mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntreprise, nouvelleFiliere) {
-    console.log("Nom : " + nouveauNom);
-    console.log("nouvelleFonction : " + nouvelleFonction);
-    console.log("nouvelleEntreprise : " + nouvelleEntreprise);
-    console.log("nouvelleFiliere : " + nouvelleFiliere);
 
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {

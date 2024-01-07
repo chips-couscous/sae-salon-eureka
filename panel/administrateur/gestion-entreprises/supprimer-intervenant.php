@@ -1,3 +1,7 @@
+<?php
+    require ('../../../static/module_php/panel/g_utilisateurs.php');
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -8,9 +12,11 @@
     <title>Salon Eureka</title>
 
     <!-- css -->
+    <link rel="stylesheet" href="../../../static/css/connexion.css">
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
     <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/intervenant.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -66,8 +72,67 @@
     <div class="container">
         <div class="container-content">
             <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Supprimer un intervenant</span>
-        </div>
+            <!-- Zone d'ajout manuel -->
+            <div class="ajoutManuel">
+                <span>Rechercher un intervenant :</span><br>
+                <form action="post">
+                    <div class="form-item bm15 ">
+                        <input type="text" name="nom" id="nom" autocomplete="off" required>
+                        <label for="nom">Nom *</label>
+                    </div>
+                    <div class="form-item bm15">
+                        <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
+                        <label for="entreprise">Entreprise *</label>
+                    </div>
+                </form>
+            </div>
 
+            <!-- Zone de prévisualisation de l'ajout final --> 
+            <div class="previsualisation">
+                <table class="tablePrevisualisation" id="TablePrevisualisation">
+					<tr>
+						<!--- Contenu -->
+						<th>
+							<!--- Colonne nom -->
+							Nom
+						</th>
+						<th>
+							<!--- Colonne Fonction -->
+							Fonction    
+						</th>
+						<th>
+							<!--- Colonne Entreprise -->
+							Entreprise
+						</th>
+						<th>
+							<!--- Colonne Filiere -->
+							Filiere
+						</th>							
+					</tr>
+					<?php       
+					// Récupération des intervenants
+					$listeIntervenants=listeDesIntervenants(); 
+
+					// Boucle afficher la liste des intervenants
+					foreach($listeIntervenants as $intervenant) {
+						$nom=$intervenant['nom'];
+						$fonction=$intervenant['fonction']; 
+						$entreprise=$intervenant['entreprise']; 
+						$filiere=$intervenant['filiere'];
+                    
+						echo "<tr>";
+						echo "<td>".$nom."</td>";
+						echo "<td>".$fonction."</td>";
+						echo "<td>".$entreprise."</td>";
+                        echo "<td>".$filiere."</td>";
+						echo "</tr>";   
+					}							
+					?>
+				</table>        
+            </div>
+
+            <button class="valider" id="boutonSupprimer">Valider la suppression</button>
+        </div>
         <div class="container-asyde">
             <div class="asyde-content">
                 <div class="asyde-navigation">
@@ -151,6 +216,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/panel/suppressionIntervenants.js" type="module"></script>
 </body>
 
 </html>

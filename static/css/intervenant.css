@@ -75,3 +75,9 @@ select {
     height: 35px;
     width: 250px;
 }
+
+.ligneSelectionnee {
+    background-color: #cce5ff; /* Couleur de fond pour mettre en évidence la ligne sélectionnée */
+    color: #000; /* Couleur du texte pour la ligne sélectionnée */
+    /* Ajoutez d'autres styles si nécessaire */
+}
