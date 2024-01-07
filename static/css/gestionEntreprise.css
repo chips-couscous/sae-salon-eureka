@@ -1,12 +1,18 @@
 @import url(./main.css);
 
-.form-item select{
-    display: block;
-    width: 400px;
-    height: 40px;
-    background: transparent;
-    border: solid 1px #ccc;
-    transition: all .3s ease;
-    padding: 0 15px;
-    border-radius: 3px;
-  }
+table {
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background-color: #e9f3ff;
+}
+
+#EditForm {
+  /*display: none;*/
+}

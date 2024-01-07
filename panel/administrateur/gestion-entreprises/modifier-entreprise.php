@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
     <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/gestionEntreprise.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -69,13 +70,68 @@
             <span class="titre-panel-ouvert"><span>Gestion des entreprises ></span> Modifier une entreprise</span>
             <form action="" method="post">
                 <div class="form-item bm15">
-                    <input type="text" name="entreprise" id="Entreprise" autocomplete="off" onkeyup="javascript:load_data(this.value)" required/>
+                    <input type="text" name="entreprise" id="Entreprise" autocomplete="off" required/>
                     <label for="Entreprise">Rechercher une entreprise</label>
-                    <input type="submit" value="Chercher"/>
                     <span id="resultats"></span>
                 </div>
             </form>
+            <?php
+                
+            ?>
+            <form action="modifier-entreprise.php" id="EditForm" method="post">
+                <div class="form-item bm15">
+                    <input type="text" name="nomE" id="NomE" autocomplete="off" required>
+                    <label for="NomE">Nom</label>
+                </div>
+                <div class="form-item bm15">
+                    <input type="text" name="description" id="Description" autocomplete="off" required>
+                    <label for="Description">Description</label>
+                </div>
+                <div class="form-item bm15">
+                    <input type="text" name="codePostal" id="CodePostal" autocomplete="off" required>
+                    <label for="CodePostal">Code Postal </label>
+                    <?php
+                        if (isset($_POST["codePostal"])) {
+                            $codeP = (int)($_POST["codePostal"]);
+                            if ($codeP == 0 || strlen($codeP) != 5) {
+                                $formValide = false;
+                            }
+                        }
+                    ?>
+                </div>
+                <div class="form-item bm15">
+                    <input type="text" name="lieuAlternance" id="LieuAlternance" autocomplete="off" required>
+                    <label for="LieuAlternance">Lieu de l'alternance</label>
+                </div>
+                <div class="form-item bm15">
+                    <select name="tailleEntreprise" id="TailleEntreprise" autocomplete="off" required>
+                        <option value="" class="grise">catégorie de l'entreprise</option>
+                        <option value="0">1 - 50</option>
+                        <option value="1">51 - 100</option>
+                        <option value="2">+100</option>
+                    </select>
+                </div>
+                <div class="form-item bm15">
+                    <input type="text" name="siteInternet" id="SiteInternet" autocomplete="off" required>
+                    <label for="SiteInternet">Site internet</label>
+                </div>
+                <div class="form-item bm15">
+                    <input type="text" name="secteurActivites" id="SecteurActivites" autocomplete="off" required>
+                    <label for="SecteurActivites">Secteur d'activité</label>
+                </div>
+                <div class="form-item">
+                    <input type="submit" value="Ajouter">
+                </div>
+            </form>
         </div>
+        <?php
+            try {
+                require ('../../../static/module_php/panel/base_de_donnees.php');
+                $pdo = connexionBaseDeDonnees();
+            } catch(Exception $e) {
+                echo "<h1>Connexion impossible</h1>";
+            }
+        ?>
 
         <div class="container-asyde">
             <div class="asyde-content">
@@ -126,7 +182,7 @@
                             <ul>
                                 <li class="hover-underline-static"><a href="./ajouter-entreprise.php">Ajouter une entreprise</a></li>
                                 <li class="hover-underline-static"><a href="./modifier-entreprise.php">Modifier une entreprise</a></li>
-                                <li class="hover-underline-static">Supprimer une entreprise</li>
+                                <li class="hover-underline-static"><a href="./supprimer-entreprise.php">Supprimer une entreprise</a></li>
                                 <li class="hover-underline-static">Ajouter un intervenant</li>
                                 <li class="hover-underline-static">Modifier un intervenant</li>
                                 <li class="hover-underline-static">Supprimer un intervenant</li>
