@@ -1,0 +1,18 @@
+@import url(./main.css);
+
+table {
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background-color: #e9f3ff;
+}
+
+#EditForm {
+  /*display: none;*/
+}
