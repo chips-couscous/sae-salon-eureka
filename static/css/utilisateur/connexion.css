@@ -1,4 +1,4 @@
-@import url(./main.css);
+@import url(./../main.css);
 
 *,
 *:focus{
@@ -59,6 +59,7 @@ form{
   background-color: var(--c-primaire);
   color: var(--c-light);
   cursor: pointer;
+
   width: 430px;
   font-weight: 500;
 }

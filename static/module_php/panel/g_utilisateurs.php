@@ -8,6 +8,7 @@
         global $pdo;
         try{ 
             $connecte=false;
+<<<<<<< HEAD
             $maRequete = $pdo->prepare("SELECT id_utilisateur, prenom_utilisateur, nom_utilisateur, mail_utilisateur, mdp_utilisateur, libelle_filiere, libelle_statut 
                                         FROM se_utilisateur
                                         INNER JOIN se_statut
@@ -17,6 +18,22 @@
                                         INNER JOIN se_filiere
                                         ON se_appartient.filiere_appartient = se_filiere.id_filiere
                                         GROUP BY id_utilisateur");
+=======
+            $maRequete = $pdo->prepare("SELECT 
+                                            se_utilisateur.id_utilisateur,
+                                            se_utilisateur.prenom_utilisateur,
+                                            se_utilisateur.nom_utilisateur,
+                                            se_utilisateur.mail_utilisateur,
+                                            se_utilisateur.mdp_utilisateur,
+                                            GROUP_CONCAT(DISTINCT se_filiere.libelle_filiere ORDER BY se_filiere.libelle_filiere SEPARATOR ', ') AS filieres,
+                                            se_statut.libelle_statut
+                                        FROM se_utilisateur
+                                        INNER JOIN se_statut ON se_utilisateur.statut_utilisateur = se_statut.id_statut
+                                        INNER JOIN se_appartient ON se_utilisateur.id_utilisateur = se_appartient.utilisateur_appartient
+                                        INNER JOIN se_filiere ON se_appartient.filiere_appartient = se_filiere.id_filiere
+                                        GROUP BY se_utilisateur.id_utilisateur
+                                        ");
+>>>>>>> utilisateurs
             if ($maRequete->execute()) {
                 $maRequete->setFetchMode(PDO::FETCH_OBJ);
                 while ($ligne=$maRequete->fetch()) {			
@@ -25,7 +42,11 @@
                     $listeUtilisateurs['nomUtilisateur'] = $ligne->nom_utilisateur;
                     $listeUtilisateurs['mailUtilisateur'] = $ligne->mail_utilisateur;
                     $listeUtilisateurs['mdpUtilisateur'] = $ligne->mdp_utilisateur;
+<<<<<<< HEAD
                     $listeUtilisateurs['libelleFiliere'] = $ligne->libelle_filiere;
+=======
+                    $listeUtilisateurs['libelleFiliere'] = $ligne->filieres;
+>>>>>>> utilisateurs
                     $listeUtilisateurs['statutUtilisateur'] = $ligne->libelle_statut;
                     $listeUtilisateur[] = $listeUtilisateurs;
                 }
@@ -81,6 +102,37 @@
         catch ( Exception $e ) {
             echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
             return $listeStatut;
+        } 
+    }
+
+    
+    function suppressionUtilisateurs($id) {
+        global $pdo;
+        try{ 
+            $connecte=false;
+            $maRequete = $pdo->prepare("DELETE FROM se_appartient WHERE utilisateur_appartient  = :id");
+            $maRequete2 = $pdo->prepare("DELETE FROM se_utilisateur WHERE id_utilisateur  = :id");
+            $maRequete->bindValue(':id', $id);
+            $maRequete2->bindValue(':id', $id);
+            $maRequete->execute();
+            $maRequete2->execute();
+        }
+        catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return ;
+        } 
+    }
+
+    
+    function modificationUtilisateur($id) { // Rajouter tous les parametres de la fonction
+        global $pdo;
+        try{ 
+            $connecte=false;
+            //Ecrire la fonction 
+        }
+        catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return ;
         } 
     }
 

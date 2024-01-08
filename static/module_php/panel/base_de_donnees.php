@@ -22,4 +22,3 @@ function connexionBaseDeDonnees() {
     }
 }
 
-$pdo = connexionBaseDeDonnees();
