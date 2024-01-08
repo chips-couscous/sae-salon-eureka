@@ -1,7 +1,6 @@
 @import url(./main.css);
 
 /* Contient la mise en forme des pages de gestion des utilisateurs */
-
 .zoneImporterEtudiant {
     min-width: 95%;
     height: 202px;
@@ -11,6 +10,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.surbrillance {
+    border-color: #33477B;
+    background-color: #E2E2E2;
 }
 
 
@@ -68,7 +71,12 @@ td {
     border-color: red;
 }
 
-
+.formValider {
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
 
 /* Modification des utilisateurs */
 
