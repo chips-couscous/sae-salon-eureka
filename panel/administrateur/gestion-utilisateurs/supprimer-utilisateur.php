@@ -1,3 +1,6 @@
+<?php
+    require('../../../static/module_php/panel/g_utilisateurs.php');
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -8,9 +11,11 @@
     <title>Supprimer un utilisateur</title>
 
     <!-- css -->
+    <link rel="stylesheet" href="../../../static/css/utilisateur/connexion.css">
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
-    <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/panel.css">
+    <link rel="stylesheet" href="../../../static/css/modifierUtilisateur.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -65,7 +70,36 @@
 
     <div class="container">
         <div class="container-content">
-            <span class="titre-panel-ouvert"><span>ICI CA SUPPRIME OU QUOI</span> SUPPRIMER UN UTILISATEUR ICI</span>
+            <div class="listeUtilisateurs">
+                    <table class="tableListeUtilisateur" id="tableListeUtilisateur"> 
+                        <tr>
+                            <th>Identifiant</th>
+                            <th>Prenom</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Mot de passe</th>
+                            <th>Filiere</th>
+                            <th>Statut</th>
+                        </tr>
+                        <?php 
+                            $listeUtilisateurs = listeDesUtilisateurs();
+                            foreach ($listeUtilisateurs as $liste) {
+                                echo "<tr class='cliquable item-utilisateur'>";
+                                echo "<td>". $liste['idUtilisateur'] . "</td>";
+                                echo "<td>". $liste['prenomUtilisateur'] . "</td>";
+                                echo "<td>". $liste['nomUtilisateur'] . "</td>";
+                                echo "<td>". $liste['mailUtilisateur'] . "</td>";
+                                echo "<td>". $liste['mdpUtilisateur'] . "</td>";
+                                echo "<td>". $liste['libelleFiliere'] . "</td>";
+                                echo "<td>". $liste['statutUtilisateur'] . "</td>";
+                                echo "</tr>";
+                            }
+                        ?>
+                    </table>
+            </div>
+            <div class="affichageUtilisateur form-item" id ="affichageUtilisateur">
+
+            </div>
         </div>
 
         <div class="container-asyde">
@@ -151,6 +185,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/panel/supprimer-utilisateur.js"></script>
 </body>
 
 </html>

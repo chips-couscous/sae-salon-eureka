@@ -5,7 +5,7 @@ var zoneSaisiePrenom = document.getElementById("prenom");
 var zoneSaisieMail = document.getElementById("mail");
 var zoneSaisieMdp = document.getElementById("mdp");
 var zoneSaisieFiliere = document.getElementById("filiere");
-var zoneSaisieStatus = document.getElementById("status");
+var zoneSaisieStatus = document.getElementById("statut");
 var zonePrevisualisation = document.getElementById("tablePrevisualisation");
 var btnImportFichier = document.getElementById("importerEtudiant");
 var zoneImportFichier = document.getElementById("zoneImporterEtudiant");
@@ -26,22 +26,46 @@ btnImportFichier.addEventListener("change", importerFichier);
 zoneImportFichier.addEventListener('drop', importDragAndDrop);
 body.addEventListener('dragover', dragOver);
 
+/* Si données déjà présentes dans cookie -> récupération */
+if (document.cookie != null) {
+    let contenuCookie = readCookie("utilisateurs");
+    if (contenuCookie != null) {
+        tableauUtilisateurs = JSON.parse(contenuCookie);
+        if (typeof tableauUtilisateurs != 'object') {
+            tableauUtilisateurs = [];
+        }
+        afficherUtilisateur();
+    }
+}
+
+/* Retourne le contenu du cookie "nom" ou null si il n'existe pas */
+function readCookie(nom) {
+	var nomCookie = nom + "=";
+	var listeCookies = document.cookie.split(';');
+	for(var i=0;i < listeCookies.length;i++) {
+		var cookie = listeCookies[i];
+		while (cookie.charAt(0)==' ') cookie = cookie.substring(1,cookie.length);
+		if (cookie.indexOf(nomCookie) == 0) return cookie.substring(nomCookie.length,cookie.length);
+	}
+	return null;
+}
 
 /* Affiche dans la zone de prévisualisation les différents utilisateurs importés ou ajoutés */
 function afficherUtilisateur() {
-    zonePrevisualisation.innerHTML = "<tr><td>Prénom</td><td>Nom</td><td>Mail</td><td>Mot de passe</td><td>Status</td><td>Filiere</td></tr>";
+    zonePrevisualisation.innerHTML = "";
+    let indiceTableau = 0; // indice de l'utilisateur dans le tableau utilisé pour la suppression
     tableauUtilisateurs.forEach(utilisateur => {
-        zonePrevisualisation.innerHTML += `<tr>
-        <td>${utilisateur["prenom"]}</td>
-        <td>${utilisateur["nom"]}</td>
-        <td>${utilisateur["mail"]}</td>
-        <td>${utilisateur["mdp"]}</td>
-        <td>${utilisateur["filiere"]}</td>
-        <td>${utilisateur["statut"]}</td>
-        </tr>`;
-
-        /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
-        ecritureCookie();
+        zonePrevisualisation.innerHTML +=
+        `<div class="row">
+            <div class="prenom"><span>${utilisateur["prenom"]}</span></div>
+            <div class="nom"><span>${utilisateur["nom"]}</span></div>
+            <div class="mail"><span>${utilisateur["mail"]}</span></div>
+            <div class="mot-de-passe"><span>${utilisateur["mdp"]}</span></div>
+            <div class="statut"><span>${utilisateur["filiere"]}</span></div>
+            <div class="filiere"><span>${utilisateur["statut"]}</span></div>
+            <div class="btnSup"><button class="supprimerUtilisateur" onclick="supprimerUtilisatuer(${indiceTableau});">&#x274C;</button></div>
+        </div>`;
+        indiceTableau += 1;
     });
 }
 
@@ -55,6 +79,18 @@ function ecritureCookie() {
 function ajouterUtilisateur(donneesUtilisateur) {
     tableauUtilisateurs.unshift({"nom" : donneesUtilisateur[0],"prenom" : donneesUtilisateur[1],"mail" : donneesUtilisateur[2],
     "mdp" : donneesUtilisateur[3],"filiere" : donneesUtilisateur[4],"statut" : donneesUtilisateur[5]});
+
+    /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
+    ecritureCookie();
+}
+
+/* Supprime l'utilisateur présent en paramètre */
+function supprimerUtilisatuer(i) {
+    tableauUtilisateurs.splice(i,1);
+    
+    /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
+    ecritureCookie();
+    afficherUtilisateur();
 }
 
 /* Retourne true si l'utilisateur passé en paramètre a déjà été ajouté */
@@ -72,8 +108,8 @@ function estUtilisateurPresent(utilisateurATester) {
 
 /* Ajoute un utilisateur au tableau de prévisualisation */
 function ajouterUtilisateurManuel() {
-    if (estChampsCorrects()) {
-        let utilisateur = [zoneSaisieNom.value, zoneSaisiePrenom.value, zoneSaisieMail.value, zoneSaisieMdp.value, zoneSaisieFiliere.value, zoneSaisieStatus.value];
+    let utilisateur = [zoneSaisieNom.value, zoneSaisiePrenom.value, zoneSaisieMail.value, zoneSaisieMdp.value, zoneSaisieFiliere.value, zoneSaisieStatus.value];
+    if (estChampsCorrects(utilisateur)) {
         if (!estUtilisateurPresent(utilisateur)) {
             ajouterUtilisateur(utilisateur);
             afficherUtilisateur();
@@ -92,12 +128,12 @@ function viderSaisie() {
     zoneSaisiePrenom.value = "";
     zoneSaisieMail.value = "";
     zoneSaisieMdp.value = "";
-    zoneSaisieFiliere.value = "";
-    zoneSaisieStatus.value = "";
+    zoneSaisieFiliere.value = -1;
+    zoneSaisieStatus.value = -1;
 }
 
 /* Vérifie que tous les champs d'ajout manuel ont été rempli et respectent le bon format */
-function estChampsCorrects() {
+function estChampsCorrects(utilisateur) {
     /* Enlève le bord rouge indiquant une erreur */
     zoneSaisieNom.classList.remove("erreur");
     zoneSaisiePrenom.classList.remove("erreur");
@@ -106,12 +142,22 @@ function estChampsCorrects() {
     zoneSaisieFiliere.classList.remove("erreur");
     zoneSaisieStatus.classList.remove("erreur");
 
-    nomCorrect = zoneSaisieNom.value.length > 0;
-    prenomCorrect = zoneSaisiePrenom.value.length > 0;
-    mailCorrect = zoneSaisieMail.value.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-    mdpCorrect = zoneSaisieMdp.value.length > 0;
-    filiereCorrect = zoneSaisieFiliere.value.length > 0;
-    statusCorrect = zoneSaisieStatus.value.length > 0;
+    return estUtilisateurCorrect(utilisateur);
+}
+
+/* Vérifie que l'utilisateur rentré en paramètre est correct */
+function estUtilisateurCorrect(utilisateur) {
+
+    if (typeof utilisateur != 'object' || utilisateur.length != 6) {
+        return false;
+    }
+
+    nomCorrect = utilisateur[0].length > 0;
+    prenomCorrect = utilisateur[1].length > 0;
+    mailCorrect = utilisateur[2].toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    mdpCorrect = utilisateur[3].length > 0;
+    filiereCorrect = utilisateur[4] != -1;
+    statusCorrect = utilisateur[5] != -1;
 
     return  nomCorrect && prenomCorrect && mailCorrect && mdpCorrect && filiereCorrect && statusCorrect;
 }
@@ -164,14 +210,18 @@ function traiterFichier(contenuFichier) {
     let utilisateurs = contenuFichier.split("\r\n"); // Découpe le fichier pour obtenir un tableau d'utilisateur
     for (i = 1; i < utilisateurs.length; i++) {
         donneesUtilisateur = utilisateurs[i].split(";"); // Découpage des différentes données d'un utilisateur
-        if (!estUtilisateurPresent(donneesUtilisateur)) {
+
+        if (estUtilisateurCorrect(donneesUtilisateur) && !estUtilisateurPresent(donneesUtilisateur)) {
             ajouterUtilisateur(donneesUtilisateur);
         } else {
             nbUtilisateurNonAjoute += 1;
         }
     }
-    if (nbUtilisateurNonAjoute > 0) {
-        alert(nbUtilisateurNonAjoute + " utilisateurs déjà présent et non ajoutés\n");
+    if (nbUtilisateurNonAjoute > 0 && nbUtilisateurNonAjoute < utilisateurs.length) {
+        alert(nbUtilisateurNonAjoute + " utilisateur(s) déjà présent ou incorrect(s) et non ajouté(s)\n");
+    }
+    if (utilisateurs.length <= 1 || nbUtilisateurNonAjoute >= utilisateurs.length) {
+        alert("Fichier incorrect");
     }
     afficherUtilisateur(); 
 }

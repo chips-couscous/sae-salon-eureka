@@ -1,39 +1,28 @@
 <?php
-    /* Récupération des utilisateurs */
-    $donneeCookie = "";
-    $tableauUtilisateurs = null;
-    if (isset($_POST["enregistrer"]) && $_POST["enregistrer"] == "true") {
-        if (isset($_COOKIE["utilisateurs"])) {
-            $donneeCookie = $_COOKIE["utilisateurs"];
+    /* Accès aux différentes méthodes en lien avec la BD */
+    require "../../../static/module_php/panel/a_utilisateur.php";
 
-            $tableauUtilisateurs = json_decode($donneeCookie);
-        }
+    $bdConnecte = estBDConnecte(); // Vérification de la connection à la BD
+    $tableauUtilisateurs = recupererCookie();
+    $estBtnValideClique = isset($_POST["enregistrer"]) && $_POST["enregistrer"] == true;
+
+    if (!$bdConnecte) {
+        ?><script>alert("Base de données non accessible !");</script><?php
     }
 
-    /* Récupération de l'objet PDO */
-    require "../../../static/module_php/base_de_donnees.php";
+    /* Insertion dans la BD */
+    if ($tableauUtilisateurs != null && $bdConnecte && $estBtnValideClique) {
 
-    /* Ecriture dans la base de données */
-    if ($tableauUtilisateurs != null) {
-        $insertionUtilisateurs = $pdo->prepare("INSERT INTO se_utilisateur (prenom_utilisateur,nom_utilisateur,mail_utilisateur,mdp_utilisateur,statut_utilisateur) VALUES (:prenom,:nom,:mail,:mdp,:statutU)");
-        $insertionFiliere = $pdo->prepare("INSERT INTO se_appartient VALUES (:idU,:idF)");
-        $recupererIDStatut = $pdo->prepare("SELECT id_statut FROM se_statut WHERE libelle_statut = :statut");
-    
-        foreach($tableauUtilisateurs as $objectUtilisateur) {
-            $utilisateur = (array)$objectUtilisateur;
-            $recupererIDStatut->bindParam("statut",$utilisateur["statut"]);
-            $recupererIDStatut->execute();
-            $idStatut = ($recupererIDStatut->fetch()["id_statut"]);
-            $insertionUtilisateurs->bindParam("prenom",$utilisateur["prenom"]);
-            $insertionUtilisateurs->bindParam("nom",$utilisateur["nom"]);
-            $insertionUtilisateurs->bindParam("mail",$utilisateur["mail"]);
-            $insertionUtilisateurs->bindParam("mdp",$utilisateur["mdp"]);
-            $insertionUtilisateurs->bindParam("statutU",$idStatut);
-            $insertionUtilisateurs->execute();
-        }
-
-        //TODO AFFICHER UN MESSAGE LORS DE L'INSERTION REUSSI ET UN MESSAGE SI ERREUR
-        // EMPECHER L'INSERTION EN DOUBLE !!
+        if (insererBD($tableauUtilisateurs)) {
+            ?><script>alert("SUCCES ! Tous les utilisateurs ont bien été importés !");</script><?php
+        } else {
+            ?>
+            <script>
+                alert("ERREUR ! Impossible d'ajouter les utilisateurs !\n\n Vérifiez les status ou les filieres."
+                        + "\n Utilisateur peut être déjà présent dans la base de données");
+            </script>
+            <?php
+        }        
     }
 ?>
 <!DOCTYPE html>
@@ -49,7 +38,7 @@
     <link rel="stylesheet" href="../../../static/css/connexion.css">
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
-    <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/panel.css">
     <link rel="stylesheet" href="../../../static/css/utilisateur.css">
 
     <!-- fontawesome link -->
@@ -105,49 +94,80 @@
 
     <div class="container">
         <div class="container-content">
+
+            <?php
+            /* Affichage d'un message si la BD est innaccessible */
+            if (!$bdConnecte) {
+                ?><h1 class="erreurBD">Base de données non accessible, peut entraîner des problèmes</h1><?php
+            }
+            ?>
+
             <!-- Zone d'importation d'une liste d'utilisateur -->
-            <div id="zoneImporterEtudiant" class="zoneImporterEtudiant">
-                <span>Déposer un fichier ou</span>&nbsp;<input type="file" name="importerEtudiant" id="importerEtudiant" class="btnImporterEtudiant" accept=".csv">
+            <div class="zoneImporterEtudiant" id="zoneImporterEtudiant">
+                <span>Déposer un fichier ou</span>&nbsp;<input type="file" name="importerEtudiant" id="importerEtudiant" class="btnImporterEtudiant" accept=".csv" value="Importer">
             </div>
 
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
-                <span>Ajouter manuellement un utilisateur :</span><br>
-                    <div class="form-item bm15 nom">
-                        <input type="text" name="nom" id="nom" autocomplete="off" class="" required>
-                        <label for="nom">Nom</label>
-                    </div>
-                    <div class="form-item bm15 prenom">
-                        <input type="text" name="prenom" id="prenom" autocomplete="off" class="" required>
-                        <label for="prenom">Prénom</label>
-                    </div>
-                    <div class="form-item bm15 mail">
-                        <input type="text" name="mail" id="mail" autocomplete="off" class="" required>
-                        <label for="mail">Mail</label>
-                    </div>
-                    <div class="form-item bm15 mdp">
-                        <input type="password" name="mdp" id="mdp" autocomplete="off" class="" required>
-                        <label for="mdp">Mot de passe</label>
-                    </div>
-                    <div class="form-item bm15 filiere">
-                        <input type="text" name="filiere" id="filiere" autocomplete="off" class="" required>
-                        <label for="filiere">Filiere</label>
-                    </div>
-                    <div class="form-item bm15 status">
-                        <input type="text" name="status" id="status" autocomplete="off" class="" required>
-                        <label for="status">Status</label>
-                    </div>
-                    <div class="form-item ajouter">
-                        <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
-                  </div>
+                <div class="form-item bm15 nom">
+                    <input type="text" name="nom" id="nom" autocomplete="off" class="" required>
+                    <label for="nom">Nom</label>
+                </div>
+                <div class="form-item bm15 prenom">
+                    <input type="text" name="prenom" id="prenom" autocomplete="off" class="" required>
+                    <label for="prenom">Prénom</label>
+                </div>
+                <div class="form-item bm15 mail">
+                    <input type="text" name="mail" id="mail" autocomplete="off" class="" required>
+                    <label for="mail">Mail</label>
+                </div>
+                <div class="form-item bm15 mdp">
+                    <input type="password" name="mdp" id="mdp" autocomplete="off" class="" required>
+                    <label for="mdp">Mot de passe</label>
+                </div>
+                <div class="form-item bm15 statut">
+                    <select name="statut" id="statut">
+                        <option value="-1">Statut</option>
+                        <?php
+                        foreach(getListeStatut() as $statut) {
+                            ?><option value="<?php echo $statut['libelleStatut'];?>"><?php echo $statut['libelleStatut'];?></option><?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-item bm15 filiere" id="divFiliere">
+                    <select name="filiere" id="filiere">
+                        <option value="-1">Filiere</option>
+                        <?php
+                        foreach(getListeFiliere() as $filiere) {
+                            ?><option value="<?php echo $filiere['libelleFiliere'];?>"><?php echo $filiere['libelleFiliere'];?></option><?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="cacher form-item" id="boutonAjouterFiliere">
+                    <p class="boutonAjoutFiliere"> + </p>
+                </div>
+                <div class="form-item ajouter">
+                    <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
+                </div>
             </div>
 
             <!-- Zone de prévisualisation de l'ajout final --> 
             <div class="previsualisation">
-                <table class="tablePrevisualisation" id="tablePrevisualisation">
-                    <!-- Affichage des différents utilisateurs -->
-                    <tr><td>Prénom</td><td>Nom</td><td>Mail</td><td>Mot de passe</td><td>Status</td><td>Filiere</td></tr> 
-                </table>
+                <div class="row titre">
+                    <div class="prenom"><span>Prénom</span></div>
+                    <div class="nom"><span>Nom</span></div>
+                    <div class="mail"><span>Mail</span></div>
+                    <div class="mot-de-passe"><span>Mot de passe</span></div>
+                    <div class="statut"><span>Filiere</span></div>
+                    <div class="filiere"><span>Statut</span></div>
+                    <div class="btnSup"></div>
+                </div>
+
+                <div class="item" id="tablePrevisualisation">
+            
+                </div>
             </div>
             
             <form action="" method="post" class="formValider">
@@ -239,7 +259,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
-    <script src="../../../static/js/ajouter-utilisateur.js"></script>
+    <script src="../../../static/js/panel/ajouter-utilisateur.js"></script>
 </body>
 
 </html>
