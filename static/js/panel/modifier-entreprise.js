@@ -27,7 +27,7 @@ let ajax_request;
 let response;
 
 /* Fonction qui récupère les données des entreprises liées au texte de la barre de recherche */
-function sending_request() {
+function sending_request(phpPath) {
 
     /* Récupération du texte de la barre de recherche */
     search = searchForm.value;
@@ -42,7 +42,7 @@ function sending_request() {
     ajax_request = new XMLHttpRequest(); 
 
     /* Adresse une requête au fichier php demandé en paramètre avec la méthode POST */
-    ajax_request.open('POST', '../../../api/rechercher-entreprise.php');
+    ajax_request.open('POST', phpPath);
 
     /* Envoi de la requête */
     ajax_request.send(form_data);
@@ -80,7 +80,7 @@ companyElements.forEach(row => {
 /* Evènement déclenchant l'autocomplétion de la barre de recherche */
 searchForm.addEventListener('keyup', function() {
 
-    sending_request();
+    sending_request('../../../api/rechercher-entreprise.php');
     
     /* fonction permettant d'intercepter la requête et d'afficher le résultat sous forme de tableau */
     ajax_request.onreadystatechange = function() {
@@ -116,3 +116,4 @@ searchForm.addEventListener('keyup', function() {
         }
     }   
 });
+

@@ -73,3 +73,66 @@ $(document).ready(function() {
         $(this).find('.carte-entreprise').toggleClass('turn')
     });
 });
+
+
+const rechercheEntreprise = document.getElementById("RechercheEntreprise");
+
+const listeEntreprise = document.getElementById("ListeE");
+
+rechercheEntreprise.addEventListener('keyup', function() {
+
+    console.log(this.value);
+    /* Récupération du texte de la barre de recherche */
+    search = this.value;
+
+    /* Création d'un objet FormData */
+    var form_data = new FormData();
+
+    /* On l'associe à la clé search le texte récupéré */
+    form_data.append('search', search);
+
+    /* Création d'un objet XMLHttpRequest */
+    ajax_request = new XMLHttpRequest(); 
+
+    /* Adresse une requête au fichier php demandé en paramètre avec la méthode POST */
+    ajax_request.open('POST', 'api/rechercher-entreprise.php');
+
+    /* Envoi de la requête */
+    ajax_request.send(form_data);
+    
+    /* fonction permettant d'intercepter la requête et d'afficher le résultat sous forme de tableau */
+    ajax_request.onreadystatechange = function() {
+        /* Si la requête a fini d'être traitée */
+        if (ajax_request.readyState == 4 && ajax_request.status == 200) {
+
+            /* Récupération du resultat de la requête */
+            response = JSON.parse(ajax_request.responseText);
+
+            let html = "";
+
+            /*Si la requête renvoie un résultat autre que vide  */
+            if (response != "") {
+                /* Insertion du résultat de la requête dans une case */
+                for(let i=0; i < response.length; i++) {
+                    html += '<div class="carte">';
+                    html += '<div class="entreprise-container"><div class="carte-entreprise">';
+                    html +=  '<div class="recto"><div class="identite">';
+                    html += '<img src="static/img/logo_entreprise/'+response[i].logo_entreprise+'" alt="Logo '+response[i].nom_entreprise+'" draggable="false">';
+                    html += '<span>'+response[i].nom_entreprise+'</span></div>';
+                    html += '<div class="tags">';
+                    html += '<span><i class="fa-solid fa-location-dot"></i>'+response[i].nom_entreprise+'</span>';
+                    html += '<span><i class="fa-solid fa-tag"></i>'+response[i].secteur_entreprise+'</span>';
+                    html += '<span><i class="fa-solid fa-users"></i>'+response[i].categorie_entreprise+'</span></div></div>';
+                    html += '<div class="verso"><div class="description-container"><div class="description-content">'+response[i].description_entreprise+'</div></div>';
+                    html += '<div class="fin-verso"><div class="lien-site"><a href="#" class="hover-underline-active">'+response[i].site_entreprise+'</a></div>';    
+                    html += '<div class="btn-souhait"><span>Ajouter aux souhaits</span></div></div></div></div></div></div>';   
+                }
+            } else {
+                html += '<span>Aucune entreprise trouvée</span>';
+            }
+
+            /* Affiche le tableau sur l'écran*/
+            listeEntreprise.innerHTML = html;
+        }
+    }   
+});
