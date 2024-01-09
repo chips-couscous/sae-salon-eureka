@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "./static/module_php/base_de_donnees.php";
+require "./static/module_php/panel/base_de_donnees.php";
 require "./static/module_php/utilisateur/utilisateur.php";
 require "./static/module_php/utilisateur/connexion_utilisateur.php";
 
