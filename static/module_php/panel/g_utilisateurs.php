@@ -8,17 +8,6 @@
         global $pdo;
         try{ 
             $connecte=false;
-<<<<<<< HEAD
-            $maRequete = $pdo->prepare("SELECT id_utilisateur, prenom_utilisateur, nom_utilisateur, mail_utilisateur, mdp_utilisateur, libelle_filiere, libelle_statut 
-                                        FROM se_utilisateur
-                                        INNER JOIN se_statut
-                                        ON se_utilisateur.statut_utilisateur = se_statut.id_statut
-                                        INNER JOIN se_appartient
-                                        ON se_utilisateur.id_utilisateur = se_appartient.utilisateur_appartient
-                                        INNER JOIN se_filiere
-                                        ON se_appartient.filiere_appartient = se_filiere.id_filiere
-                                        GROUP BY id_utilisateur");
-=======
             $maRequete = $pdo->prepare("SELECT 
                                             se_utilisateur.id_utilisateur,
                                             se_utilisateur.prenom_utilisateur,
@@ -33,7 +22,6 @@
                                         INNER JOIN se_filiere ON se_appartient.filiere_appartient = se_filiere.id_filiere
                                         GROUP BY se_utilisateur.id_utilisateur
                                         ");
->>>>>>> utilisateurs
             if ($maRequete->execute()) {
                 $maRequete->setFetchMode(PDO::FETCH_OBJ);
                 while ($ligne=$maRequete->fetch()) {			
@@ -42,11 +30,7 @@
                     $listeUtilisateurs['nomUtilisateur'] = $ligne->nom_utilisateur;
                     $listeUtilisateurs['mailUtilisateur'] = $ligne->mail_utilisateur;
                     $listeUtilisateurs['mdpUtilisateur'] = $ligne->mdp_utilisateur;
-<<<<<<< HEAD
-                    $listeUtilisateurs['libelleFiliere'] = $ligne->libelle_filiere;
-=======
                     $listeUtilisateurs['libelleFiliere'] = $ligne->filieres;
->>>>>>> utilisateurs
                     $listeUtilisateurs['statutUtilisateur'] = $ligne->libelle_statut;
                     $listeUtilisateur[] = $listeUtilisateurs;
                 }
