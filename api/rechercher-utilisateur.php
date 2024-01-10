@@ -3,7 +3,7 @@ require "../static/module_php/panel/base_de_donnees.php";
 
 $pdo = connexionBaseDeDonnees();
 
-try {
+try {   
     $prenom = isset($_REQUEST['prenom']) ? $_REQUEST['prenom'] . "%" : "";
     $statut = isset($_REQUEST['statut']) ? $_REQUEST['statut'] : "";
     $filiere = isset($_REQUEST['filiere']) ? $_REQUEST['filiere'] : "";

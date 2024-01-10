@@ -1,6 +1,19 @@
 <?php
-    require('../../../static/module_php/panel/g_utilisateurs.php');
-    
+session_start();
+if (!isset($_SESSION['idUtilisateur'])) {
+    header('Location: ../../../utilisateur/connexion.php');
+}
+
+require ('../../../static/module_php/base_de_donnees.php');
+require ('../../../static/module_php/utilisateur/utilisateur.php');
+require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
+require('../../../static/module_php/panel/g_utilisateurs.php');
+
+$pdo = connexionBaseDeDonnees();
+$idUtilisateur = $_SESSION['idUtilisateur'];
+$informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -82,7 +95,7 @@
                     <select name="filiere" id="filiere">
                         <option value="">Choisir une filière</option>
                         <?php 
-                            $filiere = listeDesFilieres();
+                            $filiere = listeDesFilieres($pdo);
                             foreach($filiere as $listeFiliere) {
                                 echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
                             }
@@ -93,7 +106,7 @@
                     <select name="typeUtilisateur" id="typeUtilisateur">
                         <option value="">Choisir un type d'utilisateur</option>
                         <?php 
-                            $statut = listeStatut();
+                            $statut = listeStatut($pdo);
                             foreach($statut as $listeStatut) {
                                 echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
                             }
@@ -114,7 +127,7 @@
                         <th>Statut</th>
                     </tr>
                     <?php 
-                        $listeUtilisateurs = listeDesUtilisateurs();
+                        $listeUtilisateurs = listeDesUtilisateurs($pdo);
                         foreach ($listeUtilisateurs as $liste) {
                             echo "<tr class='cliquable item-utilisateur'>";
                             echo "<td>". $liste['idUtilisateur'] . "</td>";
@@ -152,7 +165,7 @@
                     <div class="form-item">
                         <select name="statutUtilisateur" id="statutUtilisateur" required> 
                             <?php 
-                                $statut = listeStatut();
+                                $statut = listeStatut($pdo);
                                 foreach($statut as $listeStatut) {
                                     echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
                                 }
@@ -164,7 +177,7 @@
                         <div id="toutesLesFilieres" class="toutesLesFilieres">
                             <select name="filiereUtilisateur" id="filiereUtilisateur" required>
                                 <?php 
-                                    $filiere = listeDesFilieres();
+                                    $filiere = listeDesFilieres($pdo);
                                     foreach($filiere as $listeFiliere) {
                                         echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
                                     }

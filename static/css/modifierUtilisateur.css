@@ -39,6 +39,7 @@ td {
 
 .cliquable:hover {
     cursor: pointer;
+    background-color: #33477B;
 }
 
 .tableListeUtilisateur {

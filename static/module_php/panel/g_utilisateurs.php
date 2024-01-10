@@ -1,10 +1,6 @@
 <?php
-
-    include('base_de_donnees.php');
-    $pdo = connexionBaseDeDonnees();
-
     // Fonction qui renvoie la liste des utilisateurs avec la totalités de leurs informations
-    function listeDesUtilisateurs() {
+    function listeDesUtilisateurs($pdo, $idAdmin) {
         global $pdo;
         try{ 
             $connecte=false;
@@ -20,8 +16,10 @@
                                         INNER JOIN se_statut ON se_utilisateur.statut_utilisateur = se_statut.id_statut
                                         INNER JOIN se_appartient ON se_utilisateur.id_utilisateur = se_appartient.utilisateur_appartient
                                         INNER JOIN se_filiere ON se_appartient.filiere_appartient = se_filiere.id_filiere
+                                        WHERE se_utilisateur.id_utilisateur != :idAdmin
                                         GROUP BY se_utilisateur.id_utilisateur
                                         ");
+            $maRequete->bindValue(':idAdmin', $idAdmin);
             if ($maRequete->execute()) {
                 $maRequete->setFetchMode(PDO::FETCH_OBJ);
                 while ($ligne=$maRequete->fetch()) {			
@@ -43,8 +41,27 @@
         } 
     }
 
+    function recupMdpAdmin($pdo, $id) {
+        global $pdo;
+        try{ 
+            $connecte=false;
+            $maRequete = $pdo->prepare("SELECT mdp_utilisateur FROM se_utilisateur WHERE id_utilisateur = :id");
+            $maRequete->bindValue(':id', $id);
+            $maRequete->execute();
+            $resultat = $maRequete->fetchAll(PDO::FETCH_COLUMN);
+            return $resultat;
+            
+            
+            
+        }
+        catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return null;
+        } 
+    }
+
     // Fonction qui renvoie la liste des filières avec son identifiant et son libelle
-    function listeDesFilieres() {
+    function listeDesFilieres($pdo) {
         global $pdo;
         try{ 
             $connecte=false;
@@ -67,7 +84,7 @@
     }
 
     // Fonction qui renvoie la liste des différents rôles possibles
-    function listeStatut() {
+    function listeStatut($pdo) {
         global $pdo;
         try{ 
             $connecte=false;
@@ -90,25 +107,28 @@
     }
 
     
-    function suppressionUtilisateurs($id) {
+    function suppressionUtilisateurs($pdo, $id) {
         global $pdo;
+        $maRequete = $pdo->prepare("DELETE FROM se_appartient WHERE utilisateur_appartient  = :id");
+        $maRequete2 = $pdo->prepare("DELETE FROM se_utilisateur WHERE id_utilisateur  = :id");
         try{ 
-            $connecte=false;
-            $maRequete = $pdo->prepare("DELETE FROM se_appartient WHERE utilisateur_appartient  = :id");
-            $maRequete2 = $pdo->prepare("DELETE FROM se_utilisateur WHERE id_utilisateur  = :id");
+            $pdo->beginTransaction();
             $maRequete->bindValue(':id', $id);
             $maRequete2->bindValue(':id', $id);
             $maRequete->execute();
             $maRequete2->execute();
+            $pdo->commit();
+            return $maRequete;
         }
         catch ( Exception $e ) {
             echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
-            return ;
+            $pdo->rollback();
+            return false;
         } 
     }
 
     
-    function modificationUtilisateur($id) { // Rajouter tous les parametres de la fonction
+    function modificationUtilisateur($pdo, $id) { // Rajouter tous les parametres de la fonction
         global $pdo;
         try{ 
             $connecte=false;
@@ -120,7 +140,7 @@
         } 
     }
 
-    function rechercherUtilisateur($searchQuery, $filiere, $typeUtilisateur) {
+    function rechercherUtilisateur($pdo, $searchQuery, $filiere, $typeUtilisateur) {
 
         // Requête pour récupérer les utilisateurs correspondant à la recherche
         $query = "SELECT * FROM utilisateurs WHERE nomUtilisateur LIKE :search";
