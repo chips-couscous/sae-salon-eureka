@@ -407,3 +407,7 @@ form.entreprise-souhait {
     width: initial;
     height: initial;
 }
+
+div.est-souhait {
+    border: solid 2px var(--c-primaire) !important;
+}

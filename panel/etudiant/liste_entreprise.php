@@ -119,7 +119,13 @@ if (isset($_POST["retirerSouhait"])) {
             foreach($listeEntreprise as $entreprise) {
               echo '<form action="" method="post" class="entreprise-souhait">';
               echo '<div class="carte">';
-              echo '<div class="entreprise-container"><div class="carte-entreprise">';
+              echo '<div class="entreprise-container"><div class="carte-entreprise';
+              if (estSouhait($pdo, $entreprise["id_entreprise"], $_SESSION['idUtilisateur'])) {
+                echo ' est-souhait"';
+              } else {
+                echo '"'; 
+              }
+              echo '>';
               echo '<div class="recto"><div class="identite">';
               echo '<img src="../../static/img/logo_entreprise/'.$entreprise["logo_entreprise"].'" alt="Logo '.$entreprise["nom_entreprise"].'" draggable="false">';
               echo '<span>'.$entreprise["nom_entreprise"].'</span></div>';
