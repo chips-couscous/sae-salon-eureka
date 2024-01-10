@@ -16,13 +16,6 @@
         
     
     foreach($resultat as $row) {
-        $requete = "SELECT libelle_categorie
-                    FROM se_categorie
-                    WHERE id_categorie = :idC";
-        $stmt = $pdo->prepare($requete);
-        $stmt->bindParam("idC", $row["categorie_entreprise"]);
-        $stmt->execute();
-        $categorieEntreprise = $stmt->fetch();
 
         $requete = "SELECT nom_secteur
                     FROM se_secteur
@@ -41,7 +34,7 @@
             'lieu_alter_entreprise' => $row["lieu_alter_entreprise"],
             'site_entreprise' => $row["site_entreprise"],
             'secteur_entreprise' => $secteurEntreprise['nom_secteur'],
-            'categorie_entreprise' => $categorieEntreprise['libelle_categorie']
+            'categorie_entreprise' => $row['categorie_entreprise']
         );
     }
     if (!isset($data)) {
