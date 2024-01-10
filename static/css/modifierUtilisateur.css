@@ -82,4 +82,25 @@ select {
 /* Suppression d'un utilisateur */ 
 .affichageUtilisateur .form-item {
     flex-direction: row;
+    width: 100%;
+}
+
+.form-donnees-supprimer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.form-item .readonly {
+    min-width: 200px;
+    min-height: 40px;
+
+    padding-left: 5px;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    border: solid 1px #000;
+    border-radius: 3px;
 }

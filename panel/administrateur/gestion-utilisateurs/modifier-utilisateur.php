@@ -161,7 +161,7 @@
                         </select>
                     </div>
                     <div class="form-item" id="ItemSelecteFiliere">
-                        <div id="toutesLesFilieres">
+                        <div id="toutesLesFilieres" class="toutesLesFilieres">
                             <select name="filiereUtilisateur" id="filiereUtilisateur" required>
                                 <?php 
                                     $filiere = listeDesFilieres();

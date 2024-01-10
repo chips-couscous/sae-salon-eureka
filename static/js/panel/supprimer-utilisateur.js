@@ -20,59 +20,72 @@ lignesTable.forEach((ligne, index) => {
         
         ecriture =  `
                                         <div>
-                                        <form method = "post" >
+                                        <form method = "post">
+                                        <div class="form-donnees-supprimer">
+
                                             <div class="form-item">
-                                                <input type="text" name="idUtilisateur" id="idUtilisateur" readonly" value="${id}">
-                                                    <label for="idUtilisateur">Id : ${id} </label>
+                                                <span class="readonly">${prenom}</span>
                                             </div>
                                             <div class="form-item">
-                                                <input type="text" name="prenomUtilisateur" id="prenomUtilisateur" readonly value="${prenom}">
-                                                    <label for="prenomUtilisateur">Prenom : ${prenom}</label>
+                                                <span class="readonly">${nom}</span>
                                             </div>
                                             <div class="form-item">
-                                                <input type="text" name="nomUtilisateur" id="nomUtilisateur" readonly value="${nom}">
-                                                <label for="nomUtilisateur">Nom : ${nom}</label>
+                                                <span class="readonly">${email}</span>
                                             </div>
                                             <div class="form-item">
-                                                <input type="text" name="mailUtilisateur" id="mailUtilisateur" readonly value="${email}">
-                                                <label for="mailUtilisateur">Email : ${email}</label>
+                                                <span class="readonly">${mdp}</span>
                                             </div>
                                             <div class="form-item">
-                                                <input type="text" name="mdpUtilisateur" id="mdpUtilisateur" readonly value="${mdp}">
-                                                <label for="mdpUtilisateur">Mot de passe : ${mdp}</label>
-                                            </div>
-                                            <div class="form-item">
-                                                <input type="text" name="filiereUtilisateur" id="filiereUtilisateur" readonly value="${filiere}">
-                                                <label for="filiereUtilisateur">Filiere : ${filiere}</label>
+                                                <span class="readonly">${filiere}</span>
                                             </div>
                                             <div class="form-item">
                                                 <input type="text" name="statutUtilisateur" id="statutUtilisateur" readonly value="${statut}">
                                                 <label for="statutUtilisateur">Statut : ${statut}</label>
                                             </div>
+                                        </div>
                                         `;
         // Gestion de l'affichage en fonction du statut
         if (statut === 'Gestionnaire' || statut === 'Administrateur') {
             ecriture +=  ` 
-                                            <div class="form-item">
-                                                <input type="text" name="motDePasseAdmin" id="motDePasseAdmin" autocomplete="off" value="" required>
-                                                <label for="motDePasseAdmin"> Veuillez rentrer un mot de passe : </label>
-                                            </div>
+                                        <div class="form-item">
+                                            <input type="text" name="motDePasseAdmin" id="motDePasseAdmin" autocomplete="off" value="" required>
+                                            <label for="motDePasseAdmin"> Veuillez rentrer un mot de passe : </label>
+                                        </div>
                                         `;
-            console.log("On est la avant");
         } 
 
         ecriture += `
+                                            
                                             <div class="form-item">
-                                                <input type="submit" value="Supprimer">
+                                                <input type="hidden" name="idUtilisateur" id="idUtilisateur" value="${id}">
+                                            </div>
+                                            <div class="form-item">
+                                                <input type="submit" value="Supprimer" id="boutonSupprimer">
                                             </div>
                                         </form>`;
-                                    
-                                        console.log("Rip");
         
         donneesSelectionnees.innerHTML = ecriture;
     });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -21,7 +21,7 @@ selectFiliere.addEventListener('change', () => {
 boutonAjouterFiliere.addEventListener('click', () => {
     if (compteur <= 3) {
         compteur++;
-        let lesFilieres = document.getElementById('toutesLesFilieres').innerHTML;
+        let lesFilieres = document.getElementsByClassName('toutesLesFilieres')[0].innerHTML;
         let divFiliere = document.createElement('div');
         divFiliere.classList.add('filiereAjoutee');
         divFiliere.innerHTML = lesFilieres;

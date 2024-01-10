@@ -97,7 +97,7 @@
                         ?>
                     </table>
             </div>
-            <div class="affichageUtilisateur form-item" id ="affichageUtilisateur">
+            <div class="affichageUtilisateur" id ="affichageUtilisateur">
 
             </div>
         </div>
