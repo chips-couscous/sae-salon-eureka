@@ -70,36 +70,46 @@
 
     <div class="container">
         <div class="container-content">
-            <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Ajouter un intervenant</span>
+        <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Ajouter un intervenant</span>
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
-                <span>Ajouter manuellement un intervenant :</span><br>
-                <form action="post">
-                    <div class="form-item bm15 ">
-                        <input type="text" name="nom" id="nom" autocomplete="off" required>
-                        <label for="nom">Nom *</label>
-                    </div>
-                    <div class="form-item bm15">
-                        <input type="text" name="fonction" id="fonction" autocomplete="off" required>
-                        <label for="fonction">Fonction</label>
-                    </div>
-                    <div class="form-item bm15">
-                        <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
-                        <label for="entreprise">Entreprise *</label>
-                    </div>
-                    <div class="form-item bm15">
-                        <input type="text" name="filiere" id="filiere" autocomplete="off" required>
-                        <label for="filiere">Filiere *</label>
-                    </div>
-                    <div class="form-item">
-                        <input type="submit" value="Ajouter">
-                  </div>
-                </form>
+                <span>Ajouter un intervenant :</span><br>
+                <div class="form-item bm15 ">
+                    <input type="text" name="nom" id="nom" autocomplete="off" required>
+                    <label for="nom">Nom *</label>
+                </div>
+                <div class="form-item bm15">
+                <select name="fonction" id="fonction">
+                    <option value="-1">Fonction</option>
+                    <?php
+                    foreach(getListeFonction() as $fonction) {
+                        ?><option value="<?php echo $fonction['libelleFonction'];?>"><?php echo $fonction['libelleFonction'];?></option><?php
+                    }
+                    ?>
+                </select>
+                </div>
+                <div class="form-item bm15">
+                    <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
+                    <label for="entreprise">Entreprise *</label>
+                </div>
+                <div class="form-item bm15">
+                <select name="filiere" id="filiere">
+                    <option value="-1">Filiere</option>
+                    <?php
+                    foreach(getListeFiliere() as $filiere) {
+                        ?><option value="<?php echo $filiere['libelleFiliere'];?>"><?php echo $filiere['libelleFiliere'];?></option><?php
+                    }
+                    ?>
+                </select>
+                </div>
+                <div class="form-item ajouter">
+                    <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
+                </div>
             </div>
 
             <!-- Zone de prévisualisation de l'ajout final --> 
             <div class="previsualisation">
-                <table class="tablePrevisualisation">
+                <table class="tablePrevisualisation" id="TablePrevisualisation">
 					<tr>
 						<!--- Contenu -->
 						<th>
@@ -119,32 +129,15 @@
 							Filiere
 						</th>							
 					</tr>
-					<?php       
-					// Récupération des intervenants
-					$listeIntervenants=listeDesIntervenants(); 
-
-					// Boucle afficher la liste des intervenants
-					foreach($listeIntervenants as $intervenant) {
-						$nom=$intervenant['nom'];
-						$fonction=$intervenant['fonction']; 
-						$entreprise=$intervenant['entreprise']; 
-						$filiere=$intervenant['filiere'];
-                    
-						echo "<tr>";
-						echo "<td>".$nom."</td>";
-						echo "<td>".$fonction."</td>";
-						echo "<td>".$entreprise."</td>";
-                        echo "<td>".$filiere."</td>";
-						echo "</tr>";   
-					}							
-					?>
 				</table>        
             </div>
-
-            <button class="valider">Valider les ajouts</button>
-
+            <form action="" method="post" class="formValider">
+                <input type="hidden" name="enregistrer" value="true">
+                <button class="valider">Valider les ajouts</button>
+            </form>
+            <div id="modifCliquee">
+            </div>
         </div>
-
         <div class="container-asyde">
             <div class="asyde-content">
                 <div class="asyde-navigation">
@@ -227,6 +220,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/panel/ajouter-intervenant.js"></script>
 </body>
 
 </html>

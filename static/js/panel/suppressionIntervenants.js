@@ -95,6 +95,11 @@ let entrepriseASupprimer = "";
 let filiereASupprimer = "";
 
 function estCliquee(ligne) {
+    // Retirer la classe "ligneSelectionnee" de toutes les autres lignes
+    var lignes = displayTable.getElementsByTagName("tr");
+    for (var i = 0; i < lignes.length; i++) {
+        lignes[i].classList.remove("ligneSelectionnee");
+    }
     // Mettre en évidence la ligne
     ligne.classList.add("ligneSelectionnee");
 

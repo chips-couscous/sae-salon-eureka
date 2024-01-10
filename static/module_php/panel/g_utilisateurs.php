@@ -1,38 +1,6 @@
 <?php 
     include('base_de_donnees.php');
     $pdo = connexionBaseDeDonnees();
-
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    function verifUtilisateur($login,$pwd) {
-        // Vérifie si l'utilisateur existe
-        // Les paramétres sont le login et le mot de passe envoyé par le formulaire de connexion
-        // Renvoie vrai ou faux en fonction si l'utilisateur a été trouvé.
-        // Si vrai, enregistrement dans les variables de session du nom du client, de son ID et d'une variable permettant de savoir que l'on est connecté.
-
-        global $connexion; 
-        try{ // Bloc try bd injoignable 
-            $connecte=false;
-            $maRequete = $connexion->prepare("SELECT IdClient, nom, login,pwd from clients where login = :leLogin and pwd = :lePWD");
-            $maRequete->bindParam(':leLogin', $login);
-            $maRequete->bindParam(':lePWD', $pwd);
-            if ($maRequete->execute()) {
-                $maRequete->setFetchMode(PDO::FETCH_OBJ);
-                while ($ligne=$maRequete->fetch()) {			
-                    $_SESSION['connecte']= true ; 			// Stockage dans les variables de session que l'on est connecté (sera utilisé sur les autres pages)
-                    $_SESSION['nomClient']= $ligne->nom ;   // Stockage dans les variables de session du nom du client
-                    $_SESSION['IdClient']= $ligne->IdClient ;// Stockage dans les variables de session de l'Id du client
-                    $connecte=true;
-                }
-            }
-            return $connecte;
-        }
-        catch ( Exception $e ) {
-            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
-            return false;
-        } 
-    }
-    /////////////////////////////////////////////////////////////////////////////////////////////
-
     /////////////////////////////////////////////////////////////////////////////////////////////
     function listeDesIntervenants() {
         // Retourne la liste des intervenants enregistrés sous forme de tableau
@@ -101,108 +69,67 @@
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
 
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    function detailCompte($IdCompte) {
-        // Fonction renvoyant les informations d'un compte
-        // Paramétre $IdCompte=Identifiant du compte dans la BD
-        // Retourne les détails du sous forme de collection indicée sur les noms des colonnes de la table compte.
+    /* Retourne la liste des filières présentes dans la BD */
+    function getListeFiliere() {
+        global $pdo;
+        $listeFiliere = null;
 
-        global $connexion;  // Connexion à la BD
-
-        $tableauRetour=array() ; // Tableau qui sera retourné contenant les information du compte		
-
-        try{ // Bloc try bd injoignable 
-
-            $maRequete = $connexion->prepare("SELECT noCompte, libelle, image from comptes where idCompte = :lIDCompte and idClient = :lIDClient");
-            $maRequete->bindParam(':lIDCompte', $IdCompte);
-            $maRequete->bindParam(':lIDClient', $_SESSION['IdClient']); // Ajout pour eviter du piratage
-
-            if ($maRequete->execute()) {
-                $maRequete->setFetchMode(PDO::FETCH_OBJ);
-                while ($ligne=$maRequete->fetch()) {	
-                    $tableauRetour['noCompte']=$ligne->noCompte;
-                    $tableauRetour['libelle']=$ligne->libelle;
-                    $tableauRetour['image']=$ligne->image;
-                }
+        $requete = $pdo->prepare("SELECT id_filiere, libelle_filiere
+                                            FROM se_filiere");
+        if ($requete->execute()) {
+            $requete->setFetchMode(PDO::FETCH_OBJ);
+            while ($ligne=$requete->fetch()) {			
+                $filiere['idFiliere'] = $ligne->id_filiere;
+                $filiere['libelleFiliere'] = $ligne->libelle_filiere;
+                $listeFiliere[] = $filiere;
             }
-            return $tableauRetour;
         }
-        catch ( Exception $e ) {
-            return $tableauRetour;
-        } 	
+
+        return $listeFiliere;
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////
 
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    function typesDesEcritures() {
-        // Fonction renvoyant le types d'écritures 
-        // Retourne les libelles des types sous forme de collection indicée sur le type et en valeur le libellé
+    /* Retourne la liste des statut présents dans la BD */
+    function getListeStatut() {
+        global $pdo;
+        $listeStatut = null;
 
-        global $connexion;  // Connexion à la BD
-
-        $tableauRetour=array() ; // Tableau qui sera retourné 	
-
-        try{ // Bloc try bd injoignable 
-            $maRequete = $connexion->prepare("SELECT type, libelle from type_ecritures order by libelle");
-
-            if ($maRequete->execute()) {
-                $maRequete->setFetchMode(PDO::FETCH_OBJ);
-                while ($ligne=$maRequete->fetch()) {	
-                    $tableauRetour[$ligne->type]=$ligne->libelle;
-                }
+        $requete = $pdo->prepare("SELECT id_statut, libelle_statut
+                                            FROM se_statut");
+        if ($requete->execute()) {
+            $requete->setFetchMode(PDO::FETCH_OBJ);
+            while ($ligne=$requete->fetch()) {			
+                $statut['idStatut'] = $ligne->id_statut;
+                $statut['libelleStatut'] = $ligne->libelle_statut;
+                $listeStatut[] = $statut;
             }
-            return $tableauRetour;
         }
-        catch ( Exception $e ) {
-            return $tableauRetour;
-        } 
+
+        return $listeStatut;
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////
 
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    function listeDesEcrituresdUnCompte($idCompte, $leTypeAAfficher) {
-        // Retourne la liste des ecritures d'un compte
-        // Fonction qui retourne la liste des ecritures d'un compte sous forme de tableau d'écritures
-        // En parametres, l'ID du compte à afficher, et le type d'écritures à afficher (TS si tous)
-        // Avec pour chaque ligne une collection indicée sur les noms des colonnes de la BD
+    /* Retourne la liste des fonctions présentes dans la BD */
+    function getListeFonction() {
+        global $pdo;
 
-        global $connexion;  // Connexion à la BD	
+        $tableauFonctions = array() ; // Tableau qui sera retourné contenant les fonctions enregistrés
 
-        $tableauRetour=array() ; // Tableau qui sera retourné 	
-
-        try{ // Bloc try bd injoignable 
-            $laRequete="SELECT laDate, ecritures.type as typeECR, ecritures.libelle as libelleECR ,montantDebit, montantCredit, type_ecritures.libelle as libType from ecritures left join type_ecritures on ecritures.type = type_ecritures.type where idCompte = :lIDCompte ";
-
-            if ($leTypeAAfficher!='TS') {
-                $laRequete.=" and ecritures.type = :leType" ;
-            }
-            $laRequete.=" order by laDate DESC";
-            $maRequete = $connexion->prepare($laRequete);
-            $maRequete->bindParam(':lIDCompte', $idCompte);
-            if ($leTypeAAfficher!='TS') {
-                // Rajout du parametre pour le type
-                $maRequete->bindParam(':leType', $leTypeAAfficher);
-            }
-
+        try {	
+            $maRequete = $pdo->prepare("
+                        SELECT id_fonction, libelle_fonction
+                        FROM se_fonction");
             if ($maRequete->execute()) {
                 $maRequete->setFetchMode(PDO::FETCH_OBJ);
                 while ($ligne=$maRequete->fetch()) {
-                    $tabEcriture['date']=date("d/m/Y", strtotime($ligne->laDate)) ; 
-                    $tabEcriture['type']=$ligne->typeECR ; 
-                    $tabEcriture['typeEnClair']=$ligne->libType ;
-                    $tabEcriture['libelle']=$ligne->libelleECR ;
-                    $tabEcriture['debit']=$ligne->montantDebit;
-                    $tabEcriture['credit']=$ligne->montantCredit;
+                    $tableauFonction['idFonction']=$ligne->id_fonction;
+                    $tableauFonction['libelleFonction']=$ligne->libelle_fonction;
 
-                    $tableauRetour[]=$tabEcriture; // Ajout d'une ligne dans le tableau qui sera retourné
+                    $tableauFonctions[] = $tableauFonction;
                 }
+                return $tableauFonctions;
             }
-            return $tableauRetour;
         }
         catch ( Exception $e ) {
-            return $tableauRetour;
-        } 	
-
+            return $tableauFonctions;
+        }
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////
 ?>
