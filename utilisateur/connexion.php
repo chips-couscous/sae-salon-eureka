@@ -4,7 +4,7 @@ session_start();
 $idUtilisateur = null;
 
 if (isset($_POST['identifiant']) && isset($_POST['motDePasse'])) {
-    require "./../static/module_php/panel/base_de_donnees.php";
+    require "./../static/module_php/base_de_donnees.php";
     require "./../static/module_php/utilisateur/connexion_utilisateur.php";
     require "./../static/module_php/utilisateur/utilisateur.php";
 
@@ -57,7 +57,7 @@ if (isset($_POST['identifiant']) && isset($_POST['motDePasse'])) {
                     <nav>
                         <ul>
                             <li class="hover-underline-active">informations du forum</li>
-                            <li class="hover-underline-active"><a href="../index.php">liste des entreprises</a></li>
+                            <li class="hover-underline-active"><a href="./../index.html">liste des entreprises</a></li>
                         </ul>
                     </nav>
                 </div>

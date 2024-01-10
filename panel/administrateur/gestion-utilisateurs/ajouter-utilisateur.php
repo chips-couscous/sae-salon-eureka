@@ -1,6 +1,6 @@
 <?php
     /* Accès aux différentes méthodes en lien avec la BD */
-    require "../../../static/module_php/panel/a_utilisateur.php";
+    require "../../../static/module_php/panel/g_utilisateurs.php";
     require "../../../static/module_php/base_de_donnees.php";
 
     $pdo = connexionBaseDeDonnees();

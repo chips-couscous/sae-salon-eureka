@@ -396,3 +396,14 @@
         z-index: 0;
     }
 }
+div.btn-souhait input {
+    background-color: transparent;
+    color:white;
+    border: none;
+    cursor: pointer;
+}
+
+form.entreprise-souhait {
+    width: initial;
+    height: initial;
+}

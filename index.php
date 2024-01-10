@@ -47,7 +47,7 @@ $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisa
                         <nav>
                             <ul>
                                 <li class="hover-underline-active">informations du forum</li>
-                                <li class="hover-underline-active"><a href="panel/etudiant/entreprise.php">liste des entreprises</a></li>
+                                <li class="hover-underline-active"><a href="panel/etudiant/liste_entreprise.php">liste des entreprises</a></li>
                             </ul>
                         </nav>
                     </div>

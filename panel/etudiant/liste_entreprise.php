@@ -7,11 +7,20 @@ if (!isset($_SESSION['idUtilisateur'])) {
 require "../../static/module_php/utilisateur/utilisateur.php";
 require "../../static/module_php/utilisateur/connexion_utilisateur.php";
 require "../../static/module_php/base_de_donnees.php";
-require "../../static/module_php/panel/liste_entreprise.php";
+require "../../static/module_php/panel/entreprise.php";
 
 $pdo = connexionBaseDeDonnees();
 $idUtilisateur = $_SESSION['idUtilisateur'];
 $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
+
+if (isset($_POST["ajouterSouhait"])) {
+  ajouterAuxSouhaits($pdo, $_POST["ajouterSouhait"], $_SESSION['idUtilisateur']);
+}
+
+if (isset($_POST["retirerSouhait"])) {
+  retirerDesSouhaits($pdo, $_POST["retirerSouhait"], $_SESSION['idUtilisateur']);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -24,8 +33,8 @@ $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisa
     <!-- css -->
     <link rel="stylesheet" href="../../static/css/main.css">
     <link rel="stylesheet" href="../../static/css/header.css">
-    <link rel="stylesheet" href="../../static/css/entreprise.css">
     <link rel="stylesheet" href="../../static/css/connexion.css">
+    <link rel="stylesheet" href="../../static/css/entreprise.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -49,7 +58,7 @@ $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisa
                 <nav>
                     <ul>
                         <li class="hover-underline-active"><a href="../../index.php">informations du forum</a></li>
-                        <li class="hover-underline-active"><a href="entreprise.php">liste des entreprises</a></li>
+                        <li class="hover-underline-active"><a href="">liste des entreprises</a></li>
                     </ul>
                 </nav>
             </div>
@@ -108,6 +117,7 @@ $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisa
             $filiereUtilisateur = getFiliereUtilisateur($pdo, $idUtilisateur);
             $listeEntreprise = getListeEntreprise($pdo, $filiereUtilisateur);
             foreach($listeEntreprise as $entreprise) {
+              echo '<form action="" method="post" class="entreprise-souhait">';
               echo '<div class="carte">';
               echo '<div class="entreprise-container"><div class="carte-entreprise">';
               echo '<div class="recto"><div class="identite">';
@@ -119,9 +129,13 @@ $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisa
               echo '<span><i class="fa-solid fa-users"></i>'.$entreprise['libelle_categorie'].'</span></div></div>';
               echo '<div class="verso"><div class="description-container"><div class="description-content">'.$entreprise["description_entreprise"].'</div></div>';
               echo '<div class="fin-verso"><div class="lien-site"><a target="blank" href="https://'.$entreprise["site_entreprise"].'" class="hover-underline-active">'.$entreprise["site_entreprise"].'</a></div>';    
-              echo '<div class="btn-souhait"><span>Ajouter aux souhaits</span></div></div></div></div></div></div>';   
+              if (estSouhait($pdo, $entreprise["id_entreprise"], $_SESSION['idUtilisateur'])) {
+                echo '<div class="btn-souhait"><input type="hidden" name="retirerSouhait" value="'.$entreprise["id_entreprise"].'"><input type="submit" value="Retirer des souhaits"></div>';
+              } else {
+                echo '<div class="btn-souhait"><input type="hidden" name="ajouterSouhait" value="'.$entreprise["id_entreprise"].'"><input type="submit" value="Ajouter aux souhaits"></div>';
+              }
+              echo '</div></div></div></div></div></form>';
             }
-            
           ?>
         </div>  
       </div>
