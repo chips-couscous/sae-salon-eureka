@@ -1,8 +1,10 @@
 <?php
     /* Accès aux différentes méthodes en lien avec la BD */
     require "../../../static/module_php/panel/a_utilisateur.php";
+    require "../../../static/module_php/base_de_donnees.php";
 
-    $bdConnecte = estBDConnecte(); // Vérification de la connection à la BD
+    $pdo = connexionBaseDeDonnees();
+    $bdConnecte = estBDConnecte($pdo); // Vérification de la connection à la BD
     $tableauUtilisateurs = recupererCookie();
     $estBtnValideClique = isset($_POST["enregistrer"]) && $_POST["enregistrer"] == true;
 
@@ -129,7 +131,7 @@
                     <select name="statut" id="statut">
                         <option value="-1">Statut</option>
                         <?php
-                        foreach(getListeStatut() as $statut) {
+                        foreach(getListeStatut($pdo) as $statut) {
                             ?><option value="<?php echo $statut['libelleStatut'];?>"><?php echo $statut['libelleStatut'];?></option><?php
                         }
                         ?>
@@ -139,7 +141,7 @@
                     <select name="filiere" id="filiere">
                         <option value="-1">Filiere</option>
                         <?php
-                        foreach(getListeFiliere() as $filiere) {
+                        foreach(getListeFiliere($pdo) as $filiere) {
                             ?><option value="<?php echo $filiere['libelleFiliere'];?>"><?php echo $filiere['libelleFiliere'];?></option><?php
                         }
                         ?>

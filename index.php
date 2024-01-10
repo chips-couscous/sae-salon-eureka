@@ -1,9 +1,8 @@
 <?php
 session_start();
-require "./static/module_php/panel/base_de_donnees.php";
+require "./static/module_php/base_de_donnees.php";
 require "./static/module_php/utilisateur/utilisateur.php";
 require "./static/module_php/utilisateur/connexion_utilisateur.php";
-require "./static/module_php/panel/liste_entreprise.php";
 
 $pdo = connexionBaseDeDonnees();
 $idUtilisateur = $_SESSION['idUtilisateur'];
@@ -48,7 +47,7 @@ $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisa
                         <nav>
                             <ul>
                                 <li class="hover-underline-active">informations du forum</li>
-                                <li class="hover-underline-active"><a href="">liste des entreprises</a></li>
+                                <li class="hover-underline-active"><a href="panel/etudiant/entreprise.php">liste des entreprises</a></li>
                             </ul>
                         </nav>
                     </div>

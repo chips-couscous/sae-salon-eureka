@@ -1,10 +1,7 @@
 <?php
-include ('base_de_donnees.php');
-$pdo = connexionBaseDeDonnees();
 
 /** @return true si la base de données est en ligne */
-function estBDConnecte() {
-    global $pdo;
+function estBDConnecte($pdo) {
 
     if ($pdo == null) {
         return false;
@@ -16,8 +13,7 @@ function estBDConnecte() {
  *  Ecrit dans la BD le tableau d'utilisateurs fourni en paramètre
  * @return true si l'insertion est bien effectuée
  */
-function insererBD($tableauUtilisateurs) {
-    global $pdo;
+function insererBD($pdo, $tableauUtilisateurs) {
 
     $insertionUtilisateurs = $pdo->prepare("INSERT INTO se_utilisateur (prenom_utilisateur,nom_utilisateur,mail_utilisateur,mdp_utilisateur,statut_utilisateur) VALUES (:prenom,:nom,:mail,:mdp,:statutU)");
     $insertionFiliere = $pdo->prepare("INSERT INTO se_appartient VALUES (:idU,:idF)");
@@ -88,8 +84,7 @@ function recupererCookie() {
 }
 
 /* Retourne la liste des filières présentes dans la BD */
-function getListeFiliere() {
-    global $pdo;
+function getListeFiliere($pdo) {
     $listeFiliere = null;
 
     $requete = $pdo->prepare("SELECT id_filiere, libelle_filiere
@@ -107,8 +102,7 @@ function getListeFiliere() {
 }
 
 /* Retourne la liste des statut présents dans la BD */
-function getListeStatut() {
-    global $pdo;
+function getListeStatut($pdo) {
     $listeStatut = null;
 
     $requete = $pdo->prepare("SELECT id_statut, libelle_statut

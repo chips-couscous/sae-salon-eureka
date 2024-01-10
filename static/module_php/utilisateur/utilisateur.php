@@ -12,3 +12,16 @@ function informationsPrimairesUtilisateurById($pdo, $id) {
     $utilisateur = $req->fetch();
     return $utilisateur;
 }
+
+/** @return filiereUtilisateur la filiere de l'utilisateur */
+function getFiliereUtilisateur($pdo, $idUtilisateur) {
+    $requete = $pdo->prepare("SELECT filiere_appartient
+                                FROM se_appartient
+                                INNER JOIN se_utilisateur
+                                ON utilisateur_appartient = id_utilisateur
+                                WHERE id_utilisateur = :idU");
+    $requete->bindParam("idU", $idUtilisateur);
+    $requete->execute();
+    $filiereUtilisateur = $requete->fetch()['filiere_appartient'];
+    return $filiereUtilisateur;
+}
