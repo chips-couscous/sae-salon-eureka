@@ -4,6 +4,7 @@
         global $pdo;
         try{ 
             $connecte=false;
+            // Fonction renvoyant la liste des utilisateurs 
             $maRequete = $pdo->prepare("SELECT 
                                             se_utilisateur.id_utilisateur,
                                             se_utilisateur.prenom_utilisateur,
@@ -19,9 +20,12 @@
                                         WHERE se_utilisateur.id_utilisateur != :idAdmin
                                         GROUP BY se_utilisateur.id_utilisateur
                                         ");
+            // Rajout du parametre manquant à la requête                            
             $maRequete->bindValue(':idAdmin', $idAdmin);
+            //Execution de la requete
             if ($maRequete->execute()) {
                 $maRequete->setFetchMode(PDO::FETCH_OBJ);
+                //création d'un tableau contenant les informations des utilisateurs
                 while ($ligne=$maRequete->fetch()) {			
                     $listeUtilisateurs['idUtilisateur'] = $ligne->id_utilisateur;
                     $listeUtilisateurs['prenomUtilisateur'] = $ligne->prenom_utilisateur;
@@ -33,26 +37,28 @@
                     $listeUtilisateur[] = $listeUtilisateurs;
                 }
             }
+            // On renvoie la liste des utilisateurs sous forme de tableau
             return $listeUtilisateur;
-        }
-        catch ( Exception $e ) {
+        } catch ( Exception $e ) {
+            // Message d'erreur si la connexion à la base de données n'a pas pu se faire
             echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            // On renvoie un tableau vide
             return $listeUtilisateur;
         } 
     }
 
+    /* Fonction qui renvoie le mot de passe de l'administrateur connecté */
     function recupMdpAdmin($pdo, $id) {
         global $pdo;
         try{ 
             $connecte=false;
+            // Requête permettant de renvoyer le mot de passe
             $maRequete = $pdo->prepare("SELECT mdp_utilisateur FROM se_utilisateur WHERE id_utilisateur = :id");
             $maRequete->bindValue(':id', $id);
             $maRequete->execute();
             $resultat = $maRequete->fetchAll(PDO::FETCH_COLUMN);
-            return $resultat;
-            
-            
-            
+            // On renvoie le résultat de la requête
+            return $resultat;  
         }
         catch ( Exception $e ) {
             echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
@@ -60,21 +66,24 @@
         } 
     }
 
-    // Fonction qui renvoie la liste des filières avec son identifiant et son libelle
+    /* Fonction qui renvoie la liste des filières avec son identifiant et son libelle */
     function listeDesFilieres($pdo) {
         global $pdo;
         try{ 
             $connecte=false;
+            // Requête permettant de renvoyer la liste des filieres
             $maRequete = $pdo->prepare("SELECT id_filiere, libelle_filiere
                                         FROM se_filiere");
             if ($maRequete->execute()) {
                 $maRequete->setFetchMode(PDO::FETCH_OBJ);
-                while ($ligne=$maRequete->fetch()) {			
+                while ($ligne=$maRequete->fetch()) {
+                    // On met le résultat de la requête dans un tableau		
                     $listeFilieres['idFiliere'] = $ligne->id_filiere;
                     $listeFilieres['libelleFiliere'] = $ligne->libelle_filiere;
                     $listeFiliere[] = $listeFilieres;
                 }
             }
+            // On renvoie le tableau contenant la liste des filières
             return $listeFiliere;
         }
         catch ( Exception $e ) {
@@ -83,11 +92,12 @@
         } 
     }
 
-    // Fonction qui renvoie la liste des différents rôles possibles
+    /* Fonction qui renvoie la liste des différents rôles possibles */
     function listeStatut($pdo) {
         global $pdo;
         try{ 
             $connecte=false;
+            // Requête permettant de renvoyer la liste des rôles existants
             $maRequete = $pdo->prepare("SELECT id_statut, libelle_statut
                                         FROM se_statut");
             if ($maRequete->execute()) {
@@ -98,6 +108,7 @@
                     $listeStatut[] = $listeStatuts;
                 }
             }
+            // Renvoie du tableau contenant le résultat
             return $listeStatut;
         }
         catch ( Exception $e ) {
@@ -106,19 +117,24 @@
         } 
     }
 
-    
+     /* Fonction permettant la suppression complète d'un utilisateur */
     function suppressionUtilisateurs($pdo, $id) {
         global $pdo;
+        // Requêtes permettant la suppression d'un utilisateur
         $maRequete = $pdo->prepare("DELETE FROM se_appartient WHERE utilisateur_appartient  = :id");
         $maRequete2 = $pdo->prepare("DELETE FROM se_utilisateur WHERE id_utilisateur  = :id");
         try{ 
+            // Début d'une transaction pour effectuer plusieurs requêtes d'un coup
             $pdo->beginTransaction();
+            // Ajout des paramètres à nos requêtes
             $maRequete->bindValue(':id', $id);
             $maRequete2->bindValue(':id', $id);
+            // Exécution des deux requêtes
             $maRequete->execute();
             $maRequete2->execute();
+            // Commit dans la base de données si tout a fonctionné
             $pdo->commit();
-            return $maRequete;
+            return true;
         }
         catch ( Exception $e ) {
             echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
@@ -127,18 +143,97 @@
         } 
     }
 
-    
-    function modificationUtilisateur($pdo, $id) { // Rajouter tous les parametres de la fonction
-        global $pdo;
-        try{ 
-            $connecte=false;
-            //Ecrire la fonction 
-        }
-        catch ( Exception $e ) {
+     /* Fonction permettant la modification du nom de l'utilisateur */
+    function majNomUtilisateur($pdo, $id, $nom) {
+        // Requête permettant de mettre à jour le nom d'un utilisateur
+        $maRequete = $pdo->prepare("UPDATE se_utilisateur
+        SET nom_utilisateur = :nom,
+        WHERE id_utilisateur = :id");
+        try {
+            // Ajout des paramètres dans la requête
+            $maRequete->bindParam(':nom', $nom);
+            $maRequete->bindParam(':id', $id);
+            $maRequete->execute();
+            return true;
+        } catch ( Exception $e ) {
             echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
-            return ;
+            return false;
+        } 
+        
+    }
+    
+     /* Fonction permettant la modification du prénom de l'utilisateur */
+    function majPrenomUtilisateur($pdo, $id, $prenom) {
+        // Requête permettant de mettre à jour le prenom d'un utilisateur
+        $maRequete = $pdo->prepare("UPDATE se_utilisateur
+        SET prenom_utilisateur = :prenom,
+        WHERE id_utilisateur = :id");
+        try {
+            // Ajout des paramètres dans la requête
+            $maRequete->bindParam('prenom', $prenom);
+            $maRequete->bindParam(':id', $id);
+            $maRequete->execute();
+            return true;
+        } catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return false;
         } 
     }
+
+     /* Fonction permettant la modification du mail de l'utilisateur */
+    function majMailUtilisateur($pdo, $id, $mail) {
+        // Requête permettant de mettre à jour le mail d'un utilisateur
+        $maRequete = $pdo->prepare("UPDATE se_utilisateur
+        SET mail_utilisateur = :mail,
+        WHERE id_utilisateur = :id");
+        try {
+            // Ajout des paramètres dans la requête
+            $maRequete->bindParam(':mail', $mail);
+            $maRequete->bindParam(':id', $id);
+            $maRequete->execute();
+            return true;
+        } catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return false;
+        } 
+    }
+
+    /* Fonction permettant la modification du mot de passe de l'utilisateur */
+    function majMdpUtilisateur($pdo, $id, $mdp) {
+        // Requête permettant de mettre à jour le mot de passe d'un utilisateur
+        $maRequete = $pdo->prepare("UPDATE se_utilisateur
+        SET mdp_utilisateur = :mdp,
+        WHERE id_utilisateur = :id");
+        try {
+            // Ajout des paramètres dans la requête
+            $maRequete->bindParam(':mdp', $mdp);
+            $maRequete->bindParam(':id', $id);
+            $maRequete->execute();
+            return true;
+        } catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return false;
+        } 
+    }
+
+    /* Fonction permettant la modification du statut de l'utilisateur */
+    function majStatutUtilisateur($pdo, $id, $statut) {
+        // Requête permettant de mettre à jour le statut d'un utilisateur
+        $maRequete = $pdo->prepare("UPDATE se_utilisateur
+        SET statut_utilisateur = :statut,
+        WHERE id_utilisateur = :id");
+        try {
+            // Ajout des paramètres dans la requête
+            $maRequete->bindParam(':statut', $statut);
+            $maRequete->bindParam(':id', $id);
+            $maRequete->execute();
+            return true;
+        } catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return false;
+        } 
+    }
+
 
     function rechercherUtilisateur($pdo, $searchQuery, $filiere, $typeUtilisateur) {
 
