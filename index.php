@@ -5,7 +5,8 @@ require "./static/module_php/utilisateur/utilisateur.php";
 require "./static/module_php/utilisateur/connexion_utilisateur.php";
 
 $pdo = connexionBaseDeDonnees();
-$idUtilisateur = $_SESSION['idUtilisateur'];
+$idUtilisateur = null;
+if (isset($_SESSION['idUtilisateur'])) {$idUtilisateur = $_SESSION['idUtilisateur'];}
 $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
 ?>
 
