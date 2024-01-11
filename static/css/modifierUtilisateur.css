@@ -1,0 +1,107 @@
+@import url(./main.css);
+
+/* Placement des différents inputs pour la saisie manuelle */
+form {
+    display: initial;
+}
+.form-item{
+    margin-top: 10px;
+    width: 300px;
+    float: left;
+}
+.form-item input{
+    width: 250px;
+}
+
+td {
+    border-right: solid #E2E2E2 2px;
+    padding-bottom: 6px;
+}
+.form-item input.erreur {
+    border-color: red;
+}
+
+
+
+/* Modification des utilisateurs */
+
+.listeUtilisateurs {
+    vertical-align: top;
+    margin-top: 10px;
+    height: 50%;
+    width: 95%;
+    background-color: #D9D9D9;
+    overflow: auto;
+}
+.cliquable {
+    padding: 2%;
+}
+
+.cliquable:hover {
+    cursor: pointer;
+    background-color: #33477B;
+}
+
+.tableListeUtilisateur {
+    margin: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.affichageModification {
+    margin: 2%;
+}
+
+.affichageModificationCache {
+    visibility: hidden;
+}
+
+.afficherAjout {
+    visibility: visible;
+    
+}
+
+.boutonAjoutFiliere {
+    text-align: center;
+    cursor: pointer;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border: none;
+    background-color: #33477B;
+    line-height: 35px;
+}
+
+select {
+    border: none;
+    background-color: #dadada;
+    height: 35px;
+    width: 250px;
+}
+
+
+/* Suppression d'un utilisateur */ 
+.affichageUtilisateur .form-item {
+    flex-direction: row;
+    width: 100%;
+}
+
+.form-donnees-supprimer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.form-item .readonly {
+    min-width: 200px;
+    min-height: 40px;
+
+    padding-left: 5px;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    border: solid 1px #000;
+    border-radius: 3px;
+}

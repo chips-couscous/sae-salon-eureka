@@ -124,22 +124,3 @@ function getListeStatut() {
 
     return $listeStatut;
 }
-
-/* Retourne la liste des statut présents dans la BD */
-function getListeStatut() {
-    global $pdo;
-    $listeStatut = null;
-
-    $requete = $pdo->prepare("SELECT id_statut, libelle_statut
-                                        FROM se_statut");
-    if ($requete->execute()) {
-        $requete->setFetchMode(PDO::FETCH_OBJ);
-        while ($ligne=$requete->fetch()) {			
-            $statut['idStatut'] = $ligne->id_statut;
-            $statut['libelleStatut'] = $ligne->libelle_statut;
-            $listeStatut[] = $statut;
-        }
-    }
-
-    return $listeStatut;
-}

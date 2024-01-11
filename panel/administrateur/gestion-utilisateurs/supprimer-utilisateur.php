@@ -1,3 +1,36 @@
+<?php
+session_start();
+if (!isset($_SESSION['idUtilisateur'])) {
+    header('Location: ../../../utilisateur/connexion.php');
+}
+
+
+require ('../../../static/module_php/base_de_donnees.php');
+require ('../../../static/module_php/utilisateur/utilisateur.php');
+require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
+require('../../../static/module_php/panel/g_utilisateurs.php');
+
+
+$mdpIncorrect = "";
+$pdo = connexionBaseDeDonnees();
+$idUtilisateur = $_SESSION['idUtilisateur'];
+$informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
+
+if (isset($_POST['statutUtilisateur'])) {
+    if ($_POST['statutUtilisateur'] == 'Gestionnaire' || 'Administrateur' && isset($_POST['motDePasseAdmin'])) {
+        $recupMdpAdmin = recupMdpAdmin($pdo, $_SESSION['idUtilisateur']); 
+        if($_POST['motDePasseAdmin'] == $recupMdpAdmin[0]) {
+            suppressionUtilisateurs($pdo, $_POST['idUtilisateur']);
+        } else {
+            $mdpIncorrect = "Mot de passe administrateur incorrect";
+        }
+    } else if ($_POST['statutUtilisateur'] == 'Étudiant') {
+        suppressionUtilisateurs($pdo, $_POST['idUtilisateur']);
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -8,9 +41,11 @@
     <title>Supprimer un utilisateur</title>
 
     <!-- css -->
+    <link rel="stylesheet" href="../../../static/css/utilisateur/connexion.css">
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
-    <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/panel.css">
+    <link rel="stylesheet" href="../../../static/css/modifierUtilisateur.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -41,21 +76,19 @@
                     </nav>
                 </div>
                 <div class="navigation-compte">
-                    <nav>
-                        <ul>
-                            <li>
-                                <i class="fa-regular fa-circle-user ic-wm-el-header"></i>
-                                <div class="header-compte">
-                                    <span class="hover-underline-active">Thomas Lemaire</span>
-                                    <!-- VIDE SI PAS CO -->
-                                    <span class="badge-status">étudiant</span>
-                                </div>
-                            </li>
-                            <!-- VIDE SI PAS CO -->
-                            <li><i class="fa-regular fa-bell"></i></li>
-                        </ul>
-                    </nav>
-                </div>
+                      <nav>
+                          <ul>
+                              <li>
+                                  <i class="fa-regular fa-circle-user ic-wm-el-header"></i>
+                                  <div class="header-compte">
+                                      <a class="hover-underline-active" href=<?php echo validerUneSessionUtilisateur($idUtilisateur) ? "\"#\">" . $informationsUtilisateur['prenom_utilisateur'] . " " . $informationsUtilisateur['nom_utilisateur'] : "\"./utilisateur/connexion.php\">" . "Se connecter" ?></a>
+                                      <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<span class='badge-status'>" . $informationsUtilisateur['libelle_statut'] . "</span>" : "" ?>
+                                  </div>
+                              </li>
+                              <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<li><i class='fa-regular fa-bell'></i></li>" : "" ?>
+                          </ul>
+                      </nav>
+                  </div>
             </div>
 
             <!-- hambuger header responsive -->
@@ -65,7 +98,66 @@
 
     <div class="container">
         <div class="container-content">
-            <span class="titre-panel-ouvert"><span>ICI CA SUPPRIME OU QUOI</span> SUPPRIMER UN UTILISATEUR ICI</span>
+        <div class="zoneRecherche">
+                <span>Suppresion d'un utilisateur :</span><br>
+                <div class="form-item">
+                    <input type="text" name="triUtilisateur" id="triUtilisateur" autocomplete="off" required>
+                    <label for="triUtilisateur" placeholder="Entrez un pseudo">Rechercher un utilisateur</label>
+                </div>
+                <div class="form-item">
+                    <select name="filiere" id="filiere">
+                        <option value="">Choisir une filière</option>
+                        <?php 
+                            $filiere = listeDesFilieres($pdo);
+                            foreach($filiere as $listeFiliere) {
+                                echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <select name="typeUtilisateur" id="typeUtilisateur">
+                        <option value="">Choisir un type d'utilisateur</option>
+                        <?php 
+                            $statut = listeStatut($pdo);
+                            foreach($statut as $listeStatut) {
+                                echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
+            </div>
+            <!-- Zone d'affichage des utilisateurs -->
+            <div class="listeUtilisateurs">
+                <table class="tableListeUtilisateur" id="tableListeUtilisateur"> 
+                    <tr>
+                        <th>Identifiant</th>
+                        <th>Prenom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Mot de passe</th>
+                        <th>Filiere</th>
+                        <th>Statut</th>
+                    </tr>
+                    <?php 
+                        $listeUtilisateurs = listeDesUtilisateurs($pdo, $idUtilisateur);
+                        foreach ($listeUtilisateurs as $liste) {
+                            echo "<tr class='cliquable item-utilisateur'>";
+                            echo "<td>". $liste['idUtilisateur'] . "</td>";
+                            echo "<td>". $liste['prenomUtilisateur'] . "</td>";
+                            echo "<td>". $liste['nomUtilisateur'] . "</td>";
+                            echo "<td>". $liste['mailUtilisateur'] . "</td>";
+                            echo "<td>". $liste['mdpUtilisateur'] . "</td>";
+                            echo "<td>". $liste['libelleFiliere'] . "</td>";
+                            echo "<td>". $liste['statutUtilisateur'] . "</td>";
+                            echo "</tr>";
+                        }
+                    ?>
+                </table>
+            </div>
+            <div class="affichageUtilisateur" id ="affichageUtilisateur">
+                <?php echo $mdpIncorrect; ?>
+            </div>
         </div>
 
         <div class="container-asyde">
@@ -151,6 +243,7 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
+    <script src="../../../static/js/panel/supprimer-utilisateur.js"></script>
 </body>
 
 </html>

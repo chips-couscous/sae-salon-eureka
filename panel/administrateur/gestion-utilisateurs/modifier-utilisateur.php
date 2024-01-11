@@ -1,6 +1,19 @@
 <?php
-    require('../../../static/module_php/panel/g_utilisateurs.php');
-    
+session_start();
+if (!isset($_SESSION['idUtilisateur'])) {
+    header('Location: ../../../utilisateur/connexion.php');
+}
+
+require ('../../../static/module_php/base_de_donnees.php');
+require ('../../../static/module_php/utilisateur/utilisateur.php');
+require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
+require('../../../static/module_php/panel/g_utilisateurs.php');
+
+$pdo = connexionBaseDeDonnees();
+$idUtilisateur = $_SESSION['idUtilisateur'];
+$informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -12,11 +25,11 @@
     <title>Modifier un utilisateur</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../../../static/css/connexion.css">
+    <link rel="stylesheet" href="../../../static/css/utilisateur/connexion.css">
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
-    <link rel="stylesheet" href="../../../static/css/compte.css">
-    <link rel="stylesheet" href="../../../static/css/utilisateur.css">
+    <link rel="stylesheet" href="../../../static/css/panel.css">
+    <link rel="stylesheet" href="../../../static/css/modifierUtilisateur.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -72,69 +85,114 @@
     <div class="container">
         <div class="container-content">
             <!-- Zone de modification -->
-            <div>
+            <div class="zoneRecherche">
                 <span>Modification d'un utilisateur :</span><br>
-                <form action="post">
-                    <div class="form-item">
-                        <input type="text" name="nomUtilisateur" id="nomUtilisateur" autocomplete="off" required>
-                        <label for="nomUtilisateur" placeholder="Entrez un pseudo">Rechercher un utilisateur</label></input>
-                    </div>
-                    <div class="form-item">
-                        <select name="filiere" id="filiere">
-                            <option value="">Choisir une filière</option>
-                            <?php 
-                                $filiere = listeDesFilieres();
-                                foreach($filiere as $listeFiliere) {
-                                    echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
-                                }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="form-item">
-                        <select name="typeUtilisateur" id="typeUtilisateur">
-                            <option value="">Choisir un type d'utilisateur</option>
-                            <?php 
-                                $statut = listeStatut();
-                                foreach($statut as $listeStatut) {
-                                    echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
-                                }
-                            ?>
-                        </select>
-                    </div>
-                </form>
+                <div class="form-item">
+                    <input type="text" name="triUtilisateur" id="triUtilisateur" autocomplete="off" required>
+                    <label for="triUtilisateur" placeholder="Entrez un pseudo">Rechercher un utilisateur</label>
+                </div>
+                <div class="form-item">
+                    <select name="filiere" id="filiere">
+                        <option value="">Choisir une filière</option>
+                        <?php 
+                            $filiere = listeDesFilieres($pdo);
+                            foreach($filiere as $listeFiliere) {
+                                echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <select name="typeUtilisateur" id="typeUtilisateur">
+                        <option value="">Choisir un type d'utilisateur</option>
+                        <?php 
+                            $statut = listeStatut($pdo);
+                            foreach($statut as $listeStatut) {
+                                echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
             </div>
             <!-- Zone d'affichage des utilisateurs -->
             <div class="listeUtilisateurs">
-                <table class="tablePrevisualisation" id="TablePrevisualisation"> 
+                <table class="tableListeUtilisateur" id="tableListeUtilisateur"> 
                     <tr>
                         <th>Identifiant</th>
                         <th>Prenom</th>
                         <th>Nom</th>
                         <th>Email</th>
                         <th>Mot de passe</th>
+                        <th>Filiere</th>
                         <th>Statut</th>
                     </tr>
                     <?php 
-                        $listeUtilisateurs = listeDesUtilisateurs();
+                        $listeUtilisateurs = listeDesUtilisateurs($pdo);
                         foreach ($listeUtilisateurs as $liste) {
-                            echo "</tr>";
+                            echo "<tr class='cliquable item-utilisateur'>";
                             echo "<td>". $liste['idUtilisateur'] . "</td>";
                             echo "<td>". $liste['prenomUtilisateur'] . "</td>";
                             echo "<td>". $liste['nomUtilisateur'] . "</td>";
                             echo "<td>". $liste['mailUtilisateur'] . "</td>";
                             echo "<td>". $liste['mdpUtilisateur'] . "</td>";
+                            echo "<td>". $liste['libelleFiliere'] . "</td>";
                             echo "<td>". $liste['statutUtilisateur'] . "</td>";
                             echo "</tr>";
                         }
                     ?>
                 </table>
             </div>
-
-            <div>
-                <?php //Ecrire la requête avec la fonction pour afficher la liste des utilisateurs ?>
-                <h1>Ici les données préremplies en fonction de l'utilisateur choisi</h1>
+                     
+            <div class="affichageModificationCache" id="affichageModification">
+                <form method = "post" >
+                    <div class="form-item">
+                        <input type="text" name="prenomUtilisateur" id="prenomUtilisateur" autocomplete="off" value="" required>
+                            <label for="prenomUtilisateur">Prenom</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="nomUtilisateur" id="nomUtilisateur" autocomplete="off" value="" required>
+                        <label for="nomUtilisateur">Nom</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="mailUtilisateur" id="mailUtilisateur" autocomplete="off" value="" required>
+                        <label for="mailUtilisateur">Email</label>
+                    </div>
+                    <div class="form-item">
+                        <input type="text" name="mdpUtilisateur" id="mdpUtilisateur" autocomplete="off" value="" required>
+                        <label for="mdpUtilisateur">Mot de passe</label>
+                    </div>
+                    <br>
+                    <div class="form-item">
+                        <select name="statutUtilisateur" id="statutUtilisateur" required> 
+                            <?php 
+                                $statut = listeStatut($pdo);
+                                foreach($statut as $listeStatut) {
+                                    echo "<option value = '". $listeStatut["idStatut"]. "'>". $listeStatut["libelleStatut"] . "</option>";
+                                }
+                                
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-item" id="ItemSelecteFiliere">
+                        <div id="toutesLesFilieres" class="toutesLesFilieres">
+                            <select name="filiereUtilisateur" id="filiereUtilisateur" required>
+                                <?php 
+                                    $filiere = listeDesFilieres($pdo);
+                                    foreach($filiere as $listeFiliere) {
+                                        echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="affichageModificationCache form-item" id="boutonAjouterFiliere">
+                        <p class="boutonAjoutFiliere"> + </p>
+                    </div>
+                    <div class="form-item">
+                        <input type="submit" value="Modifier">
+                    </div>
+                </form>
             </div>
-
         </div>
 
         <div class="container-asyde">
