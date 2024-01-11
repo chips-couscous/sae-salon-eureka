@@ -1,5 +1,27 @@
 <?php
     require('../../../static/module_php/panel/g_utilisateurs.php');
+    $bdConnecte = estBDConnecte(); // Vérification de la connection à la BD
+    $tableauIntervenants = recupererCookie();
+    $estBtnValideClique = isset($_POST["enregistrer"]) && $_POST["enregistrer"] == true;
+
+    if (!$bdConnecte) {
+        ?><script>alert("Base de données non accessible !");</script><?php
+    }
+
+    /* Insertion dans la BD */
+    if ($tableauIntervenants != null && $bdConnecte && $estBtnValideClique) {
+
+        if (insererBDIntervenants($tableauIntervenants)) {
+            ?><script>alert("SUCCES ! Tous les utilisateurs ont bien été importés !");</script><?php
+        } else {
+            ?>
+            <script>
+                alert("ERREUR ! Impossible d'ajouter les utilisateurs !\n\n Vérifiez les status ou les filieres."
+                        + "\n Utilisateur peut être déjà présent dans la base de données");
+            </script>
+            <?php
+        }        
+    }
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -135,8 +157,9 @@
                 <input type="hidden" name="enregistrer" value="true">
                 <button class="valider">Valider les ajouts</button>
             </form>
-            <div id="modifCliquee">
-            </div>
+            <?php
+                var_dump($_POST["enregistrer"]);
+            ?>
         </div>
         <div class="container-asyde">
             <div class="asyde-content">

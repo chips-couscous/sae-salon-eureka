@@ -17,6 +17,30 @@ var filiereCorrect;
 /* Ajout d'eventListener */
 btnAjouterManuel.addEventListener("click", ajouterUtilisateurManuel);
 
+/* Si données déjà présentes dans cookie -> récupération */
+if (document.cookie != null) {
+    let contenuCookie = readCookie("utilisateurs");
+    if (contenuCookie != null) {
+        tableauUtilisateurs = JSON.parse(contenuCookie);
+        if (typeof tableauUtilisateurs != 'object') {
+            tableauUtilisateurs = [];
+        }
+        afficherUtilisateur();
+    }
+}
+
+/* Retourne le contenu du cookie "nom" ou null si il n'existe pas */
+function readCookie(nom) {
+	var nomCookie = nom + "=";
+	var listeCookies = document.cookie.split(';');
+	for(var i=0;i < listeCookies.length;i++) {
+		var cookie = listeCookies[i];
+		while (cookie.charAt(0)==' ') cookie = cookie.substring(1,cookie.length);
+		if (cookie.indexOf(nomCookie) == 0) return cookie.substring(nomCookie.length,cookie.length);
+	}
+	return null;
+}
+
 /* Affiche dans la zone de prévisualisation les différents utilisateurs importés ou ajoutés */
 function afficherUtilisateur() {
     let indiceTableau = 0; // indice de l'utilisateur dans le tableau utilisé pour la suppression
@@ -30,9 +54,43 @@ function afficherUtilisateur() {
             <td class="filiere"><span>${utilisateur["filiere"]}</span></td>
             <td class="btnSup"><button class="supprimerUtilisateur" onclick="supprimerUtilisatuer(${indiceTableau});">&#x274C;</button></td>
         </tr>`;
-        console.log(zonePrevisualisation.innerHTML);
         indiceTableau += 1;
     });
+}
+
+
+/* Fait correspondre les données affichées et celles présentes dans le cookie*/
+function ecritureCookie() {
+    tableauUtilisateurJSON = JSON.stringify(tableauUtilisateurs);
+    document.cookie = 'utilisateurs = ' + tableauUtilisateurJSON;
+}
+
+/* Ajoute un utilisateur dans le tableau */
+function ajouterUtilisateur(donneesUtilisateur) {
+    tableauUtilisateurs.unshift({"nom" : donneesUtilisateur[0],"fonction" : donneesUtilisateur[1],"entreprise" : donneesUtilisateur[2],
+    "filiere" : donneesUtilisateur[3]});
+
+    /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
+    ecritureCookie();
+    console.log("ajout user");
+}
+
+/* Supprime l'utilisateur présent en paramètre */
+function supprimerUtilisatuer(i) {
+    tableauUtilisateurs.splice(i,1);
+    
+    /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
+    ecritureCookie();
+    afficherUtilisateur();
+}
+
+/* Retourne true si l'utilisateur passé en paramètre a déjà été ajouté */
+function estUtilisateurPresent(utilisateurATester) {
+    let estPresent = false;
+    tableauUtilisateurs.forEach(utilisateur => {
+        estPresent |= utilisateur["nom"] == utilisateurATester[0] && utilisateur["fonction"] == utilisateurATester[1] && utilisateur["entreprise"] == utilisateurATester[2] && utilisateur["filiere"] == utilisateurATester[3];
+    });
+    return estPresent;
 }
 
   ///////////////////////////////////////////////////////////////////////
@@ -47,6 +105,21 @@ function ajouterUtilisateurManuel() {
         ajouterUtilisateur(utilisateur);
         afficherUtilisateur();
         viderSaisie();
+    } else {
+        afficherChampsIncorrect();
+    }
+}
+
+function ajouterUtilisateurManuel() {
+    let utilisateur = [zoneSaisieNom.value, zoneSaisieFonction.value, zoneSaisieEntreprise.value, zoneSaisieFiliere.value];
+    if (estChampsCorrects(utilisateur)) {
+        if (!estUtilisateurPresent(utilisateur)) {
+            ajouterUtilisateur(utilisateur);
+            afficherUtilisateur();
+            viderSaisie();
+        } else {
+            alert("Utilisateur déjà présent !");
+        }
     } else {
         afficherChampsIncorrect();
     }

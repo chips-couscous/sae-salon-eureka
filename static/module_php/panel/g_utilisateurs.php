@@ -1,6 +1,89 @@
 <?php 
     include('base_de_donnees.php');
     $pdo = connexionBaseDeDonnees();
+
+    /** @return true si la base de données est en ligne */
+    function estBDConnecte() {
+        global $pdo;
+
+        if ($pdo == null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *  Ecrit dans la BD le tableau d'utilisateurs fourni en paramètre
+     * @return true si l'insertion est bien effectuée
+     */
+    function insererBDIntervenants($tableauIntervenants) {
+        global $pdo;
+
+        $insertionIntervenants = $pdo->prepare("INSERT INTO se_intervenant(nom_intervenant,fonction_intervenant,entreprise_intervenant) VALUES (:nom,:fonction,:entreprise)");
+        $insertionFiliere = $pdo->prepare("INSERT INTO se_intervient VALUES (:idI,:idF)");
+        $recupererIDEntreprise = $pdo->prepare("SELECT id_entreprise FROM se_entreprise WHERE nom_entreprise = :entreprise");
+        $recupererIDFiliere = $pdo->prepare("SELECT id_filiere FROM se_filiere WHERE libelle_filiere = :filiere");
+
+        try {
+            $pdo->beginTransaction();
+            foreach($tableauIntervenants as $objectIntervenant) {
+                $intervenant = (array)$objectIntervenant;
+
+                /* Récupération de l'id du statut */
+                $recupererIDEntreprise->bindParam("entreprise",$intervenant["entreprise"]);
+                $recupererIDEntreprise->execute();
+                $idEntreprise = $recupererIDEntreprise->fetch()["id_entreprise"];
+
+                /* Insertion de l'utilisateur */
+                $insertionIntervenants->bindParam("nom",$intervenant["nom"]);
+                $insertionIntervenants->bindParam("fonction",$intervenant["fonction"]);
+                $insertionIntervenants->bindParam("entreprise",$idEntreprise);
+                $insertionIntervenants->execute();
+
+                /* Récupération de l'id de l'utilisateur */
+                $idIntervenant = $pdo->lastInsertId();
+
+                /* Insertion de chaques filiees */
+                $filieres = explode("/", $intervenant["filiere"]);
+
+                foreach ($filieres as $filiere) {
+                    /* Récupération de l'id de la filiere */
+                    $recupererIDFiliere->bindParam("filiere",$filiere);
+                    $recupererIDFiliere->execute();
+                    $idFiliere = $recupererIDFiliere->fetch()["id_filiere"];
+
+                    /* Insertion de la filiere */
+                    $insertionFiliere->bindParam("idI",$idIntervenant);
+                    $insertionFiliere->bindParam("idF",$idFiliere);
+                    $insertionFiliere->execute();
+                }
+            }
+
+            $pdo->commit();
+            return true;   
+
+        } catch (PDOException $e) {
+            $pdo->rollback();
+            return false;
+        }
+    }
+
+    /** 
+     * Vérifie si il existe un cookie et si oui récupères les données des utilisateurs
+     * présents dans le cookie
+     */
+    function recupererCookie() {
+        $donneeCookie = "";
+
+        if (isset($_POST["enregistrer"]) && $_POST["enregistrer"] == "true") {
+            if (isset($_COOKIE["utilisateurs"])) {
+                $donneeCookie = $_COOKIE["utilisateurs"];
+
+                return json_decode($donneeCookie);
+            }
+        }
+        return null;
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////
     function listeDesIntervenants() {
         // Retourne la liste des intervenants enregistrés sous forme de tableau
