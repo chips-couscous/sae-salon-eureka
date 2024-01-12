@@ -1,4 +1,5 @@
 <?php
+    $messageErreur = "";
     // Fonction qui renvoie la liste des utilisateurs avec la totalités de leurs informations
     function listeDesUtilisateurs($pdo, $idAdmin) {
         global $pdo;
@@ -66,6 +67,36 @@
         } 
     }
 
+
+    function ajouterFiliere($pdo, $idUtilisateur, $idFiliere) {
+        global $pdo;
+        try{ 
+            $maRequete = $pdo->prepare("INSERT INTO se_appartient VALUES (:idU,:idF)");
+            $maRequete->bindValue(':idU', $idUtilisateur);
+            $maRequete->bindValue(':idF', $idFiliere);
+            $maRequete->execute();
+            return true;
+        }
+        catch ( Exception $e ) {
+            return false;
+        }  
+    }
+    
+    function supprimerFiliere($pdo, $id) {
+        global $pdo;
+        try{ 
+            $connecte=false;
+            $maRequete = $pdo->prepare("DELETE FROM se_appartient WHERE utilisateur_appartient  = :id");
+            $maRequete->bindValue(':id', $id);
+            $maRequete->execute();
+            return true;  
+        }
+        catch ( Exception $e ) {
+            return false;
+        }  
+    }
+
+
     /* Fonction qui renvoie la liste des filières avec son identifiant et son libelle */
     function listeDesFilieres($pdo) {
         global $pdo;
@@ -121,8 +152,7 @@
     function suppressionUtilisateurs($pdo, $id) {
         global $pdo;
         // Requêtes permettant la suppression d'un utilisateur
-        $maRequete = $pdo->prepare("DELETE FROM se_appartient WHERE utilisateur_appartient  = :id");
-        $maRequete2 = $pdo->prepare("DELETE FROM se_utilisateur WHERE id_utilisateur  = :id");
+        
         try{ 
             // Début d'une transaction pour effectuer plusieurs requêtes d'un coup
             $pdo->beginTransaction();

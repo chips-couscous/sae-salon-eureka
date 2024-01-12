@@ -4,6 +4,8 @@ const selectStatut = document.getElementById('typeUtilisateur');
 const selectFiliere = document.getElementById('filiere');
 const boutonAjouterFiliere = document.getElementById('boutonAjouterFiliere');
 const itemFiliere = document.getElementById('listeDesFiliere');
+const afficher = document.getElementById('afficher');
+let dernierSelectCree;
 compteur = 0;
 
 inputPrenom.addEventListener('keyup', () => {
@@ -62,6 +64,8 @@ boutonAjouterFiliere.addEventListener('click', () => {
 
             // Ajout du divFiliere à l'élément parent
             itemFiliere.appendChild(divFiliere);
+            
+            dernierSelectCree = selectFiliere;
         }
     }
 });
@@ -110,6 +114,18 @@ function afficherDonnees(donnees) {
         `;
     }
     affichageModif()
+}
+
+function mettrefiliereSelectionne(filiereAMettre) {
+    // Vérifier si le dernier select créé existe
+    if (dernierSelectCree) {
+        // Parcourir les options du select et définir la valeur sélectionnée
+        Array.from(dernierSelectCree.options).forEach((option, index) => {
+            if (option.innerText.trim() === filiereAMettre.trim()) {
+                dernierSelectCree.selectedIndex = index;
+            }
+        });
+    }
 }
 
 function affichageModif() {
@@ -164,23 +180,18 @@ function affichageModif() {
                 if (i == 0) {
                     for (let k = 0; k < listeDesFiliere.options.length; k++) {
                         if (listeDesFiliere.options[k].innerText.trim() === filieresUtilisateur[i].trim()) {
-                            console.log("Je suis la");
                             listeDesFiliere.options[k].selected = true;
                         }
                     }
                 } else {
                     boutonAjouterFiliere.click();
+                    mettrefiliereSelectionne(filieresUtilisateur[i]);
                 }
             }
 
+            //afficher.style.display = 'none';
+            //afficher.classList.add('affichageModificationCache');
             
-            
- 
-            for (let k = 1; k < filieresUtilisateur.length; k++) {
-                
-            }
-
-
             // Gestion de l'affichage en fonction du statut
             if (statut === 'Gestionnaire') {
                 boutonAjouterFiliere.classList.remove('affichageModificationCache');
