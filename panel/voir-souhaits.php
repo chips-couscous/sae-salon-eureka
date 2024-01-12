@@ -27,6 +27,7 @@ $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisa
     <link rel="stylesheet" href="../static/css/header.css">
     <link rel="stylesheet" href="../static/css/connexion.css">
     <link rel="stylesheet" href="../static/css/entreprise.css">
+    <link rel="stylesheet" href="../static/css/utilisateur.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -77,53 +78,32 @@ $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisa
 
     <div class="container">
       <div class="container-content">
-        <div class="rechercher-entreprise">
-          <div class="form-item">
-            <input type="text" name="rechercheEtudiant" id="RechercheEtudiant" autocomplete="off" required>
-            <label for="RechercheEtudiant">Rechercher un étudiant</label>
+        <div class="auto-completion-text">
+          <div class="rechercher-entreprise">
+            <div class="form-item">
+              <input type="text" name="rechercheEtudiant" id="RechercheEtudiant" autocomplete="off" required>
+              <label for="RechercheEtudiant">Rechercher un étudiant</label>
+            </div>
+          </div>
+
+          <div class="liste-etudiants result-auto-completion">
+            <div class="previsualisation" id="listeEtudiant">
+
+            </div>
           </div>
         </div>
-
-        <div class="liste-filtres">
-          <div class="filtres-actifs" id="FiltresActifs">
-
-          </div>
+        <div class="etudiantSelectionne" id="etudiantSelectionne">
+          
         </div>
         <!-- liste des souhaits -->
-        <div class="liste-entreprise" id="ListeE">
-          <?php
-            $idUtilisateurRecherche = 31;
-            $listeSouhaits = getListeSouhait($pdo, $idUtilisateurRecherche);
-            if ($listeSouhaits == null) {
-              echo 'Aucun souhaits effectué';
-            }
-            foreach($listeSouhaits as $entreprise) {
-              echo '<form action="" method="post" class="entreprise-souhait">';
-              echo '<div class="carte">';
-              echo '<div class="entreprise-container"><div class="carte-entreprise';
-              if (estSouhait($pdo, $entreprise["id_entreprise"], $idUtilisateurRecherche)) {
-                echo ' est-souhait"';
-              } else {
-                echo '"'; 
-              }
-              echo '>';
-              echo '<div class="recto"><div class="identite">';
-              echo '<img src="../static/img/logo_entreprise/'.$entreprise["logo_entreprise"].'" alt="Logo '.$entreprise["nom_entreprise"].'" draggable="false">';
-              echo '<span>'.$entreprise["nom_entreprise"].'</span></div>';
-              echo '<div class="tags">';
-              echo '<span><i class="fa-solid fa-location-dot"></i>'.$entreprise["nom_entreprise"].'</span>';
-              echo '<span><i class="fa-solid fa-tag"></i>'.$entreprise['nom_secteur'].'</span>';
-              echo '<span><i class="fa-solid fa-users"></i>'.$entreprise['libelle_categorie'].'</span></div></div>';
-              echo '<div class="verso"><div class="description-container"><div class="description-content">'.$entreprise["description_entreprise"].'</div></div>';
-              echo '<div class="fin-verso"><div class="lien-site"><a target="blank" href="https://'.$entreprise["site_entreprise"].'" class="hover-underline-active">'.$entreprise["site_entreprise"].'</a></div>';   
-              echo '</div></div></div></div></div></form>';
-            }
-          ?>
+        <div class="liste-entreprise" id="listeSouhaits">
+          
         </div>  
       </div>
     </div>
 
     <script src="../static/js/header.js"></script>
     <script src="../static/js/entreprise.js"></script>
+    <script src="../static/js/panel/voir-souhaits.js"></script>
   </body>
 </html>

@@ -134,6 +134,27 @@ div.nom,.prenom,.mail,.mot-de-passe,.statut,.filiere,.btnSup {
     visibility: hidden;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
+.auto-completion-text {
+    position: relative;
+}
+.auto-completion-text .result-auto-completion {
+    position: absolute;
+    top: 60px;
+
+    z-index: 100;
+}
+.etudiantSelectionne {
+    text-align: center;
+}
+.etudiantSelectionne .nom, .etudiantSelectionne .prenom {
+    font-weight: bold;
+    color: #33477B;
+}
+
 /* Modification des utilisateurs */
 
 .listeUtilisateurs {
