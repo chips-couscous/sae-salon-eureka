@@ -142,98 +142,50 @@
             return false;
         } 
     }
-
-     /* Fonction permettant la modification du nom de l'utilisateur */
-    function majNomUtilisateur($pdo, $id, $nom) {
-        // Requête permettant de mettre à jour le nom d'un utilisateur
-        $maRequete = $pdo->prepare("UPDATE se_utilisateur
-        SET nom_utilisateur = :nom,
-        WHERE id_utilisateur = :id");
+     
+    /* Fonction permettant la modification d'un utilisateur sauf la filiere */
+    function majUtilisateur($pdo, $id, $prenom, $nom, $mail, $mdp, $statut) {
         try {
-            // Ajout des paramètres dans la requête
-            $maRequete->bindParam(':nom', $nom);
-            $maRequete->bindParam(':id', $id);
-            $maRequete->execute();
-            return true;
-        } catch ( Exception $e ) {
-            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
-            return false;
-        } 
-        
-    }
+            // Début d'une transaction pour effectuer plusieurs requêtes d'un coup
+            $pdo->beginTransaction();
     
-     /* Fonction permettant la modification du prénom de l'utilisateur */
-    function majPrenomUtilisateur($pdo, $id, $prenom) {
-        // Requête permettant de mettre à jour le prenom d'un utilisateur
-        $maRequete = $pdo->prepare("UPDATE se_utilisateur
-        SET prenom_utilisateur = :prenom,
-        WHERE id_utilisateur = :id");
-        try {
+            // Requête permettant de mettre à jour un utilisateur
+            $majNom = $pdo->prepare("UPDATE se_utilisateur SET prenom_utilisateur = :prenom WHERE id_utilisateur = :id");
+            $majPrenom = $pdo->prepare("UPDATE se_utilisateur SET nom_utilisateur = :nom WHERE id_utilisateur = :id");
+            $majMail = $pdo->prepare("UPDATE se_utilisateur SET mail_utilisateur = :mail WHERE id_utilisateur = :id");
+            $majMdp = $pdo->prepare("UPDATE se_utilisateur SET mdp_utilisateur = :mdp WHERE id_utilisateur = :id");
+            $majStatut = $pdo->prepare("UPDATE se_utilisateur SET statut_utilisateur = :statut WHERE id_utilisateur = :id");
+    
             // Ajout des paramètres dans la requête
-            $maRequete->bindParam('prenom', $prenom);
-            $maRequete->bindParam(':id', $id);
-            $maRequete->execute();
+            $majNom->bindParam(':prenom', $prenom);
+            $majNom->bindParam(':id', $id);
+            $majPrenom->bindParam(':nom', $nom);
+            $majPrenom->bindParam(':id', $id);
+            $majMail->bindParam(':mail', $mail);
+            $majMail->bindParam(':id', $id);
+            $majMdp->bindParam(':mdp', $mdp);
+            $majMdp->bindParam(':id', $id);
+            $majStatut->bindParam(':statut', $statut);
+            $majStatut->bindParam(':id', $id);
+    
+            // Exécution des requêtes
+            $majNom->execute();
+            $majPrenom->execute();
+            $majMail->execute();
+            $majMdp->execute();
+            $majStatut->execute();
+    
+            // Commit dans la base de données si tout a fonctionné
+            $pdo->commit();
             return true;
-        } catch ( Exception $e ) {
+    
+        } catch (Exception $e) {
             echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            $pdo->rollback();
             return false;
-        } 
+        }
     }
-
-     /* Fonction permettant la modification du mail de l'utilisateur */
-    function majMailUtilisateur($pdo, $id, $mail) {
-        // Requête permettant de mettre à jour le mail d'un utilisateur
-        $maRequete = $pdo->prepare("UPDATE se_utilisateur
-        SET mail_utilisateur = :mail,
-        WHERE id_utilisateur = :id");
-        try {
-            // Ajout des paramètres dans la requête
-            $maRequete->bindParam(':mail', $mail);
-            $maRequete->bindParam(':id', $id);
-            $maRequete->execute();
-            return true;
-        } catch ( Exception $e ) {
-            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
-            return false;
-        } 
-    }
-
-    /* Fonction permettant la modification du mot de passe de l'utilisateur */
-    function majMdpUtilisateur($pdo, $id, $mdp) {
-        // Requête permettant de mettre à jour le mot de passe d'un utilisateur
-        $maRequete = $pdo->prepare("UPDATE se_utilisateur
-        SET mdp_utilisateur = :mdp,
-        WHERE id_utilisateur = :id");
-        try {
-            // Ajout des paramètres dans la requête
-            $maRequete->bindParam(':mdp', $mdp);
-            $maRequete->bindParam(':id', $id);
-            $maRequete->execute();
-            return true;
-        } catch ( Exception $e ) {
-            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
-            return false;
-        } 
-    }
-
-    /* Fonction permettant la modification du statut de l'utilisateur */
-    function majStatutUtilisateur($pdo, $id, $statut) {
-        // Requête permettant de mettre à jour le statut d'un utilisateur
-        $maRequete = $pdo->prepare("UPDATE se_utilisateur
-        SET statut_utilisateur = :statut,
-        WHERE id_utilisateur = :id");
-        try {
-            // Ajout des paramètres dans la requête
-            $maRequete->bindParam(':statut', $statut);
-            $maRequete->bindParam(':id', $id);
-            $maRequete->execute();
-            return true;
-        } catch ( Exception $e ) {
-            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
-            return false;
-        } 
-    }
-
+        
 
     function rechercherUtilisateur($pdo, $searchQuery, $filiere, $typeUtilisateur) {
 

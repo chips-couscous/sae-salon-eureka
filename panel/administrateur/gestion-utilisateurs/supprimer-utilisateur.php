@@ -11,7 +11,7 @@ require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
 require('../../../static/module_php/panel/g_utilisateurs.php');
 
 
-$mdpIncorrect = "";
+$message = "";
 $pdo = connexionBaseDeDonnees();
 $idUtilisateur = $_SESSION['idUtilisateur'];
 $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
@@ -21,8 +21,9 @@ if (isset($_POST['statutUtilisateur'])) {
         $recupMdpAdmin = recupMdpAdmin($pdo, $_SESSION['idUtilisateur']); 
         if($_POST['motDePasseAdmin'] == $recupMdpAdmin[0]) {
             suppressionUtilisateurs($pdo, $_POST['idUtilisateur']);
+            $message = "L'utilisateur a été supprimé";
         } else {
-            $mdpIncorrect = "Mot de passe administrateur incorrect";
+            $message = "Mot de passe administrateur incorrect";
         }
     } else if ($_POST['statutUtilisateur'] == 'Étudiant') {
         suppressionUtilisateurs($pdo, $_POST['idUtilisateur']);
@@ -156,7 +157,7 @@ if (isset($_POST['statutUtilisateur'])) {
                 </table>
             </div>
             <div class="affichageUtilisateur" id ="affichageUtilisateur">
-                <?php echo $mdpIncorrect; ?>
+                <?php echo $message; ?>
             </div>
         </div>
 

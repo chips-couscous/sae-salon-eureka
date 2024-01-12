@@ -10,15 +10,26 @@ require ('../../../static/module_php/utilisateur/utilisateur.php');
 require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
 require('../../../static/module_php/panel/g_utilisateurs.php');
 
-
-$mdpIncorrect = "";
+$message = "";
 $pdo = connexionBaseDeDonnees();
+$listeFiliere = listeDesFilieres($pdo);
+
+// Encodage de la liste en JSON
+$listeFiliere_json = json_encode($listeFiliere);
+
+// Définition d'un cookie contenant les filieres
+setcookie('liste_filiere_cookie', $listeFiliere_json, 0, '/');
+
+// On récupère l'ID de l'utilisateur connecté
 $idUtilisateur = $_SESSION['idUtilisateur'];
 $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
-
-if (isset($_POST['prenomUtilisateur'])) {
-    if ($_POST['prenomUtilisateur'] != ) {
-        majPrenomUtilisateur($pdo, $_POST['idUtilisateur'], $_POST['prenomUtilisateur']);
+if (isset($_POST['prenomUtilisateur']) && isset($_POST['nomUtilisateur']) && isset($_POST['mailUtilisateur']) && isset($_POST['mdpUtilisateur']) && isset($_POST['statutUtilisateur'])) {
+    if ($_POST['prenomUtilisateur'] != '' && $_POST['nomUtilisateur'] != '' && $_POST['mailUtilisateur'] != '' && $_POST['mdpUtilisateur'] != '' && $_POST['statutUtilisateur'] != '') {
+        if (majUtilisateur($pdo, $_POST['idUtilisateur'], $_POST['prenomUtilisateur'], $_POST['nomUtilisateur'], $_POST['mailUtilisateur'], $_POST['mdpUtilisateur'], $_POST['statutUtilisateur'])) {
+            $message = "Modification réussie";
+        } else {
+            $message = "La modification n'a pas fonctionnée";
+        }
     }
 }
 ?>
@@ -131,7 +142,7 @@ if (isset($_POST['prenomUtilisateur'])) {
                         <th>Statut</th>
                     </tr>
                     <?php 
-                        $listeUtilisateurs = listeDesUtilisateurs($pdo);
+                        $listeUtilisateurs = listeDesUtilisateurs($pdo, $idUtilisateur);
                         foreach ($listeUtilisateurs as $liste) {
                             echo "<tr class='cliquable item-utilisateur'>";
                             echo "<td>". $liste['idUtilisateur'] . "</td>";
@@ -178,22 +189,30 @@ if (isset($_POST['prenomUtilisateur'])) {
                         </select>
                     </div>
                     <div class="form-item" id="ItemSelecteFiliere">
-                        <div id="toutesLesFilieres" class="toutesLesFilieres">
-                            <select name="filiereUtilisateur" id="filiereUtilisateur" required>
-                                <?php 
-                                    $filiere = listeDesFilieres($pdo);
-                                    foreach($filiere as $listeFiliere) {
-                                        echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
-                                    }
-                                ?>
-                            </select>
-                        </div>
+                    <div class="form-item">
+                        <table id="listeDesFiliere">
+                            <tr>
+                                <select name="filiereUtilisateur" id="filiereUtilisateur">
+                                    <option value="">Choisir une filière</option>
+                                    <?php 
+                                        $filiere = listeDesFilieres($pdo);
+                                        foreach($filiere as $listeFiliere) {
+                                            echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </tr>
+                        </table>
+                    </div>
                     </div>
                     <div class="affichageModificationCache form-item" id="boutonAjouterFiliere">
                         <p class="boutonAjoutFiliere"> + </p>
                     </div>
                     <div class="form-item">
                         <input type="submit" value="Modifier">
+                    </div>
+                    <div class="form-item">
+                        <input type="hidden" name="idUtilisateur" id="idUtilisateur" value="">
                     </div>
                 </form>
             </div>
