@@ -70,7 +70,7 @@
             <span class="titre-panel-ouvert"><span>Gestion des entreprises ></span> Supprimer une entreprise</span>
             <form action="" method="post">
                 <div class="form-item bm15">
-                    <input type="text" name="entreprise" id="Entreprise" autocomplete="off" required/>
+                    <input type="text" name="entreprise" id="EntrepriseS" autocomplete="off" required/>
                     <label for="Entreprise">Rechercher une entreprise</label>
                     <span id="resultats"></span>
                 </div>
@@ -168,7 +168,8 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
-    <script src="../../../static/js/panel/modifier-entreprise.js"></script>
+    <script src="../../../static/js/panel/supprimer-entreprise.js"></script>
+    <script src="../../../static/js/panel/module.js"></script>
 </body>
 
 </html>

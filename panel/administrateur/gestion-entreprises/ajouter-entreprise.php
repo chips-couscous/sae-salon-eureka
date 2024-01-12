@@ -103,9 +103,11 @@
                 <div class="form-item bm15">
                     <select name="tailleEntreprise" id="TailleEntreprise" autocomplete="off" required>
                         <option value="" class="grise">catégorie de l'entreprise</option>
-                        <option value="0">1 - 50</option>
-                        <option value="1">51 - 100</option>
-                        <option value="2">+100</option>
+                        <option value="1">1 - 9</option>
+                        <option value="2">10-99</option>
+                        <option value="3">100-499</option>
+                        <option value="4">500-999</option>
+                        <option value="5">1000+</option>
                     </select>
                 </div>
                 <div class="form-item bm15">

@@ -1,5 +1,5 @@
-/* Récupère le texte de la barre de recherche */
-const searchForm = document.getElementById('Entreprise');
+/* Récupère le texte de la barre de recherche de modification*/
+const searchFormU = document.getElementById('EntrepriseM');
 
 /* Récupère le formulaire de modification */
 const formContainer = document.getElementById("EditForm");
@@ -15,28 +15,6 @@ let ajax_request;
 
 /* Contient la réponse de la page php */
 let response;
-
-/* Fonction qui récupère les données des entreprises liées au texte de la barre de recherche */
-function sending_request(phpPath) {
-
-    /* Récupération du texte de la barre de recherche */
-    search = searchForm.value;
-
-    /* Création d'un objet FormData */
-    var form_data = new FormData();
-
-    /* On l'associe à la clé search le texte récupéré */
-    form_data.append('search', search);
-
-    /* Création d'un objet XMLHttpRequest */
-    ajax_request = new XMLHttpRequest(); 
-
-    /* Adresse une requête au fichier php demandé en paramètre avec la méthode POST */
-    ajax_request.open('POST', phpPath);
-
-    /* Envoi de la requête */
-    ajax_request.send(form_data);
-}
 
 function formDisplay() {
     const companyElements = document.querySelectorAll("#CompanyData tbody tr");
@@ -64,7 +42,7 @@ function formDisplay() {
             id = row.getAttribute('dataID');
 
             /* Utiliser la page php pour récupérer les informations */
-            searchForm.value = response[id].nom_entreprise;
+            searchFormU.value = response[id].nom_entreprise;
 
             nomE.value = response[id].nom_entreprise;
             descrE.value = response[id].description_entreprise;
@@ -80,9 +58,9 @@ function formDisplay() {
 }
 
 /* Evènement déclenchant l'autocomplétion de la barre de recherche */
-searchForm.addEventListener('keyup', function() {
+searchFormU.addEventListener('keyup', function() {
 
-    sending_request('../../../api/rechercher-entreprise.php');
+    sending_request(searchFormU, '../../../api/rechercher-entreprise.php');
     
     /* fonction permettant d'intercepter la requête et d'afficher le résultat sous forme de tableau */
     ajax_request.onreadystatechange = function() {
@@ -97,9 +75,9 @@ searchForm.addEventListener('keyup', function() {
             /*Si la requête renvoie un résultat autre que vide  */
             if (response != "") {
                 /* Insertion du résultat de la requête dans un tableau */
-                html += '<thead><tr><th>ID</th><th>Nom</th><th>Code Postal</th><th>Lieu de l\'alternance</th><th>site de l\'entreprise</th><th>Secteur de l\'entreprise</th></tr></thead><tbody>';
+                html += '<thead><tr><th>ID</th><th>Nom</th><th>Code Postal</th><th>Lieu de l\'alternance</th><th>site internet</th><th>Secteur d\'activités</th><th></th></tr></thead><tbody>';
                 for(let i=0; i < response.length; i++) {
-                    html += '<tr class="clickable nique" dataID='+i+'><td class="SearchID">'+response[i].id_entreprise+'</td>';
+                    html += '<tr class="clickableU" dataID='+i+'><td class="SearchID">'+response[i].id_entreprise+'</td>';
                     html += '<td>'+response[i].nom_entreprise+'</td>';
                     html += '<td>'+response[i].codep_entreprise+'</td>';
                     html += '<td>'+response[i].lieu_alter_entreprise+'</td>';
