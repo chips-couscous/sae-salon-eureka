@@ -11,6 +11,9 @@
     }
 
     /* Insertion dans la BD */
+    var_dump($bdConnecte);
+    var_dump($tableauUtilisateurs);
+    var_dump($estBtnValideClique);
     if ($tableauUtilisateurs != null && $bdConnecte && $estBtnValideClique) {
 
         if (insererBD($tableauUtilisateurs)) {

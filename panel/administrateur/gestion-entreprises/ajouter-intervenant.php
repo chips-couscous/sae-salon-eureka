@@ -10,7 +10,6 @@
 
     /* Insertion dans la BD */
     if ($tableauIntervenants != null && $bdConnecte && $estBtnValideClique) {
-
         if (insererBDIntervenants($tableauIntervenants)) {
             ?><script>alert("SUCCES ! Tous les utilisateurs ont bien été importés !");</script><?php
         } else {
@@ -95,36 +94,44 @@
         <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Ajouter un intervenant</span>
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
-                <span>Ajouter un intervenant :</span><br>
-                <div class="form-item bm15 ">
-                    <input type="text" name="nom" id="nom" autocomplete="off" required>
-                    <label for="nom">Nom *</label>
-                </div>
-                <div class="form-item bm15">
-                <select name="fonction" id="fonction">
-                    <option value="-1">Fonction</option>
+                <label for="entreprise">Sélectionnez une entreprise :</label>
+                <select name="entreprise" id="selectionEntreprise">
+                    <option value="">-- Choisissez une entreprise --</option>
                     <?php
-                    foreach(getListeFonction() as $fonction) {
-                        ?><option value="<?php echo $fonction['libelleFonction'];?>"><?php echo $fonction['libelleFonction'];?></option><?php
+                    foreach(getListeEntreprise() as $entreprise) {
+                        ?><option value="<?php echo $entreprise['nomEntreprise'];?>"><?php echo $entreprise['nomEntreprise'];?></option><?php
                     }
                     ?>
                 </select>
+                <div class="form-item bm15 champsIntervenantInvisible" id="champNom">
+                    <input type="text" name="nom" id="nom" autocomplete="off">
+                    <label for="nom">Nom *</label>
                 </div>
-                <div class="form-item bm15">
+                <div class="form-item bm15 champsIntervenantInvisible" id="champFonction">
+                    <select name="fonction" id="fonction">
+                        <option value="-1">Fonction</option>
+                        <?php
+                        foreach(getListeFonction() as $fonction) {
+                            ?><option value="<?php echo $fonction['libelleFonction'];?>"><?php echo $fonction['libelleFonction'];?></option><?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-item bm15 champsIntervenantInvisible" id="champEntreprise">
                     <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
                     <label for="entreprise">Entreprise *</label>
                 </div>
-                <div class="form-item bm15">
-                <select name="filiere" id="filiere">
-                    <option value="-1">Filiere</option>
-                    <?php
-                    foreach(getListeFiliere() as $filiere) {
-                        ?><option value="<?php echo $filiere['libelleFiliere'];?>"><?php echo $filiere['libelleFiliere'];?></option><?php
-                    }
-                    ?>
-                </select>
+                <div class="form-item bm15 champsIntervenantInvisible" id="champFiliere">
+                    <select name="filiere" id="filiere">
+                        <option value="-1">Filiere</option>
+                        <?php
+                        foreach(getListeFiliere() as $filiere) {
+                            ?><option value="<?php echo $filiere['libelleFiliere'];?>"><?php echo $filiere['libelleFiliere'];?></option><?php
+                        }
+                        ?>
+                    </select>
                 </div>
-                <div class="form-item ajouter">
+                <div class="form-item ajouter champsIntervenantInvisible" id="champAjouter">
                     <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
                 </div>
             </div>
@@ -155,11 +162,8 @@
             </div>
             <form action="" method="post" class="formValider">
                 <input type="hidden" name="enregistrer" value="true">
-                <button class="valider">Valider les ajouts</button>
+                <input type="submit" class="valider" value="Valider les ajouts">
             </form>
-            <?php
-                var_dump($_POST["enregistrer"]);
-            ?>
         </div>
         <div class="container-asyde">
             <div class="asyde-content">

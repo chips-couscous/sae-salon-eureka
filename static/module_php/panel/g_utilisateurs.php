@@ -137,20 +137,42 @@
         global $pdo;  // Connexion à la BD
 
         try{ // Bloc try bd injoignable 
-
-            $maRequete = $pdo->prepare("INSERT INTO 'se_intervenant' (nom_intervenant, fonction_intervenant, entreprise_intervenant)
-                                        VALUES (:nomIntervenant, :fonctionIntervenant, :entrepriseIntervenant)");
-            $maRequete->bindParam(':nomIntervenant', $nom_intervenant);
-            $maRequete->bindParam(':fonctionIntervenant', $fonction_intervenant); 
-            $maRequete->bindParam(':entrepriseIntervenant', $entreprise_intervenant);
-            
-            return true;
+            if (!intervenantPresent($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant)){
+                $maRequete = $pdo->prepare("INSERT INTO 'se_intervenant' (nom_intervenant, fonction_intervenant, entreprise_intervenant)
+                VALUES (:nomIntervenant, :fonctionIntervenant, :entrepriseIntervenant)");
+                $maRequete->bindParam(':nomIntervenant', $nom_intervenant);
+                $maRequete->bindParam(':fonctionIntervenant', $fonction_intervenant); 
+                $maRequete->bindParam(':entrepriseIntervenant', $entreprise_intervenant);
+                return true;
+            } else {
+                return false;
+            }
         }
         catch ( Exception $e ) {
             return false;
         } 	
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
+
+    function intervenantPresent($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant){
+        global $pdo;
+
+        try {
+            $maRequete = $pdo->prepare("SELECT nom_intervenant AS nom,
+                                               fonction_intervenant AS fonction,
+                                               entreprise_intervenant AS entreprise
+                                        FROM se_intervenant
+                                        WHERE nom = :nomIntervenant
+                                        AND fonction = :fonctionIntervenant
+                                        AND entreprise = :entrepriseIntervenant;");
+            $maRequete->bindParam(':nomIntervenant', $nom_intervenant);
+            $maRequete->bindParam(':fonctionIntervenant', $fonction_intervenant); 
+            $maRequete->bindParam(':entrepriseIntervenant', $entreprise_intervenant);
+            return true;
+        } catch ( Exception $e ) {
+            return false;
+        } 	
+    }
 
     /* Retourne la liste des filières présentes dans la BD */
     function getListeFiliere() {
@@ -213,6 +235,32 @@
         }
         catch ( Exception $e ) {
             return $tableauFonctions;
+        }
+    }
+
+    /* Retourne la liste des fonctions présentes dans la BD */
+    function getListeEntreprise() {
+        global $pdo;
+
+        $tableauEntreprises = array() ; // Tableau qui sera retourné contenant les fonctions enregistrés
+
+        try {	
+            $maRequete = $pdo->prepare("
+                        SELECT id_entreprise, nom_entreprise
+                        FROM se_entreprise");
+            if ($maRequete->execute()) {
+                $maRequete->setFetchMode(PDO::FETCH_OBJ);
+                while ($ligne=$maRequete->fetch()) {
+                    $tableauEntreprise['idEntreprise']=$ligne->id_entreprise;
+                    $tableauEntreprise['nomEntreprise']=$ligne->nom_entreprise;
+
+                    $tableauEntreprises[] = $tableauEntreprise;
+                }
+                return $tableauEntreprises;
+            }
+        }
+        catch ( Exception $e ) {
+            return $tableauEntreprises;
         }
     }
 ?>

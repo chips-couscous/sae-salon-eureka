@@ -85,3 +85,11 @@ select {
 .form-item .erreur {
     border-color: red;
 }
+
+.champsIntervenantVisible {
+    display: block;
+}
+
+.champsIntervenantInvisible {
+    display: none;
+}

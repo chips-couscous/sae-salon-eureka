@@ -14,6 +14,10 @@ var fonctionCorrect;
 var entrepriseCorrect;
 var filiereCorrect;
 
+var selectionEntreprise = document.getElementById("selectionEntreprise");
+
+selectionEntreprise.addEventListener("change", afficherChamps);
+
 /* Ajout d'eventListener */
 btnAjouterManuel.addEventListener("click", ajouterUtilisateurManuel);
 
@@ -25,8 +29,37 @@ if (document.cookie != null) {
         if (typeof tableauUtilisateurs != 'object') {
             tableauUtilisateurs = [];
         }
+        console.log(tableauUtilisateurs);
         afficherUtilisateur();
     }
+}
+
+// PENSES A CHANGER POUR UN CLASS NAME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+function afficherChamps() {
+    // Itère sur tous les éléments avec la classe "champsIntervenant"
+    var champNom = document.getElementById("champNom");
+    var champFonction = document.getElementById("champFonction");
+    var champEntreprise = document.getElementById("champEntreprise");
+    var champFiliere = document.getElementById("champFiliere");
+    var champAjouter = document.getElementById("champAjouter");
+    // Applique les styles en fonction de la sélection de l'entreprise
+    champNom.classList.add("champsIntervenantVisible");
+    champNom.classList.remove("champsIntervenantInvisible");
+
+    champFonction.classList.add("champsIntervenantVisible");
+    champFonction.classList.remove("champsIntervenantInvisible");
+
+    champEntreprise.classList.add("champsIntervenantVisible");
+    champEntreprise.classList.remove("champsIntervenantInvisible");
+
+    champFiliere.classList.add("champsIntervenantVisible");
+    champFiliere.classList.remove("champsIntervenantInvisible");
+
+    champAjouter.classList.add("champsIntervenantVisible");
+    champAjouter.classList.remove("champsIntervenantInvisible");
 }
 
 /* Retourne le contenu du cookie "nom" ou null si il n'existe pas */
@@ -58,10 +91,9 @@ function afficherUtilisateur() {
     });
 }
 
-
 /* Fait correspondre les données affichées et celles présentes dans le cookie*/
 function ecritureCookie() {
-    tableauUtilisateurJSON = JSON.stringify(tableauUtilisateurs);
+    let tableauUtilisateurJSON = JSON.stringify(tableauUtilisateurs);
     document.cookie = 'utilisateurs = ' + tableauUtilisateurJSON;
 }
 
@@ -77,19 +109,26 @@ function ajouterUtilisateur(donneesUtilisateur) {
 
 /* Supprime l'utilisateur présent en paramètre */
 function supprimerUtilisatuer(i) {
-    tableauUtilisateurs.splice(i,1);
+    tableauUtilisateurs.splice(i, 1);
     
-    /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
+    /* Ecrit dans le cookie au fur et à mesure des ajouts pour que le cookie corresponde à ce qui est affiché */
     ecritureCookie();
-    afficherUtilisateur();
+    // Ne pas appeler afficherUtilisateur() ici pour éviter l'affichage multiple
 }
 
 /* Retourne true si l'utilisateur passé en paramètre a déjà été ajouté */
 function estUtilisateurPresent(utilisateurATester) {
     let estPresent = false;
     tableauUtilisateurs.forEach(utilisateur => {
-        estPresent |= utilisateur["nom"] == utilisateurATester[0] && utilisateur["fonction"] == utilisateurATester[1] && utilisateur["entreprise"] == utilisateurATester[2] && utilisateur["filiere"] == utilisateurATester[3];
+        if (utilisateur["nom"] == utilisateurATester[0] && utilisateur["fonction"] == utilisateurATester[1] && utilisateur["entreprise"] == utilisateurATester[2] && utilisateur["filiere"] == utilisateurATester[3]){
+            estPresent = true;
+        };
     });
+    if (estPresent){
+        console.log("deja present");
+    }else{ 
+        console.log("pas present");
+    }
     return estPresent;
 }
 
@@ -98,25 +137,15 @@ function estUtilisateurPresent(utilisateurATester) {
 ///////////////////////////////////////////////////////////////////////
 
 /* Ajoute un utilisateur au tableau de prévisualisation */
-function ajouterUtilisateurManuel() {
-    let utilisateur = [zoneSaisieNom.value, zoneSaisieFonction.value, zoneSaisieEntreprise.value, zoneSaisieFiliere.value];
-    console.log(utilisateur);
-    if (estChampsCorrects(utilisateur)) {
-        ajouterUtilisateur(utilisateur);
-        afficherUtilisateur();
-        viderSaisie();
-    } else {
-        afficherChampsIncorrect();
-    }
-}
 
 function ajouterUtilisateurManuel() {
     let utilisateur = [zoneSaisieNom.value, zoneSaisieFonction.value, zoneSaisieEntreprise.value, zoneSaisieFiliere.value];
     if (estChampsCorrects(utilisateur)) {
         if (!estUtilisateurPresent(utilisateur)) {
+            console.log("Debut ajout intervenant : " + utilisateur);
             ajouterUtilisateur(utilisateur);
-            afficherUtilisateur();
             viderSaisie();
+            afficherUtilisateur();
         } else {
             alert("Utilisateur déjà présent !");
         }
@@ -129,6 +158,8 @@ function ajouterUtilisateur(donneesUtilisateur) {
     tableauUtilisateurs.unshift({"nom" : donneesUtilisateur[0],"fonction" : donneesUtilisateur[1],"entreprise" : donneesUtilisateur[2],
     "filiere" : donneesUtilisateur[3]});
 
+    /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
+    ecritureCookie();
 }
 
 /* Vide les zones de saisie manuelles*/

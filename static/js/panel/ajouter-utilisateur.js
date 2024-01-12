@@ -73,6 +73,7 @@ function afficherUtilisateur() {
 function ecritureCookie() {
     tableauUtilisateurJSON = JSON.stringify(tableauUtilisateurs);
     document.cookie = 'utilisateurs = ' + tableauUtilisateurJSON;
+    console.log(" cookie : " + document.cookie);
 }
 
 /* Ajoute un utilisateur dans le tableau */
