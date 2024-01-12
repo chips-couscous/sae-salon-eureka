@@ -75,9 +75,6 @@
                     <span id="resultats"></span>
                 </div>
             </form>
-            <?php
-                
-            ?>
             <form action="modifier-entreprise.php" id="EditForm" method="post">
                 <div class="form-item bm15">
                     <input type="text" name="nomE" id="NomE" autocomplete="off" required>
@@ -130,6 +127,44 @@
             try {
                 require ('../../../static/module_php/panel/base_de_donnees.php');
                 $pdo = connexionBaseDeDonnees();
+                if (isset($_POST["nomE"])) {
+                    $requete = "SELECT nom_secteur FROM se_secteur";
+                    $stmt = $pdo->prepare($requete);
+                    $stmt->execute();
+                    $stmt->fetch();
+
+                    $secteurExistant = false;
+                    foreach ($stmt as $secteur) {
+                        if ($_POST["secteurActivites"] == $secteur) {
+                            $secteurExistant = true;
+                        }
+                    }
+                    $requete = "UPDATE se_entreprises 
+                            SET nom_entreprise = :nomE
+                            SET codep_entreprise = :codePostal
+                            SET description_entreprise = :description
+                            SET lieu_alter_entreprise = :lieuAlternance
+                            SET site_entreprise = :siteInternet
+                            SET categorie_entreprise = :tailleEntreprise
+                            SET secteur_entreprise = :secteurActivites";
+                    
+                    if ($secteurExistant == false) {
+                        
+                    }
+
+                    $requete .= "WHERE id_entreprise = :idE";
+                    $stmt = $pdo->prepare($requete);
+                    $stmt->bindParam("nomE", $_POST["nomE"]);
+                    $stmt->bindParam("codePostal", $_POST["codePostal"]);
+                    $stmt->bindParam("description", $_POST["description"]);
+                    $stmt->bindParam("lieuAlternance", $_POST["lieuAlternance"]);
+                    $stmt->bindParam("siteInternet", $_POST["siteInternet"]);
+                    $stmt->bindParam("tailleEntreprise", $_POST["tailleEntreprise"]);
+                    $stmt->bindParam("secteurActivites", $_POST["secteurActivites"]);
+
+                    $stmt->bindParam("idE", $_POST[""]);
+                }
+                
             } catch(Exception $e) {
                 echo "<h1>Connexion impossible</h1>";
             }

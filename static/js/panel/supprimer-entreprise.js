@@ -22,15 +22,15 @@ searchFormD.addEventListener('keyup', function() {
             /*Si la requête renvoie un résultat autre que vide  */
             if (response != "") {
                 /* Insertion du résultat de la requête dans un tableau */
-                html += '<thead><tr><th>ID</th><th>Nom</th><th>Code Postal</th><th>Lieu de l\'alternance</th><th>site de l\'entreprise</th><th>Secteur de l\'entreprise</th></tr></thead><tbody>';
+                html += '<thead><tr><th>ID</th><th>Nom</th><th>Code Postal</th><th>Lieu de l\'alternance</th><th>site de l\'entreprise</th><th>Secteur de l\'entreprise</th><th></th></tr></thead><tbody>';
                 for(let i=0; i < response.length; i++) {
-                    html += '<tr class="clickableD" dataID='+i+'><td class="SearchID">'+response[i].id_entreprise+'</td>';
+                    html += '<form action="supprimer-entreprise.php" method="post" class="btnSupp"><tr class="clickableD" dataID='+i+'><td>'+response[i].id_entreprise+'</td>';
                     html += '<td>'+response[i].nom_entreprise+'</td>';
                     html += '<td>'+response[i].codep_entreprise+'</td>';
                     html += '<td>'+response[i].lieu_alter_entreprise+'</td>';
                     html += '<td>'+response[i].site_entreprise+'</td>';
                     html += '<td>'+response[i].secteur_entreprise+'</td>';
-                    html += '<td><form action="supprimer-entreprise.php" method="post"><input type="submit" value="Supprimer" id="Bouton nSuppression"/></form></td></tr>';
+                    html += '<td><input type="submit" value="Supprimer"/></form></td></tr>';
                 }
             } else {
                 html += '<tbody><tr><td>Aucune entreprise trouvée</td></tr>';
