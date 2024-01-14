@@ -1,298 +1,252 @@
-<?php 
-    include('base_de_donnees.php');
-    $pdo = connexionBaseDeDonnees();
-
-    /** @return true si la base de données est en ligne */
-    function estBDConnecte() {
+<?php
+    $messageErreur = "";
+    // Fonction qui renvoie la liste des utilisateurs avec la totalités de leurs informations
+    function listeDesUtilisateurs($pdo, $idAdmin) {
         global $pdo;
-
-        if ($pdo == null) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     *  Ecrit dans la BD le tableau d'utilisateurs fourni en paramètre
-     * @return true si l'insertion est bien effectuée
-     */
-    function insererBDIntervenants($tableauIntervenants) {
-        global $pdo;
-
-        $insertionIntervenants = $pdo->prepare("INSERT INTO se_intervenant(nom_intervenant,fonction_intervenant,entreprise_intervenant) VALUES (:nom,:fonction,:entreprise)");
-        $insertionFiliere = $pdo->prepare("INSERT INTO se_intervient VALUES (:idI,:idF)");
-        $recupererIDEntreprise = $pdo->prepare("SELECT id_entreprise FROM se_entreprise WHERE nom_entreprise = :entreprise");
-        $recupererIDFiliere = $pdo->prepare("SELECT id_filiere FROM se_filiere WHERE libelle_filiere = :filiere");
-
-        try {
-            $pdo->beginTransaction();
-            foreach($tableauIntervenants as $objectIntervenant) {
-                $intervenant = (array)$objectIntervenant;
-
-                /* Récupération de l'id du statut */
-                $recupererIDEntreprise->bindParam("entreprise",$intervenant["entreprise"]);
-                $recupererIDEntreprise->execute();
-                $idEntreprise = $recupererIDEntreprise->fetch()["id_entreprise"];
-
-                /* Insertion de l'utilisateur */
-                $insertionIntervenants->bindParam("nom",$intervenant["nom"]);
-                $insertionIntervenants->bindParam("fonction",$intervenant["fonction"]);
-                $insertionIntervenants->bindParam("entreprise",$idEntreprise);
-                $insertionIntervenants->execute();
-
-                /* Récupération de l'id de l'utilisateur */
-                $idIntervenant = $pdo->lastInsertId();
-
-                /* Insertion de chaques filiees */
-                $filieres = explode("/", $intervenant["filiere"]);
-
-                foreach ($filieres as $filiere) {
-                    /* Récupération de l'id de la filiere */
-                    $recupererIDFiliere->bindParam("filiere",$filiere);
-                    $recupererIDFiliere->execute();
-                    $idFiliere = $recupererIDFiliere->fetch()["id_filiere"];
-
-                    /* Insertion de la filiere */
-                    $insertionFiliere->bindParam("idI",$idIntervenant);
-                    $insertionFiliere->bindParam("idF",$idFiliere);
-                    $insertionFiliere->execute();
-                }
-            }
-
-            $pdo->commit();
-            return true;   
-
-        } catch (PDOException $e) {
-            $pdo->rollback();
-            return false;
-        }
-    }
-
-    /** 
-     * Vérifie si il existe un cookie et si oui récupères les données des utilisateurs
-     * présents dans le cookie
-     */
-    function recupererCookie() {
-        $donneeCookie = "";
-
-        if (isset($_POST["enregistrer"]) && $_POST["enregistrer"] == "true") {
-            if (isset($_COOKIE["utilisateurs"])) {
-                $donneeCookie = $_COOKIE["utilisateurs"];
-
-                return json_decode($donneeCookie);
-            }
-        }
-        return null;
-    }
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    function listeDesIntervenants() {
-        // Retourne la liste des intervenants enregistrés sous forme de tableau
-        // Fonction qui retourne la liste des intervenants enregistrés sous forme de tableau
-        // avec pour chaque ligne une collection indicée sur les noms des colonnes de la BD
-        // Parametre $IdClient=Identifiant du client dans la BD pour lequel on veut la liste des comptes
-        global $pdo;  // Connexion à la BD
-
-        $tableauIntervenants=array() ; // Tableau qui sera retourné contenant les intervenants enregistrés
-
-        try {	
-            // REquete avec agrégats pour calculer le solde
-            $maRequete = $pdo->prepare("
-            SELECT se_intervenant.nom_intervenant AS nom, 
-            IFNULL(se_intervenant.fonction_intervenant, 'Aucune fonction renseignée') AS fonction,
-            se_entreprise.nom_entreprise AS entreprise, 
-            se_filiere.libelle_filiere AS filiere
-            FROM se_intervenant 
-            INNER JOIN se_entreprise
-            ON se_intervenant.entreprise_intervenant = se_entreprise.id_entreprise
-            INNER JOIN se_intervient
-            ON se_intervenant.id_intervenant = se_intervient.intervenant_intervient
-            INNER JOIN se_filiere
-            ON se_intervient.filiere_intervient = se_filiere.id_filiere
-            ORDER BY se_intervenant.nom_intervenant;");
+        try{ 
+            $connecte=false;
+            // Fonction renvoyant la liste des utilisateurs 
+            $maRequete = $pdo->prepare("SELECT 
+                                            se_utilisateur.id_utilisateur,
+                                            se_utilisateur.prenom_utilisateur,
+                                            se_utilisateur.nom_utilisateur,
+                                            se_utilisateur.mail_utilisateur,
+                                            se_utilisateur.mdp_utilisateur,
+                                            GROUP_CONCAT(DISTINCT se_filiere.libelle_filiere ORDER BY se_filiere.libelle_filiere SEPARATOR ', ') AS filieres,
+                                            se_statut.libelle_statut
+                                        FROM se_utilisateur
+                                        INNER JOIN se_statut ON se_utilisateur.statut_utilisateur = se_statut.id_statut
+                                        INNER JOIN se_appartient ON se_utilisateur.id_utilisateur = se_appartient.utilisateur_appartient
+                                        INNER JOIN se_filiere ON se_appartient.filiere_appartient = se_filiere.id_filiere
+                                        WHERE se_utilisateur.id_utilisateur != :idAdmin
+                                        GROUP BY se_utilisateur.id_utilisateur
+                                        ");
+            // Rajout du parametre manquant à la requête                            
+            $maRequete->bindValue(':idAdmin', $idAdmin);
+            //Execution de la requete
             if ($maRequete->execute()) {
                 $maRequete->setFetchMode(PDO::FETCH_OBJ);
-                while ($ligne=$maRequete->fetch()) {
-                    $tableauIntervenant['nom']=$ligne->nom;
-                    $tableauIntervenant['fonction']=$ligne->fonction;
-                    $tableauIntervenant['entreprise']=$ligne->entreprise;
-                    $tableauIntervenant['filiere']=$ligne->filiere;
-
-                    $tableauIntervenants[] = $tableauIntervenant;
+                //création d'un tableau contenant les informations des utilisateurs
+                while ($ligne=$maRequete->fetch()) {			
+                    $listeUtilisateurs['idUtilisateur'] = $ligne->id_utilisateur;
+                    $listeUtilisateurs['prenomUtilisateur'] = $ligne->prenom_utilisateur;
+                    $listeUtilisateurs['nomUtilisateur'] = $ligne->nom_utilisateur;
+                    $listeUtilisateurs['mailUtilisateur'] = $ligne->mail_utilisateur;
+                    $listeUtilisateurs['mdpUtilisateur'] = $ligne->mdp_utilisateur;
+                    $listeUtilisateurs['libelleFiliere'] = $ligne->filieres;
+                    $listeUtilisateurs['statutUtilisateur'] = $ligne->libelle_statut;
+                    $listeUtilisateur[] = $listeUtilisateurs;
                 }
-                return $tableauIntervenants;
             }
-        }
-        catch ( Exception $e ) {
-            return $tableauIntervenants;
-        }
-    }	
-    /////////////////////////////////////////////////////////////////////////////////////////////	
-
-     /////////////////////////////////////////////////////////////////////////////////////////////
-     function ajouterIntervenant($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant) {
-        global $pdo;  // Connexion à la BD
-    
-        try {
-            if (!intervenantPresent($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant)) {
-                $maRequete = $pdo->prepare("INSERT INTO se_intervenant (nom_intervenant, fonction_intervenant, entreprise_intervenant)
-                    VALUES (:nomIntervenant, :fonctionIntervenant, :entrepriseIntervenant)");
-                $maRequete->bindParam(':nomIntervenant', $nom_intervenant);
-                $maRequete->bindParam(':fonctionIntervenant', $fonction_intervenant);
-                $maRequete->bindParam(':entrepriseIntervenant', $entreprise_intervenant);
-                $maRequete->execute();  // N'oubliez pas d'exécuter la requête
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception $e) {
-            // Gestion de l'exception (vous pouvez choisir de loguer l'erreur ou faire autre chose)
-            return false;
-        }
+            // On renvoie la liste des utilisateurs sous forme de tableau
+            return $listeUtilisateur;
+        } catch ( Exception $e ) {
+            // Message d'erreur si la connexion à la base de données n'a pas pu se faire
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            // On renvoie un tableau vide
+            return $listeUtilisateur;
+        } 
     }
-    
-    function intervenantPresent($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant) {
+
+    /* Fonction qui renvoie le mot de passe de l'administrateur connecté */
+    function recupMdpAdmin($pdo, $id) {
         global $pdo;
-    
-        try {
-            $maRequete = $pdo->prepare("SELECT COUNT(*) AS count FROM se_intervenant
-                WHERE nom_intervenant = :nomIntervenant
-                AND fonction_intervenant = :fonctionIntervenant
-                AND entreprise_intervenant = :entrepriseIntervenant");
-            $maRequete->bindParam(':nomIntervenant', $nom_intervenant);
-            $maRequete->bindParam(':fonctionIntervenant', $fonction_intervenant);
-            $maRequete->bindParam(':entrepriseIntervenant', $entreprise_intervenant);
+        try{ 
+            $connecte=false;
+            // Requête permettant de renvoyer le mot de passe
+            $maRequete = $pdo->prepare("SELECT mdp_utilisateur FROM se_utilisateur WHERE id_utilisateur = :id");
+            $maRequete->bindValue(':id', $id);
             $maRequete->execute();
-            
-            $result = $maRequete->fetch(PDO::FETCH_ASSOC);
+            $resultat = $maRequete->fetchAll(PDO::FETCH_COLUMN);
+            // On renvoie le résultat de la requête
+            return $resultat;  
+        }
+        catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return null;
+        } 
+    }
+
+
+    function ajouterFiliere($pdo, $idUtilisateur, $idFiliere) {
+        global $pdo;
+        try{ 
+            $maRequete = $pdo->prepare("INSERT INTO se_appartient VALUES (:idU,:idF)");
+            $maRequete->bindValue(':idU', $idUtilisateur);
+            $maRequete->bindValue(':idF', $idFiliere);
+            $maRequete->execute();
+            return true;
+        }
+        catch ( Exception $e ) {
+            return false;
+        }  
+    }
     
-            return $result['count'] > 0;
+    function supprimerFiliere($pdo, $id) {
+        global $pdo;
+        try{ 
+            $connecte=false;
+            $maRequete = $pdo->prepare("DELETE FROM se_appartient WHERE utilisateur_appartient  = :id");
+            $maRequete->bindValue(':id', $id);
+            $maRequete->execute();
+            return true;  
+        }
+        catch ( Exception $e ) {
+            return false;
+        }  
+    }
+
+
+    /* Fonction qui renvoie la liste des filières avec son identifiant et son libelle */
+    function listeDesFilieres($pdo) {
+        global $pdo;
+        try{ 
+            $connecte=false;
+            // Requête permettant de renvoyer la liste des filieres
+            $maRequete = $pdo->prepare("SELECT id_filiere, libelle_filiere
+                                        FROM se_filiere");
+            if ($maRequete->execute()) {
+                $maRequete->setFetchMode(PDO::FETCH_OBJ);
+                while ($ligne=$maRequete->fetch()) {
+                    // On met le résultat de la requête dans un tableau		
+                    $listeFilieres['idFiliere'] = $ligne->id_filiere;
+                    $listeFilieres['libelleFiliere'] = $ligne->libelle_filiere;
+                    $listeFiliere[] = $listeFilieres;
+                }
+            }
+            // On renvoie le tableau contenant la liste des filières
+            return $listeFiliere;
+        }
+        catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return $listeFiliere;
+        } 
+    }
+
+    /* Fonction qui renvoie la liste des différents rôles possibles */
+    function listeStatut($pdo) {
+        global $pdo;
+        try{ 
+            $connecte=false;
+            // Requête permettant de renvoyer la liste des rôles existants
+            $maRequete = $pdo->prepare("SELECT id_statut, libelle_statut
+                                        FROM se_statut");
+            if ($maRequete->execute()) {
+                $maRequete->setFetchMode(PDO::FETCH_OBJ);
+                while ($ligne=$maRequete->fetch()) {			
+                    $listeStatuts['idStatut'] = $ligne->id_statut;
+                    $listeStatuts['libelleStatut'] = $ligne->libelle_statut;
+                    $listeStatut[] = $listeStatuts;
+                }
+            }
+            // Renvoie du tableau contenant le résultat
+            return $listeStatut;
+        }
+        catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            return $listeStatut;
+        } 
+    }
+
+     /* Fonction permettant la suppression complète d'un utilisateur */
+    function suppressionUtilisateurs($pdo, $id) {
+        global $pdo;
+        // Requêtes permettant la suppression d'un utilisateur
+        
+        try{ 
+            // Début d'une transaction pour effectuer plusieurs requêtes d'un coup
+            $pdo->beginTransaction();
+            // Ajout des paramètres à nos requêtes
+            $maRequete->bindValue(':id', $id);
+            $maRequete2->bindValue(':id', $id);
+            // Exécution des deux requêtes
+            $maRequete->execute();
+            $maRequete2->execute();
+            // Commit dans la base de données si tout a fonctionné
+            $pdo->commit();
+            return true;
+        }
+        catch ( Exception $e ) {
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            $pdo->rollback();
+            return false;
+        } 
+    }
+     
+    /* Fonction permettant la modification d'un utilisateur sauf la filiere */
+    function majUtilisateur($pdo, $id, $prenom, $nom, $mail, $mdp, $statut) {
+        try {
+            // Début d'une transaction pour effectuer plusieurs requêtes d'un coup
+            $pdo->beginTransaction();
+    
+            // Requête permettant de mettre à jour un utilisateur
+            $majNom = $pdo->prepare("UPDATE se_utilisateur SET prenom_utilisateur = :prenom WHERE id_utilisateur = :id");
+            $majPrenom = $pdo->prepare("UPDATE se_utilisateur SET nom_utilisateur = :nom WHERE id_utilisateur = :id");
+            $majMail = $pdo->prepare("UPDATE se_utilisateur SET mail_utilisateur = :mail WHERE id_utilisateur = :id");
+            $majMdp = $pdo->prepare("UPDATE se_utilisateur SET mdp_utilisateur = :mdp WHERE id_utilisateur = :id");
+            $majStatut = $pdo->prepare("UPDATE se_utilisateur SET statut_utilisateur = :statut WHERE id_utilisateur = :id");
+    
+            // Ajout des paramètres dans la requête
+            $majNom->bindParam(':prenom', $prenom);
+            $majNom->bindParam(':id', $id);
+            $majPrenom->bindParam(':nom', $nom);
+            $majPrenom->bindParam(':id', $id);
+            $majMail->bindParam(':mail', $mail);
+            $majMail->bindParam(':id', $id);
+            $majMdp->bindParam(':mdp', $mdp);
+            $majMdp->bindParam(':id', $id);
+            $majStatut->bindParam(':statut', $statut);
+            $majStatut->bindParam(':id', $id);
+    
+            // Exécution des requêtes
+            $majNom->execute();
+            $majPrenom->execute();
+            $majMail->execute();
+            $majMdp->execute();
+            $majStatut->execute();
+    
+            // Commit dans la base de données si tout a fonctionné
+            $pdo->commit();
+            return true;
+    
         } catch (Exception $e) {
-            // Gestion de l'exception (vous pouvez choisir de loguer l'erreur ou faire autre chose)
+            echo "<h1>Erreur de connexion à la base de données ! </h1><br/>";
+            $pdo->rollback();
             return false;
         }
     }
-
-    /* Retourne la liste des filières présentes dans la BD */
-    function getListeFiliere() {
-        global $pdo;
-        $listeFiliere = null;
-
-        $requete = $pdo->prepare("SELECT id_filiere, libelle_filiere
-                                            FROM se_filiere");
-        if ($requete->execute()) {
-            $requete->setFetchMode(PDO::FETCH_OBJ);
-            while ($ligne=$requete->fetch()) {			
-                $filiere['idFiliere'] = $ligne->id_filiere;
-                $filiere['libelleFiliere'] = $ligne->libelle_filiere;
-                $listeFiliere[] = $filiere;
-            }
-        }
-
-        return $listeFiliere;
-    }
-
-    /* Retourne la liste des statut présents dans la BD */
-    function getListeStatut() {
-        global $pdo;
-        $listeStatut = null;
-
-        $requete = $pdo->prepare("SELECT id_statut, libelle_statut
-                                            FROM se_statut");
-        if ($requete->execute()) {
-            $requete->setFetchMode(PDO::FETCH_OBJ);
-            while ($ligne=$requete->fetch()) {			
-                $statut['idStatut'] = $ligne->id_statut;
-                $statut['libelleStatut'] = $ligne->libelle_statut;
-                $listeStatut[] = $statut;
-            }
-        }
-
-        return $listeStatut;
-    }
-
-    /* Retourne la liste des fonctions présentes dans la BD */
-    function getListeFonction() {
-        global $pdo;
-
-        $tableauFonctions = array() ; // Tableau qui sera retourné contenant les fonctions enregistrés
-
-        try {	
-            $maRequete = $pdo->prepare("
-                        SELECT id_fonction, libelle_fonction
-                        FROM se_fonction");
-            if ($maRequete->execute()) {
-                $maRequete->setFetchMode(PDO::FETCH_OBJ);
-                while ($ligne=$maRequete->fetch()) {
-                    $tableauFonction['idFonction']=$ligne->id_fonction;
-                    $tableauFonction['libelleFonction']=$ligne->libelle_fonction;
-
-                    $tableauFonctions[] = $tableauFonction;
-                }
-                return $tableauFonctions;
-            }
-        }
-        catch ( Exception $e ) {
-            return $tableauFonctions;
-        }
-    }
-
-    /* Retourne la liste des fonctions présentes dans la BD */
-    function getListeEntreprise() {
-        global $pdo;
-
-        $tableauEntreprises = array() ; // Tableau qui sera retourné contenant les fonctions enregistrés
-
-        try {	
-            $maRequete = $pdo->prepare("
-                        SELECT id_entreprise, nom_entreprise
-                        FROM se_entreprise");
-            if ($maRequete->execute()) {
-                $maRequete->setFetchMode(PDO::FETCH_OBJ);
-                while ($ligne=$maRequete->fetch()) {
-                    $tableauEntreprise['idEntreprise']=$ligne->id_entreprise;
-                    $tableauEntreprise['nomEntreprise']=$ligne->nom_entreprise;
-
-                    $tableauEntreprises[] = $tableauEntreprise;
-                }
-                return $tableauEntreprises;
-            }
-        }
-        catch ( Exception $e ) {
-            return $tableauEntreprises;
-        }
-    }
-
-    /* Retourne la liste des fonctions présentes dans la BD */
-    function getNombreIntervenants($entreprise) {
-        global $pdo;
-    
-        $nombreIntervenants = 1; // Variable contenant le nombre d'intervenants
-    
-        $recupererIDEntreprise = $pdo->prepare("SELECT id_entreprise FROM se_entreprise WHERE nom_entreprise = :entreprise");
-        $recupererNombreIntervenants = $pdo->prepare("SELECT COUNT(*) AS nb_intervenant
-                                              FROM se_intervenant
-                                              WHERE entreprise_intervenant = :idEntreprise");
-    
-        try {
-            $pdo->beginTransaction();
         
-            /* Récupération de l'id de l'entreprise */
-            $recupererIDEntreprise->bindParam(":entreprise", $entreprise);
-            $recupererIDEntreprise->execute();
-            $idEntreprise = $recupererIDEntreprise->fetch()["id_entreprise"];
-        
-            /* Récupération du nombre d'intervenants pour l'entreprise donnée */
-            $recupererNombreIntervenants->bindParam(":idEntreprise", $idEntreprise);
-            $recupererNombreIntervenants->execute();
-            $nombreIntervenants += intval($recupererNombreIntervenants->fetch()["nb_intervenant"]); // Assurez-vous que la valeur est un entier
-        
-            $pdo->commit();
-    
-            return $nombreIntervenants;
-        
-        } catch (PDOException $e) {
-            $pdo->rollback();
-            return $nombreIntervenants; // Vous pouvez également loguer l'erreur $e si nécessaire
+
+    function rechercherUtilisateur($pdo, $searchQuery, $filiere, $typeUtilisateur) {
+
+        // Requête pour récupérer les utilisateurs correspondant à la recherche
+        $query = "SELECT * FROM utilisateurs WHERE nomUtilisateur LIKE :search";
+
+        // Ajout des conditions pour les select filiere et typeUtilisateur s'ils sont renseignés
+        if ($filiere !== '') {
+            $query .= " AND idFiliere = :filiere";
         }
-    }  
+
+        if ($typeUtilisateur !== '') {
+            $query .= " AND idStatut = :typeUtilisateur";
+        }
+
+        $stmt = $pdo->prepare($query);
+        $stmt->bindValue(':search', '%' . $searchQuery . '%');
+
+        // Ajout des valeurs des selects s'ils sont renseignés
+        if ($filiere !== '') {
+            $stmt->bindValue(':filiere', $filiere);
+        }
+
+        if ($typeUtilisateur !== '') {
+            $stmt->bindValue(':typeUtilisateur', $typeUtilisateur);
+        }
+
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Retourne les résultats de la recherche
+        return $results;
+    }
 ?>

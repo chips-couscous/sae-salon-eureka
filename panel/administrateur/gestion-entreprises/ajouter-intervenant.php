@@ -1,5 +1,5 @@
 <?php
-    require('../../../static/module_php/panel/g_utilisateurs.php');
+    require('../../../static/module_php/panel/g_intervenants.php');
     $bdConnecte = estBDConnecte(); // Vérification de la connection à la BD
     $tableauIntervenants = recupererCookie();
     $estBtnValideClique = isset($_POST["enregistrer"]) && $_POST["enregistrer"] == true;

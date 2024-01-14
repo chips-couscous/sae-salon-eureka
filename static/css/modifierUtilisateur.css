@@ -105,3 +105,8 @@ select {
     border: solid 1px #000;
     border-radius: 3px;
 }
+
+.afficher {
+    display: block;
+    visibility: visible;
+}

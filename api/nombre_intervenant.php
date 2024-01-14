@@ -1,5 +1,5 @@
 <?php
-include('../static/module_php/panel/g_utilisateurs.php');
+include('../static/module_php/panel/g_intervenants.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['entreprise'])) {
     $selectedEntreprise = $_POST['entreprise'];

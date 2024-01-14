@@ -1,5 +1,5 @@
 <?php
-    require ('../../../static/module_php/panel/g_utilisateurs.php');
+    require ('../../../static/module_php/panel/g_intervenants.php');
 ?>
 
 <!DOCTYPE html>
