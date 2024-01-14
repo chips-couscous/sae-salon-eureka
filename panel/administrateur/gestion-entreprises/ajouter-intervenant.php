@@ -35,7 +35,7 @@
     <link rel="stylesheet" href="../../../static/css/connexion.css">
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
-    <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/panel.css">
     <link rel="stylesheet" href="../../../static/css/intervenant.css">
 
     <!-- fontawesome link -->
@@ -94,20 +94,22 @@
         <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Ajouter un intervenant</span>
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
-                <label for="entreprise">Sélectionnez une entreprise :</label>
-                <select name="entreprise" id="selectionEntreprise">
-                    <option value="">-- Choisissez une entreprise --</option>
-                    <?php
-                    foreach(getListeEntreprise() as $entreprise) {
-                        ?><option value="<?php echo $entreprise['nomEntreprise'];?>"><?php echo $entreprise['nomEntreprise'];?></option><?php
-                    }
-                    ?>
-                </select>
-                <div class="form-item bm15 champsIntervenantInvisible" id="champNom">
-                    <input type="text" name="nom" id="nom" autocomplete="off">
+                <div>
+                    <label for="entreprise">Sélectionnez une entreprise :</label>
+                    <select name="entreprise" id="selectionEntreprise">
+                        <option value="">-- Choisissez une entreprise --</option>
+                        <?php
+                        foreach(getListeEntreprise() as $entreprise) {
+                            ?><option value="<?php echo $entreprise['nomEntreprise'];?>"><?php echo $entreprise['nomEntreprise'];?></option><?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-item bm15 champsIntervenantInvisible champsAjoutIntervenant">
+                    <input type="text" name="nom" id="nom" required >
                     <label for="nom">Nom *</label>
                 </div>
-                <div class="form-item bm15 champsIntervenantInvisible" id="champFonction">
+                <div class="form-item bm15 champsIntervenantInvisible champsAjoutIntervenant">
                     <select name="fonction" id="fonction">
                         <option value="-1">Fonction</option>
                         <?php
@@ -117,11 +119,7 @@
                         ?>
                     </select>
                 </div>
-                <div class="form-item bm15 champsIntervenantInvisible" id="champEntreprise">
-                    <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
-                    <label for="entreprise">Entreprise *</label>
-                </div>
-                <div class="form-item bm15 champsIntervenantInvisible" id="champFiliere">
+                <div class="form-item bm15 champsIntervenantInvisible champsAjoutIntervenant" >
                     <select name="filiere" id="filiere">
                         <option value="-1">Filiere</option>
                         <?php
@@ -131,7 +129,7 @@
                         ?>
                     </select>
                 </div>
-                <div class="form-item ajouter champsIntervenantInvisible" id="champAjouter">
+                <div class="form-item ajouter champsIntervenantInvisible champsAjoutIntervenant" >
                     <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
                 </div>
             </div>

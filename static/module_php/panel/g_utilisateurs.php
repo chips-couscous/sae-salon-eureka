@@ -130,48 +130,46 @@
 
      /////////////////////////////////////////////////////////////////////////////////////////////
      function ajouterIntervenant($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant) {
-        // Fonction renvoyant les informations d'un compte
-        // Paramétre $IdCompte=Identifiant du compte dans la BD
-        // Retourne les détails du sous forme de collection indicée sur les noms des colonnes de la table compte.
-
         global $pdo;  // Connexion à la BD
-
-        try{ // Bloc try bd injoignable 
-            if (!intervenantPresent($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant)){
-                $maRequete = $pdo->prepare("INSERT INTO 'se_intervenant' (nom_intervenant, fonction_intervenant, entreprise_intervenant)
-                VALUES (:nomIntervenant, :fonctionIntervenant, :entrepriseIntervenant)");
+    
+        try {
+            if (!intervenantPresent($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant)) {
+                $maRequete = $pdo->prepare("INSERT INTO se_intervenant (nom_intervenant, fonction_intervenant, entreprise_intervenant)
+                    VALUES (:nomIntervenant, :fonctionIntervenant, :entrepriseIntervenant)");
                 $maRequete->bindParam(':nomIntervenant', $nom_intervenant);
-                $maRequete->bindParam(':fonctionIntervenant', $fonction_intervenant); 
+                $maRequete->bindParam(':fonctionIntervenant', $fonction_intervenant);
                 $maRequete->bindParam(':entrepriseIntervenant', $entreprise_intervenant);
+                $maRequete->execute();  // N'oubliez pas d'exécuter la requête
                 return true;
             } else {
                 return false;
             }
+        } catch (Exception $e) {
+            // Gestion de l'exception (vous pouvez choisir de loguer l'erreur ou faire autre chose)
+            return false;
         }
-        catch ( Exception $e ) {
-            return false;
-        } 	
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////
-
-    function intervenantPresent($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant){
+    
+    function intervenantPresent($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant) {
         global $pdo;
-
+    
         try {
-            $maRequete = $pdo->prepare("SELECT nom_intervenant AS nom,
-                                               fonction_intervenant AS fonction,
-                                               entreprise_intervenant AS entreprise
-                                        FROM se_intervenant
-                                        WHERE nom = :nomIntervenant
-                                        AND fonction = :fonctionIntervenant
-                                        AND entreprise = :entrepriseIntervenant;");
+            $maRequete = $pdo->prepare("SELECT COUNT(*) AS count FROM se_intervenant
+                WHERE nom_intervenant = :nomIntervenant
+                AND fonction_intervenant = :fonctionIntervenant
+                AND entreprise_intervenant = :entrepriseIntervenant");
             $maRequete->bindParam(':nomIntervenant', $nom_intervenant);
-            $maRequete->bindParam(':fonctionIntervenant', $fonction_intervenant); 
+            $maRequete->bindParam(':fonctionIntervenant', $fonction_intervenant);
             $maRequete->bindParam(':entrepriseIntervenant', $entreprise_intervenant);
-            return true;
-        } catch ( Exception $e ) {
+            $maRequete->execute();
+            
+            $result = $maRequete->fetch(PDO::FETCH_ASSOC);
+    
+            return $result['count'] > 0;
+        } catch (Exception $e) {
+            // Gestion de l'exception (vous pouvez choisir de loguer l'erreur ou faire autre chose)
             return false;
-        } 	
+        }
     }
 
     /* Retourne la liste des filières présentes dans la BD */
@@ -263,4 +261,38 @@
             return $tableauEntreprises;
         }
     }
+
+    /* Retourne la liste des fonctions présentes dans la BD */
+    function getNombreIntervenants($entreprise) {
+        global $pdo;
+    
+        $nombreIntervenants = 1; // Variable contenant le nombre d'intervenants
+    
+        $recupererIDEntreprise = $pdo->prepare("SELECT id_entreprise FROM se_entreprise WHERE nom_entreprise = :entreprise");
+        $recupererNombreIntervenants = $pdo->prepare("SELECT COUNT(*) AS nb_intervenant
+                                              FROM se_intervenant
+                                              WHERE entreprise_intervenant = :idEntreprise");
+    
+        try {
+            $pdo->beginTransaction();
+        
+            /* Récupération de l'id de l'entreprise */
+            $recupererIDEntreprise->bindParam(":entreprise", $entreprise);
+            $recupererIDEntreprise->execute();
+            $idEntreprise = $recupererIDEntreprise->fetch()["id_entreprise"];
+        
+            /* Récupération du nombre d'intervenants pour l'entreprise donnée */
+            $recupererNombreIntervenants->bindParam(":idEntreprise", $idEntreprise);
+            $recupererNombreIntervenants->execute();
+            $nombreIntervenants += intval($recupererNombreIntervenants->fetch()["nb_intervenant"]); // Assurez-vous que la valeur est un entier
+        
+            $pdo->commit();
+    
+            return $nombreIntervenants;
+        
+        } catch (PDOException $e) {
+            $pdo->rollback();
+            return $nombreIntervenants; // Vous pouvez également loguer l'erreur $e si nécessaire
+        }
+    }  
 ?>

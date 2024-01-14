@@ -2,7 +2,7 @@
 var btnAjouterManuel = document.getElementById("ajouterUtilisateur");
 var zoneSaisieNom = document.getElementById("nom");
 var zoneSaisieFonction = document.getElementById("fonction");
-var zoneSaisieEntreprise = document.getElementById("entreprise");
+var zoneSaisieEntreprise = document.getElementById("selectionEntreprise");
 var zoneSaisieFiliere = document.getElementById("filiere");
 var zonePrevisualisation = document.getElementById("TablePrevisualisation");
 var body = document.body;
@@ -13,6 +13,8 @@ var nomCorrect;
 var fonctionCorrect;
 var entrepriseCorrect;
 var filiereCorrect;
+
+var entrepriseSelectionnee;
 
 var selectionEntreprise = document.getElementById("selectionEntreprise");
 
@@ -29,37 +31,57 @@ if (document.cookie != null) {
         if (typeof tableauUtilisateurs != 'object') {
             tableauUtilisateurs = [];
         }
-        console.log(tableauUtilisateurs);
         afficherUtilisateur();
     }
 }
 
-// PENSES A CHANGER POUR UN CLASS NAME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+var nomInput = document.getElementById('nom');
+selectionEntreprise.addEventListener('change', function() {
+    entrepriseSelectionnee = this.value;
 
+    if (entrepriseSelectionnee == ""){
+        masquerChamps();
+    }else {
+        afficherChamps();
+    }
+    // Effectuer une requête AJAX pour récupérer le nombre d'intervenants depuis le backend
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../../../api/nombre_intervenant.php', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var nombreIntervenants = xhr.responseText;
+            nomInput.value = "Intervenant " + nombreIntervenants;
+        }
+    };
+    // Envoyer la requête avec les données nécessaires
+    var data = 'entreprise=' + encodeURIComponent(entrepriseSelectionnee);
+    xhr.send(data);
+});
 
 
 function afficherChamps() {
-    // Itère sur tous les éléments avec la classe "champsIntervenant"
-    var champNom = document.getElementById("champNom");
-    var champFonction = document.getElementById("champFonction");
-    var champEntreprise = document.getElementById("champEntreprise");
-    var champFiliere = document.getElementById("champFiliere");
-    var champAjouter = document.getElementById("champAjouter");
+    // Itère sur tous les éléments avec la classe "champsAjoutIntervenant"
+    var champsAjout = document.getElementsByClassName("champsAjoutIntervenant");
     // Applique les styles en fonction de la sélection de l'entreprise
-    champNom.classList.add("champsIntervenantVisible");
-    champNom.classList.remove("champsIntervenantInvisible");
+    for (i = 0; i < champsAjout.length; i++){
+        var champAjout = champsAjout[i];
 
-    champFonction.classList.add("champsIntervenantVisible");
-    champFonction.classList.remove("champsIntervenantInvisible");
+        champAjout.classList.add("champsIntervenantVisible");
+        champAjout.classList.remove("champsIntervenantInvisible");
+    }
+}
 
-    champEntreprise.classList.add("champsIntervenantVisible");
-    champEntreprise.classList.remove("champsIntervenantInvisible");
+function masquerChamps() {
+    // Itère sur tous les éléments avec la classe "champsAjoutIntervenant"
+    var champsAjout = document.getElementsByClassName("champsAjoutIntervenant");
+    // Applique les styles en fonction de la sélection de l'entreprise
+    for (i = 0; i < champsAjout.length; i++){
+        var champAjout = champsAjout[i];
 
-    champFiliere.classList.add("champsIntervenantVisible");
-    champFiliere.classList.remove("champsIntervenantInvisible");
-
-    champAjouter.classList.add("champsIntervenantVisible");
-    champAjouter.classList.remove("champsIntervenantInvisible");
+        champAjout.classList.remove("champsIntervenantVisible");
+        champAjout.classList.add("champsIntervenantInvisible");
+    }
 }
 
 /* Retourne le contenu du cookie "nom" ou null si il n'existe pas */
@@ -77,7 +99,7 @@ function readCookie(nom) {
 /* Affiche dans la zone de prévisualisation les différents utilisateurs importés ou ajoutés */
 function afficherUtilisateur() {
     let indiceTableau = 0; // indice de l'utilisateur dans le tableau utilisé pour la suppression
-    console.log("on est la");
+    zonePrevisualisation.innerHTML = "";
     tableauUtilisateurs.forEach(utilisateur => {
         zonePrevisualisation.innerHTML +=
         `<tr>
@@ -89,6 +111,7 @@ function afficherUtilisateur() {
         </tr>`;
         indiceTableau += 1;
     });
+    masquerChamps();
 }
 
 /* Fait correspondre les données affichées et celles présentes dans le cookie*/
@@ -104,7 +127,6 @@ function ajouterUtilisateur(donneesUtilisateur) {
 
     /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
     ecritureCookie();
-    console.log("ajout user");
 }
 
 /* Supprime l'utilisateur présent en paramètre */
@@ -124,11 +146,6 @@ function estUtilisateurPresent(utilisateurATester) {
             estPresent = true;
         };
     });
-    if (estPresent){
-        console.log("deja present");
-    }else{ 
-        console.log("pas present");
-    }
     return estPresent;
 }
 
@@ -136,8 +153,9 @@ function estUtilisateurPresent(utilisateurATester) {
  //                Ajout manuel d'un utilisateur                      //
 ///////////////////////////////////////////////////////////////////////
 
-/* Ajoute un utilisateur au tableau de prévisualisation */
 
+
+/* Ajoute un utilisateur au tableau de prévisualisation */
 function ajouterUtilisateurManuel() {
     let utilisateur = [zoneSaisieNom.value, zoneSaisieFonction.value, zoneSaisieEntreprise.value, zoneSaisieFiliere.value];
     if (estChampsCorrects(utilisateur)) {
