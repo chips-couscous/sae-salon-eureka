@@ -77,10 +77,12 @@
             <div class="ajoutManuel">
                 <span>Rechercher un intervenant :</span><br>
                 <form action="post">
+                    <!-- Zone de saisie du nom -->
                     <div class="form-item bm15 ">
                         <input type="text" name="nom" id="nom" autocomplete="off" required>
                         <label for="nom">Nom *</label>
                     </div>
+                    <!-- Zone de saisie de l'entreprise -->
                     <div class="form-item bm15">
                         <input type="text" name="entreprise" id="entreprise" autocomplete="off" required>
                         <label for="entreprise">Entreprise *</label>

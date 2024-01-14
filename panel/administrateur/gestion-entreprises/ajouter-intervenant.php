@@ -101,16 +101,19 @@
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
                 <div>
+                    <!-- Zone de sélection de l'entreprise -->
                     <label for="entreprise">Sélectionnez une entreprise :</label>
                     <select name="entreprise" id="selectionEntreprise">
                         <option value="">-- Choisissez une entreprise --</option>
                         <?php
+                        // Boucle sur la liste des entreprises pour les insérer dans le select
                         foreach(getListeEntreprise() as $entreprise) {
                             ?><option value="<?php echo $entreprise['nomEntreprise'];?>"><?php echo $entreprise['nomEntreprise'];?></option><?php
                         }
                         ?>
                     </select>
                 </div>
+                <!-- Zone de saisie du nom --> 
                 <div class="form-item bm15 champsIntervenantInvisible champsAjoutIntervenant">
                     <input type="text" name="nom" id="nom" required >
                     <label for="nom">Nom *</label>
@@ -119,6 +122,7 @@
                     <select name="fonction" id="fonction">
                         <option value="-1">-- Fonction --</option>
                         <?php
+                        // Boucle sur la liste des fonctions pour les insérer dans le select
                         foreach(getListeFonction() as $fonction) {
                             ?><option value="<?php echo $fonction['libelleFonction'];?>"><?php echo $fonction['libelleFonction'];?></option><?php
                         }
@@ -129,15 +133,18 @@
                     <select name="filiere" id="filiere">
                         <option value="-1">-- Filiere --</option>
                         <?php
+                        // Boucle sur la liste des filieres pour les insérer dans le select
                         foreach(getListeFiliere() as $filiere) {
                             ?><option value="<?php echo $filiere['libelleFiliere'];?>"><?php echo $filiere['libelleFiliere'];?></option><?php
                         }
                         ?>
                     </select>
                 </div>
+                <!-- AJout de filiere --> 
                 <div class="form-item champsIntervenantInvisible champsAjoutIntervenant" id="boutonAjouterFiliere">
                     <p class="boutonAjoutFiliere"> + </p>
                 </div>
+                <!-- Bouton d'ajout --> 
                 <div class="form-item ajouter champsIntervenantInvisible champsAjoutIntervenant" >
                     <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
                 </div>
