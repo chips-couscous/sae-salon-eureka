@@ -123,25 +123,38 @@
                 <div class="form-item bm15">
                     <input type="text" name="secteurActivites" id="SecteurActivites" autocomplete="off" required>
                     <label for="SecteurActivites">Secteur d'activité</label>
+                    <span id="Secteur"></span>
                 </div>
                 <div class="form-item">
                     <input type="submit" value="Ajouter">
                 </div>
                 <?php
                     if (isset($_POST['nomE']) && $_POST['nomE'] != "" && $formValide == true) {
-                        
+                        $requete = "SELECT nom_secteur FROM se_secteur";
+                        $stmt = $pdo->prepare($requete);
+                        $stmt->execute();
+                        $stmt->fetch();
+                        $secteurExistant = false;
+                        foreach($stmt as $secteur) {
+                            if($_POST["secteurActivites"] == $secteur["nom_secteur"]) {
+                                $secteurExistant = true;
+                            }
+                        }
+
                         # insertion d'un secteur d'activité
-                        # TODO le faire que si le secteur d'activité n'existe pas
-                        #$stmt = $pdo->prepare("INSERT INTO se_secteur (nom_secteur) VALUES (:nomSecteur)");
-                        #$stmt->bindParam("nomSecteur", $_POST["secteurActivites"]);
-                        #$stmt->execute();
+                        if (!$secteurExistant) {
+                            # le secteur d'activité n'existe pas
+                            $stmt = $pdo->prepare("INSERT INTO se_secteur (nom_secteur) VALUES (:nomSecteur)");
+                            $stmt->bindParam("nomSecteur", $_POST["secteurActivites"]);
+                            $stmt->execute();
+                        }
+                        
 
                         # Récupération id_secteur 
-                        # TODO revoir les requêtes
                         $requete = $pdo->prepare("SELECT id_secteur FROM se_secteur WHERE nom_secteur = :nomS");
                         $requete->bindParam("nomS", $_POST["secteurActivites"]);
                         $requete->execute();
-                        $numSecteur = $requete->fetchAll();
+                        $numSecteur = $requete->fetch();
 
                         # Insertion des données relatives à l'entreprise
                         $stmt = $pdo->prepare("INSERT INTO se_entreprise (nom_entreprise, codep_entreprise, lieu_alter_entreprise, description_entreprise, site_entreprise, categorie_entreprise, secteur_entreprise)
@@ -152,11 +165,11 @@
                         $stmt->bindParam("descrE", $_POST["description"]);
                         $stmt->bindParam("siteE", $_POST["siteInternet"]);
                         $stmt->bindParam("categorieE", $_POST["tailleEntreprise"]);
-                        $stmt->bindParam("secteurE", $numSecteur[0]["id_secteur"]);
+                        $stmt->bindParam("secteurE", $numSecteur["id_secteur"]);
                         #$stmt->execute();
 
                         echo "<h1>insertion</h1>";
-                        var_dump($numSecteur[0]["id_secteur"]);
+                        var_dump($numSecteur["id_secteur"]);
                     } else if (isset($codeP)) {
                         echo "<h1>formulaire pas valide</h1>";
                     }
@@ -252,7 +265,8 @@
 
     <script src="../../../static/js/header.js"></script>
     <script src="../../../static/js/compte.js"></script>
-    <script src="../../../static/js/autocomplete.js"></script>
+    <script src="../../../static/js/panel/ajouter-entreprise.js"></script>
+    <script src="../../../static/js/panel/module.js"></script>
 </body>
 
 </html>

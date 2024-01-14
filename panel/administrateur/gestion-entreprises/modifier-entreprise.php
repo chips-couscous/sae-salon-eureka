@@ -88,6 +88,7 @@
                     <input type="text" name="codePostal" id="CodePostal" autocomplete="off" required>
                     <label for="CodePostal">Code Postal </label>
                     <?php
+                        $formValide = true;
                         if (isset($_POST["codePostal"])) {
                             $codeP = (int)($_POST["codePostal"]);
                             if ($codeP == 0 || strlen($codeP) != 5) {
@@ -117,7 +118,9 @@
                 <div class="form-item bm15">
                     <input type="text" name="secteurActivites" id="SecteurActivites" autocomplete="off" required>
                     <label for="SecteurActivites">Secteur d'activité</label>
+                    <span id="Secteur"></span>
                 </div>
+                <div id="idE"></div>
                 <div class="form-item">
                     <input type="submit" value="Modifier">
                 </div>
@@ -127,32 +130,35 @@
             try {
                 require ('../../../static/module_php/panel/base_de_donnees.php');
                 $pdo = connexionBaseDeDonnees();
-                if (isset($_POST["nomE"])) {
+                if (isset($_POST["nomE"]) && $formValide == true) {
                     $requete = "SELECT nom_secteur FROM se_secteur";
                     $stmt = $pdo->prepare($requete);
                     $stmt->execute();
                     $stmt->fetch();
-
                     $secteurExistant = false;
-                    foreach ($stmt as $secteur) {
-                        if ($_POST["secteurActivites"] == $secteur) {
+                    foreach($stmt as $secteur) {
+                        if($_POST["secteurActivites"] == $secteur["nom_secteur"]) {
                             $secteurExistant = true;
                         }
                     }
-                    $requete = "UPDATE se_entreprises 
+
+                    # insertion d'un secteur d'activité
+                    if (!$secteurExistant) {
+                        # le secteur d'activité n'existe pas
+                        $stmt = $pdo->prepare("INSERT INTO se_secteur (nom_secteur) VALUES (:nomSecteur)");
+                        $stmt->bindParam("nomSecteur", $_POST["secteurActivites"]);
+                        $stmt->execute();
+                    }
+                    $requete = "UPDATE se_entreprise
                             SET nom_entreprise = :nomE
                             SET codep_entreprise = :codePostal
                             SET description_entreprise = :description
                             SET lieu_alter_entreprise = :lieuAlternance
                             SET site_entreprise = :siteInternet
                             SET categorie_entreprise = :tailleEntreprise
-                            SET secteur_entreprise = :secteurActivites";
+                            SET secteur_entreprise = :secteurActivites
+                            WHERE id_entreprise = :idE";
                     
-                    if ($secteurExistant == false) {
-                        
-                    }
-
-                    $requete .= "WHERE id_entreprise = :idE";
                     $stmt = $pdo->prepare($requete);
                     $stmt->bindParam("nomE", $_POST["nomE"]);
                     $stmt->bindParam("codePostal", $_POST["codePostal"]);
@@ -161,8 +167,7 @@
                     $stmt->bindParam("siteInternet", $_POST["siteInternet"]);
                     $stmt->bindParam("tailleEntreprise", $_POST["tailleEntreprise"]);
                     $stmt->bindParam("secteurActivites", $_POST["secteurActivites"]);
-
-                    $stmt->bindParam("idE", $_POST[""]);
+                    $stmt->bindParam("idE", $_POST["secteurActivites"]);
                 }
                 
             } catch(Exception $e) {

@@ -8,17 +8,16 @@ searchFormD.addEventListener('keyup', function() {
 
     /* Appelle une fonction envoie une requête à un fichier php */
     sending_request(searchFormD, '../../../api/rechercher-entreprise.php');
-
     /* fonction permettant d'intercepter la requête et d'afficher le résultat sous forme de tableau */
     ajax_request.onreadystatechange = function() {
         /* Si la requête a fini d'être traitée */
         if (ajax_request.readyState == 4 && ajax_request.status == 200) {
-
+        
             /* Récupération du resultat de la requête */
             response = JSON.parse(ajax_request.responseText);
-
+        
             let html = '<table id="CompanyData">'; 
-
+        
             /*Si la requête renvoie un résultat autre que vide  */
             if (response != "") {
                 /* Insertion du résultat de la requête dans un tableau */
@@ -35,9 +34,9 @@ searchFormD.addEventListener('keyup', function() {
             } else {
                 html += '<tbody><tr><td>Aucune entreprise trouvée</td></tr>';
             }
-
+        
             html += '</tbody></table>';
-
+        
             /* Affiche le tableau sur l'écran*/
             resultList.innerHTML = html;
         }

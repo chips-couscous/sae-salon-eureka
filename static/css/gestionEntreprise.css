@@ -5,11 +5,11 @@ table {
   border-radius: 5px;
 }
 
-.clickableU {
+.clickableU, .clickableA {
   cursor: pointer;
 }
 
-.clickableU:hover, .clickableD:hover {
+.clickableU:hover, .clickableD:hover, .clickableA:hover {
   background-color: #e9f3ff;
 }
 
