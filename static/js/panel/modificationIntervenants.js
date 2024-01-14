@@ -1,15 +1,23 @@
+// Récupération des différents éléments du formulaire et de la table
 const inputNom = document.getElementById('nom');
 const inputEntreprise = document.getElementById('entreprise');
 const displayTable = document.getElementById('TablePrevisualisation');
 
+// Ajout d'un écouteur d'évènements sur la zone de saisie du nom
 inputNom.addEventListener('keyup', () => {
     chargerDonnees(inputNom.value, inputEntreprise.value);
 })
 
+// Ajout d'un écouteur d'évènements sur la zone de saisie de l'entreprise
 inputEntreprise.addEventListener('keyup', () => {
     chargerDonnees(inputNom.value, inputEntreprise.value);
 })
 
+/* Fonction pour charger les données avec requete AJAX
+ * Prend en paramètre le nom et l'entreprise renseignée
+ * pour afficher seulement les résultats dont le nom commence
+ * par ce qui a été saisie et avec l'entreprise sélectionnée
+ */
 function chargerDonnees(filtreNom, filtreEntreprise) {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
@@ -22,14 +30,19 @@ function chargerDonnees(filtreNom, filtreEntreprise) {
             }
         }
     }
-     
+    // Interrogation de l'api avec les parametres saisis 
     let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/rechercher-intervenant.php?nom=${filtreNom}&entreprise=${filtreEntreprise}`;
     console.log(requete);
     xmlhttp.open("GET", requete, true);
     xmlhttp.send();
 }
 
+/* Fonction pour afficher les données dans la table
+ * Prend en paramètre les données renvoyées par le serveur
+ * via la requête AJAX
+ */
 function afficherDonnees(donnees) {
+    // Reinitialisation de la table avec les champs des colonnes
     displayTable.innerHTML = `
     <tr>
 		<th>
@@ -45,6 +58,7 @@ function afficherDonnees(donnees) {
 			Filiere
 		</th>							
 	</tr>`;
+    // Parcours des données par ligne pour les afficher dans la table
     for (let i = 0; i < donnees.length; i++) {
         let intervenant = donnees[i];
         displayTable.innerHTML += `
@@ -89,6 +103,7 @@ displayTable.addEventListener("click", function(event) {
     estCliquee(target);
 });
 
+// Fonction récupérant la liste des fonctions présentes dans la BD
 function chargerFonctions() {
     return new Promise((resolve, reject) => {
         let xmlhttp = new XMLHttpRequest();
@@ -102,21 +117,24 @@ function chargerFonctions() {
                 }
             }
         }
-
+        // Interrogation de l'api pour récupérer la liste des fonctions présentes
         let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/liste-fonctions.php`;
         xmlhttp.open("GET", requete, true);
         xmlhttp.send();
     });
 }
 
-let tableauFonction 
+// Variable contenant la liste des fonctions de la BD
+let tableauFonction; 
 
+// Récupération de la réponse de l'api en stockant le résultat dans un tableau
 chargerFonctions().then((tableauFonctions) => {
     tableauFonction = tableauFonctions;
 }).catch((error) => {
     console.error(error);
 });
 
+// Fonction récupérant la liste des entreprises présentes dans la BD
 function chargerEntreprises() {
     return new Promise((resolve, reject) => {
         let xmlhttp = new XMLHttpRequest();
@@ -130,21 +148,24 @@ function chargerEntreprises() {
                 }
             }
         }
-
+        // Interrogation de l'api pour récupérer la liste des entreprises présentes
         let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/liste-entreprises.php`;
         xmlhttp.open("GET", requete, true);
         xmlhttp.send();
     });
 }
 
-let tableauEntreprise 
+// Variable contenant la liste des entreprises de la BD
+let tableauEntreprise; 
 
+// Récupération de la réponse de l'api en stockant le résultat dans un tableau
 chargerEntreprises().then((tableauEntreprises) => {
     tableauEntreprise = tableauEntreprises;
 }).catch((error) => {
     console.error(error);
 });
 
+// Fonction récupérant la liste des filieres présentes dans la BD
 function chargerFilieres() {
     return new Promise((resolve, reject) => {
         let xmlhttp = new XMLHttpRequest();
@@ -158,15 +179,17 @@ function chargerFilieres() {
                 }
             }
         }
-
+        // Interrogation de l'api pour récupérer la liste des filieres présentes
         let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/liste-filieres.php`;
         xmlhttp.open("GET", requete, true);
         xmlhttp.send();
     });
 }
 
-let tableauFiliere 
+// Variable contenant la liste des filieres de la BD
+let tableauFiliere; 
 
+// Récupération de la réponse de l'api en stockant le résultat dans un tableau
 chargerFilieres().then((tableauFilieres) => {
     tableauFiliere = tableauFilieres;
 }).catch((error) => {
@@ -178,10 +201,14 @@ let champsModifs = document.getElementById("modifCliquee");
 
 // Fonction à appeler lorsqu'une ligne est cliquée
 function estCliquee(ligne) {
+    // Récupération des champs et listes
     let listeChamps = ligne.getElementsByTagName("td");
     let tableauFonctions = tableauFonction;
     let tableauEntreprises = tableauEntreprise;
     let tableauFilieres = tableauFiliere;
+
+    // Récupérez l'ID de la ligne cliquée
+    let ligneID = ligne.getAttribute("id");
 
     // Construire la chaîne HTML dans une variable
     let htmlContent = `
@@ -194,6 +221,7 @@ function estCliquee(ligne) {
             <div class="form-item bm15 ">
                 <select name="fonction" id="fonctionModif">`;
 
+    // Affichage des différentes fonctions dans le select       
     for (var i = 0; i < tableauFonctions.length; i++) {
         htmlContent += `<option value="${tableauFonctions[i].fonction}"`;
         if (listeChamps[1].innerText == tableauFonctions[i].fonction) {
@@ -207,6 +235,7 @@ function estCliquee(ligne) {
                 </div>
                 <div class="form-item bm15 ">
                     <select name="entreprise" id="entrepriseModif">`;
+    // Affichage des différentes entreprises dans le select     
     for (var i = 0; i < tableauEntreprises.length; i++) {
         htmlContent += `<option value="${tableauEntreprises[i].entreprise}"`;
         if (listeChamps[2].innerText == tableauEntreprises[i].entreprise) {
@@ -220,6 +249,7 @@ function estCliquee(ligne) {
                 </div>
                 <div class="form-item bm15 ">
                     <select name="filiere" id="filiereModif">`;
+    // Affichage des différentes filieres dans le select     
     for (var i = 0; i < tableauFilieres.length; i++) {
         htmlContent += `<option value="${tableauFilieres[i].filiere}"`;
         if (listeChamps[3].innerText == tableauFilieres[i].filiere) {
@@ -238,6 +268,7 @@ function estCliquee(ligne) {
     // Remplacez le contenu de champsModifs par la nouvelle chaîne HTML
     champsModifs.innerHTML = htmlContent;
 
+    // Appel de fonction mettant en place un écouteur d'évènements sur le formulaire
     ajouterEcouteurFormulaire();
     
     return true;
@@ -259,12 +290,13 @@ function ajouterEcouteurFormulaire() {
             let nouvelleEntreprise = document.getElementById("entrepriseModif").value;
             let nouvelleFiliere = document.getElementById("filiereModif").value;
 
-            // Effectuez une requête AJAX pour mettre à jour la base de données
+            // Appel de fonction intérrogant l'api pour mettre à jour la BD
             mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntreprise, nouvelleFiliere);
         });
     }
 }
 
+// Fonction intérrogant l'api afin de mettre à jour la BD
 function mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntreprise, nouvelleFiliere) {
 
     let xmlhttp = new XMLHttpRequest();
@@ -279,7 +311,7 @@ function mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntrepri
             }
         }
     }
-
+    // Interrogation de l'api pour mettre à jour les informations de l'intervenant
     let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/mettre-a-jour-intervenant.php`;
     requete += `?nom=${nouveauNom}&fonction=${nouvelleFonction}&entreprise=${nouvelleEntreprise}&filiere=${nouvelleFiliere}`;
 

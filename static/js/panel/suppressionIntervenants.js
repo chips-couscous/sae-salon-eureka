@@ -1,15 +1,21 @@
-const inputNom = document.getElementById('nom');
-const inputEntreprise = document.getElementById('entreprise');
-const displayTable = document.getElementById('TablePrevisualisation');
+// Récupération des différents éléments
+const inputNom = document.getElementById('nom'); // Zone de saisie du nom
+const inputEntreprise = document.getElementById('entreprise'); // Selection de l'entreprise
+const displayTable = document.getElementById('TablePrevisualisation'); // Table contenant les intervenants de la BD
 
+// Ecouteur d'évenement se déclenchant lorsqu'on écrit dans la zone de saisie
 inputNom.addEventListener('keyup', () => {
+    // Appel pour auto-complétion
     chargerDonnees(inputNom.value, inputEntreprise.value);
 })
 
+// Ecouteur d'évenement se déclenchant lorsqu'on écrit dans la zone de saisie
 inputEntreprise.addEventListener('keyup', () => {
+    // Appel pour auto-complétion    
     chargerDonnees(inputNom.value, inputEntreprise.value);
 })
 
+// Chargement des données depuis la BD avec requete AJAX
 function chargerDonnees(filtreNom, filtreEntreprise) {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
@@ -22,13 +28,14 @@ function chargerDonnees(filtreNom, filtreEntreprise) {
             }
         }
     }
-     
+    // Interroge l'api avec les paramètres nom et entreprise
     let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/rechercher-intervenant.php?nom=${filtreNom}&entreprise=${filtreEntreprise}`;
     console.log(requete);
     xmlhttp.open("GET", requete, true);
     xmlhttp.send();
 }
 
+// Affiche les donnees recupérées via l'api dans la table de prévisualisation
 function afficherDonnees(donnees) {
     displayTable.innerHTML = `
     <tr>
@@ -45,6 +52,7 @@ function afficherDonnees(donnees) {
 			Filiere
 		</th>							
 	</tr>`;
+    // Parcours des données par ligne
     for (let i = 0; i < donnees.length; i++) {
         let intervenant = donnees[i];
         displayTable.innerHTML += `
@@ -89,11 +97,13 @@ displayTable.addEventListener("click", function(event) {
     estCliquee(target);
 });
 
+// Variables global contenants les informations de l'intervenant à supprimer
 let nomASupprimer = "";
 let fonctionASupprimer = "";
 let entrepriseASupprimer = "";
 let filiereASupprimer = "";
 
+// Fonction qui met en évidence la ligne et récupère les infos de celle-çi lorsqu'elle est cliquée
 function estCliquee(ligne) {
     // Retirer la classe "ligneSelectionnee" de toutes les autres lignes
     var lignes = displayTable.getElementsByTagName("tr");
@@ -109,6 +119,7 @@ function estCliquee(ligne) {
     let entreprise = ligne.children[2].innerText;
     let filiere = ligne.children[3].innerText;
 
+    // Stocke les informations de la ligne dans les variables des informations de l'intervenant à supprimer
     nomASupprimer = nom;
     fonctionASupprimer = fonction;
     entrepriseASupprimer = entreprise;
@@ -117,10 +128,13 @@ function estCliquee(ligne) {
     console.log(ligne.classList);
 }
 
+// Bouton pour supprimer un intervenant
 let boutonSuppression = document.getElementById("boutonSupprimer");
 
+// Ecouteur d'évenement qui appelle la fonction de confirmation si le bouton est cliqué
 boutonSuppression.addEventListener('click', () => confirmerSuppression(nomASupprimer, fonctionASupprimer, entrepriseASupprimer, filiereASupprimer));
 
+// Fonction qui ouvre une fenêtre de confirmation de suppression 
 function confirmerSuppression(nom, fonction, entreprise, filiere) {
     if (window.confirm(`Voulez-vous vraiment supprimer l'intervenant : ${nom} de l'entreprise ${entreprise} ?`)) {
         supprimerIntervenant(nom, fonction, entreprise, filiere);
@@ -130,6 +144,7 @@ function confirmerSuppression(nom, fonction, entreprise, filiere) {
     }
 }
 
+// Fonction qui interroge l'api pour supprimer l'intervenant
 function supprimerIntervenant(nom, fonction, entreprise, filiere) {
     // Effectuer la requête AJAX pour la suppression
     let xmlhttp = new XMLHttpRequest();
@@ -145,7 +160,7 @@ function supprimerIntervenant(nom, fonction, entreprise, filiere) {
             }
         }
     }
-
+    // Interroge l'api avec les parametres necessaires pour supprimer l'intervenant sélectionné
     let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/supprimer-intervenant.php`;
     requete += `?nom=${nom}&fonction=${fonction}&entreprise=${entreprise}&filiere=${filiere}`;
 

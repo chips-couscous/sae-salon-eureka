@@ -1,44 +1,48 @@
 /* Déclaration des variables */
-var btnAjouterManuel = document.getElementById("ajouterUtilisateur");
-var zoneSaisieNom = document.getElementById("nom");
-var zoneSaisieFonction = document.getElementById("fonction");
-var zoneSaisieEntreprise = document.getElementById("selectionEntreprise");
-var zoneSaisieFiliere = document.getElementById("filiere");
-var zonePrevisualisation = document.getElementById("TablePrevisualisation");
-var body = document.body;
+var btnAjouterManuel = document.getElementById("ajouterIntervenant"); // Bouton Ajouter sur la page
+var zoneSaisieNom = document.getElementById("nom"); // Zone de saisie du nom
+var zoneSaisieFonction = document.getElementById("fonction"); // Selection de la fonction
+var zoneSaisieEntreprise = document.getElementById("selectionEntreprise"); // Selection de l'entreprise
+var zoneSaisieFiliere = document.getElementById("filiere"); // Selection de la filiere 
+var zonePrevisualisation = document.getElementById("TablePrevisualisation"); // Table contenant les intervenants qui vont être ajoutés
+var body = document.body; // Body de la page
 
-var tableauUtilisateurs = [];
+var tableauIntervenants = []; // tableau contenant les intervenants qui vont être ajoutés
+var nomCorrect; // Booléen vérifiant la validité du nom
+var fonctionCorrect; // Booléen vérifiant la validité de la fonction
+var entrepriseCorrect; // Booléen vérifiant la validité de l'entreprise
+var filiereCorrect; // Booléen vérifiant la validité de la filiere
 
-var nomCorrect;
-var fonctionCorrect;
-var entrepriseCorrect;
-var filiereCorrect;
+var entrepriseSelectionnee; // Variable contenant l'entreprise pour lequel l'ajout sera fait
 
-var entrepriseSelectionnee;
-
+// Selection de l'entreprise pour l'ajout
 var selectionEntreprise = document.getElementById("selectionEntreprise");
 
+// Ecouteur d'évènement qui se déclenche lorsqu'une entreprise est selectionne - Appelle afficherChamps()
 selectionEntreprise.addEventListener("change", afficherChamps);
 
-/* Ajout d'eventListener */
-btnAjouterManuel.addEventListener("click", ajouterUtilisateurManuel);
+/* Ajout d'eventListener sur le pre-ajout */
+btnAjouterManuel.addEventListener("click", ajouterIntervenantManuel);
 
 /* Si données déjà présentes dans cookie -> récupération */
 if (document.cookie != null) {
-    let contenuCookie = readCookie("utilisateurs");
+    let contenuCookie = readCookie("intervenants");
     if (contenuCookie != null) {
-        tableauUtilisateurs = JSON.parse(contenuCookie);
-        if (typeof tableauUtilisateurs != 'object') {
-            tableauUtilisateurs = [];
+        tableauIntervenants = JSON.parse(contenuCookie);
+        if (typeof tableauIntervenants != 'object') {
+            tableauIntervenants = [];
         }
-        afficherUtilisateur();
+        afficherIntervenant();
     }
 }
 
+// Zone de saisie du nom
 var nomInput = document.getElementById('nom');
+// Ecouteur d'évènement qui se déclenche lorsqu'une entreprise est selectionne
 selectionEntreprise.addEventListener('change', function() {
+    // Récupération de l'entreprise sélectionnée
     entrepriseSelectionnee = this.value;
-
+    // Si l'entreprise sélectionnée est en fait le message indiquant qu'il faut sélectionner
     if (entrepriseSelectionnee == ""){
         masquerChamps();
     }else {
@@ -59,7 +63,7 @@ selectionEntreprise.addEventListener('change', function() {
     xhr.send(data);
 });
 
-
+// Fonction qui affiche les champs du formulaire d'ajout
 function afficherChamps() {
     // Itère sur tous les éléments avec la classe "champsAjoutIntervenant"
     var champsAjout = document.getElementsByClassName("champsAjoutIntervenant");
@@ -72,6 +76,7 @@ function afficherChamps() {
     }
 }
 
+// Fonction qui masque les champs du formulaire d'ajout
 function masquerChamps() {
     // Itère sur tous les éléments avec la classe "champsAjoutIntervenant"
     var champsAjout = document.getElementsByClassName("champsAjoutIntervenant");
@@ -96,18 +101,18 @@ function readCookie(nom) {
 	return null;
 }
 
-/* Affiche dans la zone de prévisualisation les différents utilisateurs importés ou ajoutés */
-function afficherUtilisateur() {
-    let indiceTableau = 0; // indice de l'utilisateur dans le tableau utilisé pour la suppression
+/* Affiche dans la zone de prévisualisation les différents intervenants ajoutés */
+function afficherIntervenant() {
+    let indiceTableau = 0; // indice de l'intervenant dans le tableau utilisé pour la suppression
     zonePrevisualisation.innerHTML = "";
-    tableauUtilisateurs.forEach(utilisateur => {
+    tableauIntervenants.forEach(intervenant => {
         zonePrevisualisation.innerHTML +=
         `<tr>
-            <td class="nom"><span>${utilisateur["nom"]}</span></td>
-            <td class="fonction"><span>${utilisateur["fonction"]}</span></td>
-            <td class="entreprise"><span>${utilisateur["entreprise"]}</span></td>
-            <td class="filiere"><span>${utilisateur["filiere"]}</span></td>
-            <td class="btnSup"><button class="supprimerUtilisateur" onclick="supprimerUtilisatuer(${indiceTableau});">&#x274C;</button></td>
+            <td class="nom"><span>${intervenant["nom"]}</span></td>
+            <td class="fonction"><span>${intervenant["fonction"]}</span></td>
+            <td class="entreprise"><span>${intervenant["entreprise"]}</span></td>
+            <td class="filiere"><span>${intervenant["filiere"]}</span></td>
+            <td class="btnSup"><button class="supprimerIntervenant" onclick="supprimerUtilisatuer(${indiceTableau});">&#x274C;</button></td>
         </tr>`;
         indiceTableau += 1;
     });
@@ -116,33 +121,33 @@ function afficherUtilisateur() {
 
 /* Fait correspondre les données affichées et celles présentes dans le cookie*/
 function ecritureCookie() {
-    let tableauUtilisateurJSON = JSON.stringify(tableauUtilisateurs);
-    document.cookie = 'utilisateurs = ' + tableauUtilisateurJSON;
+    let tableauIntervenantJSON = JSON.stringify(tableauIntervenants);
+    document.cookie = 'intervenants = ' + tableauIntervenantJSON;
 }
 
-/* Ajoute un utilisateur dans le tableau */
-function ajouterUtilisateur(donneesUtilisateur) {
-    tableauUtilisateurs.unshift({"nom" : donneesUtilisateur[0],"fonction" : donneesUtilisateur[1],"entreprise" : donneesUtilisateur[2],
-    "filiere" : donneesUtilisateur[3]});
+/* Ajoute un intervenant dans le tableau */
+function ajouterIntervenant(donneesIntervenant) {
+    tableauIntervenants.unshift({"nom" : donneesIntervenant[0],"fonction" : donneesIntervenant[1],"entreprise" : donneesIntervenant[2],
+    "filiere" : donneesIntervenant[3]});
 
     /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
     ecritureCookie();
 }
 
-/* Supprime l'utilisateur présent en paramètre */
+/* Supprime l'intervenant présent en paramètre */
 function supprimerUtilisatuer(i) {
-    tableauUtilisateurs.splice(i, 1);
+    tableauIntervenants.splice(i, 1);
     
     /* Ecrit dans le cookie au fur et à mesure des ajouts pour que le cookie corresponde à ce qui est affiché */
     ecritureCookie();
-    // Ne pas appeler afficherUtilisateur() ici pour éviter l'affichage multiple
+    // Ne pas appeler afficherIntervenant() ici pour éviter l'affichage multiple
 }
 
-/* Retourne true si l'utilisateur passé en paramètre a déjà été ajouté */
-function estUtilisateurPresent(utilisateurATester) {
+/* Retourne true si l'intervenant passé en paramètre a déjà été ajouté */
+function estIntervenantPresent(intervenantATester) {
     let estPresent = false;
-    tableauUtilisateurs.forEach(utilisateur => {
-        if (utilisateur["nom"] == utilisateurATester[0] && utilisateur["fonction"] == utilisateurATester[1] && utilisateur["entreprise"] == utilisateurATester[2] && utilisateur["filiere"] == utilisateurATester[3]){
+    tableauIntervenants.forEach(intervenant => {
+        if (intervenant["nom"] == intervenantATester[0] && intervenant["fonction"] == intervenantATester[1] && intervenant["entreprise"] == intervenantATester[2] && intervenant["filiere"] == intervenantATester[3]){
             estPresent = true;
         };
     });
@@ -150,31 +155,29 @@ function estUtilisateurPresent(utilisateurATester) {
 }
 
   ///////////////////////////////////////////////////////////////////////
- //                Ajout manuel d'un utilisateur                      //
+ //                Ajout manuel d'un intervenant                      //
 ///////////////////////////////////////////////////////////////////////
 
-
-
-/* Ajoute un utilisateur au tableau de prévisualisation */
-function ajouterUtilisateurManuel() {
-    let utilisateur = [zoneSaisieNom.value, zoneSaisieFonction.value, zoneSaisieEntreprise.value, zoneSaisieFiliere.value];
-    if (estChampsCorrects(utilisateur)) {
-        if (!estUtilisateurPresent(utilisateur)) {
-            console.log("Debut ajout intervenant : " + utilisateur);
-            ajouterUtilisateur(utilisateur);
+/* Ajoute un intervenant au tableau de prévisualisation */
+function ajouterIntervenantManuel() {
+    let intervenant = [zoneSaisieNom.value, zoneSaisieFonction.value, zoneSaisieEntreprise.value, zoneSaisieFiliere.value];
+    if (estChampsCorrects(intervenant)) {
+        if (!estIntervenantPresent(intervenant)) {
+            console.log("Debut ajout intervenant : " + intervenant);
+            ajouterIntervenant(intervenant);
             viderSaisie();
-            afficherUtilisateur();
+            afficherIntervenant();
         } else {
-            alert("Utilisateur déjà présent !");
+            alert("Intervenant déjà présent !");
         }
     } else {
         afficherChampsIncorrect();
     }
 }
 
-function ajouterUtilisateur(donneesUtilisateur) {
-    tableauUtilisateurs.unshift({"nom" : donneesUtilisateur[0],"fonction" : donneesUtilisateur[1],"entreprise" : donneesUtilisateur[2],
-    "filiere" : donneesUtilisateur[3]});
+function ajouterIntervenant(donneesIntervenant) {
+    tableauIntervenants.unshift({"nom" : donneesIntervenant[0],"fonction" : donneesIntervenant[1],"entreprise" : donneesIntervenant[2],
+    "filiere" : donneesIntervenant[3]});
 
     /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
     ecritureCookie();
@@ -189,27 +192,27 @@ function viderSaisie() {
 }
 
 /* Vérifie que tous les champs d'ajout manuel ont été rempli et respectent le bon format */
-function estChampsCorrects(utilisateur) {
+function estChampsCorrects(intervenant) {
     /* Enlève le bord rouge indiquant une erreur */
     zoneSaisieNom.classList.remove("erreur");
     zoneSaisieFonction.classList.remove("erreur");
     zoneSaisieEntreprise.classList.remove("erreur");
     zoneSaisieFiliere.classList.remove("erreur");
 
-    return estUtilisateurCorrect(utilisateur);
+    return estIntervenantCorrect(intervenant);
 }
 
-/* Vérifie que l'utilisateur rentré en paramètre est correct */
-function estUtilisateurCorrect(utilisateur) {
+/* Vérifie que l'intervenant rentré en paramètre est correct */
+function estIntervenantCorrect(intervenant) {
 
-    if (typeof utilisateur != 'object' || utilisateur.length != 4) {
+    if (typeof intervenant != 'object' || intervenant.length != 4) {
         return false;
     }
 
-    nomCorrect = utilisateur[0].length > 0;
-    fonctionCorrect = utilisateur[1] != -1;
-    entrepriseCorrect = utilisateur[2].length > 0;
-    filiereCorrect = utilisateur[3] != -1;
+    nomCorrect = intervenant[0].length > 0; // Si le nom a été saisi
+    fonctionCorrect = intervenant[1] != -1; // Est ce que la fonction n'est pas celle de base
+    entrepriseCorrect = intervenant[2].length > 0; // Si l'entreprise a bien été sélectionnée
+    filiereCorrect = intervenant[3] != -1; // Est ce que la filiere n'est pas celle de base
 
     return  nomCorrect && fonctionCorrect && entrepriseCorrect && filiereCorrect;
 }

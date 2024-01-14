@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
     <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/panel.css">
     <link rel="stylesheet" href="../../../static/css/intervenant.css">
 
     <!-- fontawesome link -->
@@ -112,6 +113,7 @@
 					<?php       
 					// Récupération des intervenants
 					$listeIntervenants=listeDesIntervenants(); 
+                    $compteur = 1; // Initialiser le compteur
 
 					// Boucle afficher la liste des intervenants
 					foreach($listeIntervenants as $intervenant) {
@@ -120,19 +122,18 @@
 						$entreprise=$intervenant['entreprise']; 
 						$filiere=$intervenant['filiere'];
                     
-						echo "<tr>";
+						echo "<tr id='ligne_$compteur'>";
 						echo "<td>".$nom."</td>";
 						echo "<td>".$fonction."</td>";
 						echo "<td>".$entreprise."</td>";
                         echo "<td>".$filiere."</td>";
-						echo "</tr>";   
+						echo "</tr>"; 
+                        
+                        $compteur++; // Incrémenter le compteur
 					}							
 					?>
 				</table>        
             </div>
-
-            <button class="valider">Valider les ajouts</button>
-
             <div id="modifCliquee">
             </div>
 

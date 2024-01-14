@@ -1,55 +1,55 @@
 <?php
-session_start();
-if (!isset($_SESSION['idUtilisateur'])) {
-    header('Location: ../../../utilisateur/connexion.php');
-}
-
-
-require ('../../../static/module_php/base_de_donnees.php');
-require ('../../../static/module_php/utilisateur/utilisateur.php');
-require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
-require('../../../static/module_php/panel/g_utilisateurs.php');
-
-$message = "";
-$compteurDeFiliere = 1;
-
-$pdo = connexionBaseDeDonnees();
-$listeFiliere = listeDesFilieres($pdo);
-
-// Encodage de la liste en JSON
-$listeFiliere_json = json_encode($listeFiliere);
-
-// Définition d'un cookie contenant les filieres
-setcookie('liste_filiere_cookie', $listeFiliere_json, 0, '/');
-
-// On récupère l'ID de l'utilisateur connecté
-$idUtilisateur = $_SESSION['idUtilisateur'];
-$informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
-$modifPossible = true;
-
-if (isset($_POST['filiereUtilisateur'])) {
-    supprimerFiliere($pdo, $_POST['idUtilisateur']);
-    $message = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiereUtilisateur"]);
-}
-if (isset($_POST["filiere1"])) {
-    $modifPossible = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiere1"]);
-}
-if (isset($_POST["filiere2"])) {
-    $modifPossible = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiere2"]);
-}
-if (isset($_POST["filiere3"])) {
-    $modifPossible = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiere3"]);
-}
-if (isset($_POST["filiere4"])) {
-    $modifPossible = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiere4"]);
-}
-if (isset($_POST['prenomUtilisateur']) && isset($_POST['nomUtilisateur']) && isset($_POST['mailUtilisateur']) && isset($_POST['mdpUtilisateur']) && isset($_POST['statutUtilisateur'])) {
-    if ($modifPossible && majUtilisateur($pdo, $_POST['idUtilisateur'], $_POST['prenomUtilisateur'], $_POST['nomUtilisateur'], $_POST['mailUtilisateur'], $_POST['mdpUtilisateur'], $_POST['statutUtilisateur'])) {
-        $message = "<h1 class='afficherAjout' id='afficher'>Modification réussie</h1>";
-    } else {
-        $message = "<h1 class='afficherAjout' id='afficher'>La modification n'a pas fonctionnée</h1>";
+    session_start();
+    if (!isset($_SESSION['idUtilisateur'])) {
+        header('Location: ../../../utilisateur/connexion.php');
     }
-}
+    
+    
+    require ('../../../static/module_php/base_de_donnees.php');
+    require ('../../../static/module_php/utilisateur/utilisateur.php');
+    require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
+    require('../../../static/module_php/panel/g_utilisateurs.php');
+    
+    $message = "";
+    $compteurDeFiliere = 1;
+    
+    $pdo = connexionBaseDeDonnees();
+    $listeFiliere = listeDesFilieres($pdo);
+    
+    // Encodage de la liste en JSON
+    $listeFiliere_json = json_encode($listeFiliere);
+    
+    // Définition d'un cookie contenant les filieres
+    setcookie('liste_filiere_cookie', $listeFiliere_json, 0, '/');
+    
+    // On récupère l'ID de l'utilisateur connecté
+    $idUtilisateur = $_SESSION['idUtilisateur'];
+    $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
+    $modifPossible = true;
+    
+    if (isset($_POST['filiereUtilisateur'])) {
+        supprimerFiliere($pdo, $_POST['idUtilisateur']);
+        $message = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiereUtilisateur"]);
+    }
+    if (isset($_POST["filiere1"])) {
+        $modifPossible = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiere1"]);
+    }
+    if (isset($_POST["filiere2"])) {
+        $modifPossible = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiere2"]);
+    }
+    if (isset($_POST["filiere3"])) {
+        $modifPossible = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiere3"]);
+    }
+    if (isset($_POST["filiere4"])) {
+        $modifPossible = ajouterFiliere($pdo, $_POST['idUtilisateur'], $_POST["filiere4"]);
+    }
+    if (isset($_POST['prenomUtilisateur']) && isset($_POST['nomUtilisateur']) && isset($_POST['mailUtilisateur']) && isset($_POST['mdpUtilisateur']) && isset($_POST['statutUtilisateur'])) {
+        if ($modifPossible && majUtilisateur($pdo, $_POST['idUtilisateur'], $_POST['prenomUtilisateur'], $_POST['nomUtilisateur'], $_POST['mailUtilisateur'], $_POST['mdpUtilisateur'], $_POST['statutUtilisateur'])) {
+            $message = "<h1 class='afficherAjout' id='afficher'>Modification réussie</h1>";
+        } else {
+            $message = "<h1 class='afficherAjout' id='afficher'>La modification n'a pas fonctionnée</h1>";
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="fr">

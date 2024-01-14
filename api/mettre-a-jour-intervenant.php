@@ -3,11 +3,11 @@ require "../static/module_php/panel/base_de_donnees.php";
 
 $pdo = connexionBaseDeDonnees();
 try {
-    $nom = isset($_REQUEST['nom']) ? $_REQUEST['nom'];
-    $fonction = isset($_REQUEST['fonction']) ? $_REQUEST['fonction'];
-    $entreprise = isset($_REQUEST['entreprise']) ? $_REQUEST['entreprise'];
-    $filiere = isset($_REQUEST['filiere']) ? $_REQUEST['filiere'];
-    $id = 3;
+    $nom = isset($_REQUEST['nom']) ? $_REQUEST['nom'] : "";
+    $fonction = isset($_REQUEST['fonction']) ? $_REQUEST['fonction'] : "";
+    $entreprise = isset($_REQUEST['entreprise']) ? $_REQUEST['entreprise'] : "";
+    $filiere = isset($_REQUEST['filiere']) ? $_REQUEST['filiere'] : "";    
+    $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";    
 
     // Début de la transaction
     $pdo->beginTransaction();

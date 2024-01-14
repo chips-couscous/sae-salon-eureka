@@ -91,6 +91,12 @@
 
     <div class="container">
         <div class="container-content">
+        <?php
+            /* Affichage d'un message si la BD est innaccessible */
+            if (!$bdConnecte) {
+                ?><h1 class="erreurBD">Base de données non accessible, peut entraîner des problèmes</h1><?php
+            }
+        ?>
         <span class="titre-panel-ouvert"><span>Gestion des intervenants ></span> Ajouter un intervenant</span>
             <!-- Zone d'ajout manuel -->
             <div class="ajoutManuel">
@@ -111,7 +117,7 @@
                 </div>
                 <div class="form-item bm15 champsIntervenantInvisible champsAjoutIntervenant">
                     <select name="fonction" id="fonction">
-                        <option value="-1">Fonction</option>
+                        <option value="-1">-- Fonction --</option>
                         <?php
                         foreach(getListeFonction() as $fonction) {
                             ?><option value="<?php echo $fonction['libelleFonction'];?>"><?php echo $fonction['libelleFonction'];?></option><?php
@@ -121,13 +127,16 @@
                 </div>
                 <div class="form-item bm15 champsIntervenantInvisible champsAjoutIntervenant" >
                     <select name="filiere" id="filiere">
-                        <option value="-1">Filiere</option>
+                        <option value="-1">-- Filiere --</option>
                         <?php
                         foreach(getListeFiliere() as $filiere) {
                             ?><option value="<?php echo $filiere['libelleFiliere'];?>"><?php echo $filiere['libelleFiliere'];?></option><?php
                         }
                         ?>
                     </select>
+                </div>
+                <div class="form-item champsIntervenantInvisible champsAjoutIntervenant" id="boutonAjouterFiliere">
+                    <p class="boutonAjoutFiliere"> + </p>
                 </div>
                 <div class="form-item ajouter champsIntervenantInvisible champsAjoutIntervenant" >
                     <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
