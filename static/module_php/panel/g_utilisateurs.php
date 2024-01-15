@@ -67,7 +67,6 @@
         } 
     }
 
-
     function ajouterFiliere($pdo, $idUtilisateur, $idFiliere) {
         global $pdo;
         try{ 

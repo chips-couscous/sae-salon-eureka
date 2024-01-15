@@ -112,7 +112,7 @@ function afficherIntervenant() {
             <td class="fonction"><span>${intervenant["fonction"]}</span></td>
             <td class="entreprise"><span>${intervenant["entreprise"]}</span></td>
             <td class="filiere"><span>${intervenant["filiere"]}</span></td>
-            <td class="btnSup"><button class="supprimerIntervenant" onclick="supprimerUtilisatuer(${indiceTableau});">&#x274C;</button></td>
+            <td class="btnSup"><button class="supprimerIntervenant" onclick="supprimerIntervenant(${indiceTableau});">&#x274C;</button></td>
         </tr>`;
         indiceTableau += 1;
     });
@@ -135,13 +135,14 @@ function ajouterIntervenant(donneesIntervenant) {
 }
 
 /* Supprime l'intervenant présent en paramètre */
-function supprimerUtilisatuer(i) {
-    tableauIntervenants.splice(i, 1);
+function supprimerIntervenant(i) {
+    tableauIntervenants.splice(i, 1); // Utilisation de splice pour supprimer l'élément à l'indice i
     
     /* Ecrit dans le cookie au fur et à mesure des ajouts pour que le cookie corresponde à ce qui est affiché */
     ecritureCookie();
-    // Ne pas appeler afficherIntervenant() ici pour éviter l'affichage multiple
+    afficherIntervenant();
 }
+
 
 /* Retourne true si l'intervenant passé en paramètre a déjà été ajouté */
 function estIntervenantPresent(intervenantATester) {
@@ -173,14 +174,6 @@ function ajouterIntervenantManuel() {
     } else {
         afficherChampsIncorrect();
     }
-}
-
-function ajouterIntervenant(donneesIntervenant) {
-    tableauIntervenants.unshift({"nom" : donneesIntervenant[0],"fonction" : donneesIntervenant[1],"entreprise" : donneesIntervenant[2],
-    "filiere" : donneesIntervenant[3]});
-
-    /* Ecrit dans le cookie au fur et a mesure des ajouts pour que le cookie corresponde a ce qui est affiché */
-    ecritureCookie();
 }
 
 /* Vide les zones de saisie manuelles*/

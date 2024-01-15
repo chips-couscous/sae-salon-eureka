@@ -8,7 +8,7 @@
     require ('../../../static/module_php/base_de_donnees.php');
     require ('../../../static/module_php/utilisateur/utilisateur.php');
     require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
-    require('../../../static/module_php/panel/g_utilisateurs.php');
+    require ('../../../static/module_php/panel/g_utilisateurs.php');
     
     $message = "";
     $compteurDeFiliere = 1;
@@ -96,19 +96,19 @@
                     </nav>
                 </div>
                 <div class="navigation-compte">
-                      <nav>
-                          <ul>
-                              <li>
-                                  <i class="fa-regular fa-circle-user ic-wm-el-header"></i>
-                                  <div class="header-compte">
-                                      <a class="hover-underline-active" href=<?php echo validerUneSessionUtilisateur($idUtilisateur) ? "\"#\">" . $informationsUtilisateur['prenom_utilisateur'] . " " . $informationsUtilisateur['nom_utilisateur'] : "\"./utilisateur/connexion.php\">" . "Se connecter" ?></a>
-                                      <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<span class='badge-status'>" . $informationsUtilisateur['libelle_statut'] . "</span>" : "" ?>
-                                  </div>
-                              </li>
-                              <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<li><i class='fa-regular fa-bell'></i></li>" : "" ?>
-                          </ul>
-                      </nav>
-                  </div>
+                    <nav>
+                        <ul>
+                            <li>
+                                <i class="fa-regular fa-circle-user ic-wm-el-header"></i>
+                                <div class="header-compte">
+                                    <a class="hover-underline-active" href=<?php echo validerUneSessionUtilisateur($idUtilisateur) ? "\"#\">" . $informationsUtilisateur['prenom_utilisateur'] . " " . $informationsUtilisateur['nom_utilisateur'] : "\"./utilisateur/connexion.php\">" . "Se connecter" ?></a>
+                                    <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<span class='badge-status'>" . $informationsUtilisateur['libelle_statut'] . "</span>" : "" ?>
+                                </div>
+                            </li>
+                            <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<li><i class='fa-regular fa-bell'></i></li>" : "" ?>
+                        </ul>
+                    </nav>
+                </div>
             </div>
             <!-- hambuger header responsive -->
             <div id="Biggachou"><span></span><span></span><span></span><span></span></div>
@@ -208,20 +208,20 @@
                         </select>
                     </div>
                     <div class="form-item" id="ItemSelecteFiliere">
-                    <div class="form-item">
-                        <table id="listeDesFiliere">
-                            <tr>
-                                <select name="filiereUtilisateur" id="filiereUtilisateur">
-                                    <?php 
-                                        $filiere = listeDesFilieres($pdo);
-                                        foreach($filiere as $listeFiliere) {
-                                            echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
-                                        }
-                                    ?>
-                                </select>
-                            </tr>
-                        </table>
-                    </div>
+                        <div class="form-item">
+                            <table id="listeDesFiliere">
+                                <tr>
+                                    <select name="filiereUtilisateur" id="filiereUtilisateur">
+                                        <?php 
+                                            $filiere = listeDesFilieres($pdo);
+                                            foreach($filiere as $listeFiliere) {
+                                                echo "<option value = '". $listeFiliere["idFiliere"]. "'>". $listeFiliere["libelleFiliere"] . "</option>";
+                                            }
+                                        ?>
+                                    </select>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                     <div class="affichageModificationCache form-item" id="boutonAjouterFiliere">
                         <p class="boutonAjoutFiliere"> + </p>

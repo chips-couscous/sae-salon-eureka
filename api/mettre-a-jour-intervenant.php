@@ -7,7 +7,8 @@ try {
     $fonction = isset($_REQUEST['fonction']) ? $_REQUEST['fonction'] : "";
     $entreprise = isset($_REQUEST['entreprise']) ? $_REQUEST['entreprise'] : "";
     $filiere = isset($_REQUEST['filiere']) ? $_REQUEST['filiere'] : "";    
-    $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";    
+    $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : "";
+    var_dump($id);    
 
     // Début de la transaction
     $pdo->beginTransaction();

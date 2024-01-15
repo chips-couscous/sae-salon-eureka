@@ -1,7 +1,4 @@
 <?php 
-    include('base_de_donnees.php');
-    $pdo = connexionBaseDeDonnees();
-
     /** @return true si la base de données est en ligne */
     function estBDConnecte() {
         global $pdo;
@@ -16,7 +13,7 @@
      *  Ecrit dans la BD le tableau d'utilisateurs fourni en paramètre
      * @return true si l'insertion est bien effectuée
      */
-    function insererBDIntervenants($tableauIntervenants) {
+    function insererBDIntervenants($pdo, $tableauIntervenants) {
         global $pdo;
 
         $insertionIntervenants = $pdo->prepare("INSERT INTO se_intervenant(nom_intervenant,fonction_intervenant,entreprise_intervenant) VALUES (:nom,:fonction,:entreprise)");
@@ -76,16 +73,17 @@
         $donneeCookie = "";
 
         if (isset($_POST["enregistrer"]) && $_POST["enregistrer"] == "true") {
-            if (isset($_COOKIE["utilisateurs"])) {
-                $donneeCookie = $_COOKIE["utilisateurs"];
+            if (isset($_COOKIE["intervenants"])) {
+                $donneeCookie = $_COOKIE["intervenants"];
 
                 return json_decode($donneeCookie);
             }
+        } else {
+            return null;
         }
-        return null;
     }
     /////////////////////////////////////////////////////////////////////////////////////////////
-    function listeDesIntervenants() {
+    function listeDesIntervenants($pdo) {
         // Retourne la liste des intervenants enregistrés sous forme de tableau
         // Fonction qui retourne la liste des intervenants enregistrés sous forme de tableau
         // avec pour chaque ligne une collection indicée sur les noms des colonnes de la BD
@@ -97,21 +95,21 @@
         try {	
             // REquete avec agrégats pour calculer le solde
             $maRequete = $pdo->prepare("
-            SELECT se_intervenant.nom_intervenant AS nom, 
+            SELECT se_intervenant.id_intervenant AS id, 
+            se_intervenant.nom_intervenant AS nom,
             IFNULL(se_intervenant.fonction_intervenant, 'Aucune fonction renseignée') AS fonction,
-            se_entreprise.nom_entreprise AS entreprise, 
-            se_filiere.libelle_filiere AS filiere
-            FROM se_intervenant 
-            INNER JOIN se_entreprise
-            ON se_intervenant.entreprise_intervenant = se_entreprise.id_entreprise
-            INNER JOIN se_intervient
-            ON se_intervenant.id_intervenant = se_intervient.intervenant_intervient
-            INNER JOIN se_filiere
-            ON se_intervient.filiere_intervient = se_filiere.id_filiere
+            se_entreprise.nom_entreprise AS entreprise,
+            GROUP_CONCAT(DISTINCT se_filiere.libelle_filiere ORDER BY se_filiere.libelle_filiere SEPARATOR ', ') AS filiere
+            FROM se_intervenant
+            INNER JOIN se_entreprise ON se_intervenant.entreprise_intervenant = se_entreprise.id_entreprise
+            INNER JOIN se_intervient ON se_intervenant.id_intervenant = se_intervient.intervenant_intervient
+            INNER JOIN se_filiere ON se_intervient.filiere_intervient = se_filiere.id_filiere
+            GROUP BY se_intervenant.id_intervenant
             ORDER BY se_intervenant.nom_intervenant;");
             if ($maRequete->execute()) {
                 $maRequete->setFetchMode(PDO::FETCH_OBJ);
                 while ($ligne=$maRequete->fetch()) {
+                    $tableauIntervenant['id']=$ligne->id;
                     $tableauIntervenant['nom']=$ligne->nom;
                     $tableauIntervenant['fonction']=$ligne->fonction;
                     $tableauIntervenant['entreprise']=$ligne->entreprise;
@@ -126,10 +124,9 @@
             return $tableauIntervenants;
         }
     }	
-    /////////////////////////////////////////////////////////////////////////////////////////////	
 
      /////////////////////////////////////////////////////////////////////////////////////////////
-     function ajouterIntervenant($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant) {
+     function ajouterIntervenant($pdo, $nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant) {
         global $pdo;  // Connexion à la BD
     
         try {
@@ -150,7 +147,7 @@
         }
     }
     
-    function intervenantPresent($nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant) {
+    function intervenantPresent($pdo, $nom_intervenant, $fonction_intervenant, $entreprise_intervenant, $filiere_intervenant) {
         global $pdo;
     
         try {
@@ -173,7 +170,7 @@
     }
 
     /* Retourne la liste des filières présentes dans la BD */
-    function getListeFiliere() {
+    function getListeFiliere($pdo) {
         global $pdo;
         $listeFiliere = null;
 
@@ -192,7 +189,7 @@
     }
 
     /* Retourne la liste des statut présents dans la BD */
-    function getListeStatut() {
+    function getListeStatut($pdo) {
         global $pdo;
         $listeStatut = null;
 
@@ -211,7 +208,7 @@
     }
 
     /* Retourne la liste des fonctions présentes dans la BD */
-    function getListeFonction() {
+    function getListeFonction($pdo) {
         global $pdo;
 
         $tableauFonctions = array() ; // Tableau qui sera retourné contenant les fonctions enregistrés
@@ -237,7 +234,7 @@
     }
 
     /* Retourne la liste des fonctions présentes dans la BD */
-    function getListeEntreprise() {
+    function getListeEntreprise($pdo) {
         global $pdo;
 
         $tableauEntreprises = array() ; // Tableau qui sera retourné contenant les fonctions enregistrés
@@ -263,7 +260,7 @@
     }
 
     /* Retourne la liste des fonctions présentes dans la BD */
-    function getNombreIntervenants($entreprise) {
+    function getNombreIntervenants($pdo, $entreprise) {
         global $pdo;
     
         $nombreIntervenants = 1; // Variable contenant le nombre d'intervenants
@@ -295,4 +292,32 @@
             return $nombreIntervenants; // Vous pouvez également loguer l'erreur $e si nécessaire
         }
     }  
+
+    function ajouterFiliere($pdo, $idIntervenant, $idFiliere) {
+        global $pdo;
+        try{ 
+            $maRequete = $pdo->prepare("INSERT INTO se_intervient VALUES (:idI,:idF)");
+            $maRequete->bindValue(':idI', $idIntervenant);
+            $maRequete->bindValue(':idF', $idFiliere);
+            $maRequete->execute();
+            return true;
+        }
+        catch ( Exception $e ) {
+            return false;
+        }  
+    }
+    
+    function supprimerFiliere($pdo, $id) {
+        global $pdo;
+        try{ 
+            $connecte=false;
+            $maRequete = $pdo->prepare("DELETE FROM se_intervient WHERE intervenant_intervient  = :id");
+            $maRequete->bindValue(':id', $id);
+            $maRequete->execute();
+            return true;  
+        }
+        catch ( Exception $e ) {
+            return false;
+        }  
+    }
 ?>

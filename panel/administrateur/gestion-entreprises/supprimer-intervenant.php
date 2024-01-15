@@ -1,5 +1,20 @@
 <?php
+    session_start();
+
+    if (!isset($_SESSION['idUtilisateur'])) {
+        header('Location: ../../../utilisateur/connexion.php');
+    }
+    
+    require ('../../../static/module_php/base_de_donnees.php');
+    require ('../../../static/module_php/utilisateur/utilisateur.php');
+    require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
     require ('../../../static/module_php/panel/g_intervenants.php');
+
+    $pdo = connexionBaseDeDonnees();
+
+    // On récupère l'ID de l'utilisateur connecté
+    $idUtilisateur = $_SESSION['idUtilisateur'];
+    $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +31,7 @@
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
     <link rel="stylesheet" href="../../../static/css/compte.css">
+    <link rel="stylesheet" href="../../../static/css/panel.css">
     <link rel="stylesheet" href="../../../static/css/intervenant.css">
 
     <!-- fontawesome link -->
@@ -111,7 +127,7 @@
 					</tr>
 					<?php       
 					// Récupération des intervenants
-					$listeIntervenants=listeDesIntervenants(); 
+					$listeIntervenants=listeDesIntervenants($pdo); 
 
 					// Boucle afficher la liste des intervenants
 					foreach($listeIntervenants as $intervenant) {

@@ -1,8 +1,15 @@
 <?php
+    session_start();
+
+    require ('../../../static/module_php/base_de_donnees.php');
+    require ('../../../static/module_php/utilisateur/utilisateur.php');
+    require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
     require('../../../static/module_php/panel/g_intervenants.php');
     $bdConnecte = estBDConnecte(); // Vérification de la connection à la BD
     $tableauIntervenants = recupererCookie();
     $estBtnValideClique = isset($_POST["enregistrer"]) && $_POST["enregistrer"] == true;
+
+    $pdo = connexionBaseDeDonnees();
 
     if (!$bdConnecte) {
         ?><script>alert("Base de données non accessible !");</script><?php
@@ -10,7 +17,7 @@
 
     /* Insertion dans la BD */
     if ($tableauIntervenants != null && $bdConnecte && $estBtnValideClique) {
-        if (insererBDIntervenants($tableauIntervenants)) {
+        if (insererBDIntervenants($pdo, $tableauIntervenants)) {
             ?><script>alert("SUCCES ! Tous les utilisateurs ont bien été importés !");</script><?php
         } else {
             ?>
@@ -107,7 +114,7 @@
                         <option value="">-- Choisissez une entreprise --</option>
                         <?php
                         // Boucle sur la liste des entreprises pour les insérer dans le select
-                        foreach(getListeEntreprise() as $entreprise) {
+                        foreach(getListeEntreprise($pdo) as $entreprise) {
                             ?><option value="<?php echo $entreprise['nomEntreprise'];?>"><?php echo $entreprise['nomEntreprise'];?></option><?php
                         }
                         ?>
@@ -123,7 +130,7 @@
                         <option value="-1">-- Fonction --</option>
                         <?php
                         // Boucle sur la liste des fonctions pour les insérer dans le select
-                        foreach(getListeFonction() as $fonction) {
+                        foreach(getListeFonction($pdo) as $fonction) {
                             ?><option value="<?php echo $fonction['libelleFonction'];?>"><?php echo $fonction['libelleFonction'];?></option><?php
                         }
                         ?>
@@ -134,7 +141,7 @@
                         <option value="-1">-- Filiere --</option>
                         <?php
                         // Boucle sur la liste des filieres pour les insérer dans le select
-                        foreach(getListeFiliere() as $filiere) {
+                        foreach(getListeFiliere($pdo) as $filiere) {
                             ?><option value="<?php echo $filiere['libelleFiliere'];?>"><?php echo $filiere['libelleFiliere'];?></option><?php
                         }
                         ?>
@@ -146,7 +153,7 @@
                 </div>
                 <!-- Bouton d'ajout --> 
                 <div class="form-item ajouter champsIntervenantInvisible champsAjoutIntervenant" >
-                    <button id="ajouterUtilisateur" class="valider ajouterManuel">Ajouter</button>
+                    <button id="ajouterIntervenant" class="valider ajouterManuel">Ajouter</button>
                 </div>
             </div>
 

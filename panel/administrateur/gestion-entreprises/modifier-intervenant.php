@@ -1,5 +1,35 @@
 <?php
+    session_start();
+    
+    require ('../../../static/module_php/base_de_donnees.php');
+    require ('../../../static/module_php/utilisateur/utilisateur.php');
+    require ('../../../static/module_php/utilisateur/connexion_utilisateur.php');
     require ('../../../static/module_php/panel/g_intervenants.php');
+    
+    $message = "";
+    $compteurDeFiliere = 1;
+    
+    $pdo = connexionBaseDeDonnees();
+    $listeFiliere = getListeFiliere($pdo);
+    
+    // Encodage de la liste en JSON
+    $listeFiliere_json = json_encode($listeFiliere);
+    
+    // Définition d'un cookie contenant les filieres
+    setcookie('liste_filiere_cookie', $listeFiliere_json, 0, '/');
+    
+    // On récupère l'ID de l'utilisateur connecté
+    $idUtilisateur = $_SESSION['idUtilisateur'];
+    $informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
+
+    // Vérifier s'il y a une demande d'ajout ou de suppression de filière
+    if (isset($_POST['filiereModif'])) {
+        // Supprimer les filières existantes pour l'utilisateur
+        supprimerFiliere($pdo, $idUtilisateur);
+
+        // Ajouter la nouvelle filière sélectionnée
+        $message = ajouterFiliere($pdo, $idUtilisateur, $_POST["filiereModif"]);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +45,6 @@
     <link rel="stylesheet" href="../../../static/css/connexion.css">
     <link rel="stylesheet" href="../../../static/css/main.css">
     <link rel="stylesheet" href="../../../static/css/header.css">
-    <link rel="stylesheet" href="../../../static/css/compte.css">
     <link rel="stylesheet" href="../../../static/css/panel.css">
     <link rel="stylesheet" href="../../../static/css/intervenant.css">
 
@@ -53,13 +82,11 @@
                             <li>
                                 <i class="fa-regular fa-circle-user ic-wm-el-header"></i>
                                 <div class="header-compte">
-                                    <span class="hover-underline-active">Thomas Lemaire</span>
-                                    <!-- VIDE SI PAS CO -->
-                                    <span class="badge-status">étudiant</span>
+                                    <a class="hover-underline-active" href=<?php echo validerUneSessionUtilisateur($idUtilisateur) ? "\"#\">" . $informationsUtilisateur['prenom_utilisateur'] . " " . $informationsUtilisateur['nom_utilisateur'] : "\"./utilisateur/connexion.php\">" . "Se connecter" ?></a>
+                                    <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<span class='badge-status'>" . $informationsUtilisateur['libelle_statut'] . "</span>" : "" ?>
                                 </div>
                             </li>
-                            <!-- VIDE SI PAS CO -->
-                            <li><i class="fa-regular fa-bell"></i></li>
+                            <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<li><i class='fa-regular fa-bell'></i></li>" : "" ?>
                         </ul>
                     </nav>
                 </div>
@@ -95,6 +122,10 @@
                 <table class="tablePrevisualisation" id="TablePrevisualisation">
 					<tr>
 						<!--- Contenu -->
+                        <th>
+							<!--- Colonne identifiant -->
+							Identifiant
+						</th>
 						<th>
 							<!--- Colonne nom -->
 							Nom
@@ -114,17 +145,18 @@
 					</tr>
 					<?php       
 					// Récupération des intervenants
-					$listeIntervenants=listeDesIntervenants(); 
+					$listeIntervenants=listeDesIntervenants($pdo); 
                     $compteur = 1; // Initialiser le compteur
 
 					// Boucle afficher la liste des intervenants
 					foreach($listeIntervenants as $intervenant) {
+                        $id=$intervenant['id'];
 						$nom=$intervenant['nom'];
 						$fonction=$intervenant['fonction']; 
 						$entreprise=$intervenant['entreprise']; 
 						$filiere=$intervenant['filiere'];
                     
-						echo "<tr id='ligne_$compteur'>";
+                        echo "<td>".$id."</td>";
 						echo "<td>".$nom."</td>";
 						echo "<td>".$fonction."</td>";
 						echo "<td>".$entreprise."</td>";
@@ -138,7 +170,6 @@
             </div>
             <div id="modifCliquee">
             </div>
-
         </div>
         <div class="container-asyde">
             <div class="asyde-content">

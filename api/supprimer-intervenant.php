@@ -4,7 +4,6 @@ require "../static/module_php/panel/base_de_donnees.php";
 $pdo = connexionBaseDeDonnees();
 try {
     $id = isset($_REQUEST['id']) ? $_REQUEST['id'];
-    $id = 3;
     
     // Début de la transaction
     $pdo->beginTransaction();

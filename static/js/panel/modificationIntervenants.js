@@ -45,6 +45,9 @@ function afficherDonnees(donnees) {
     // Reinitialisation de la table avec les champs des colonnes
     displayTable.innerHTML = `
     <tr>
+        <th>
+            Identifiant
+        </th>
 		<th>
 			Nom
 		</th>
@@ -63,6 +66,7 @@ function afficherDonnees(donnees) {
         let intervenant = donnees[i];
         displayTable.innerHTML += `
         </tr>
+            <td>${intervenant['id']}</td>
             <td>${intervenant['nom']}</td>
             <td>${intervenant['fonction']}</td>
             <td>${intervenant['entreprise']}</td>
@@ -201,21 +205,19 @@ let champsModifs = document.getElementById("modifCliquee");
 
 // Fonction à appeler lorsqu'une ligne est cliquée
 function estCliquee(ligne) {
+    console.log("ligneCliqué");
     // Récupération des champs et listes
     let listeChamps = ligne.getElementsByTagName("td");
     let tableauFonctions = tableauFonction;
     let tableauEntreprises = tableauEntreprise;
     let tableauFilieres = tableauFiliere;
 
-    // Récupérez l'ID de la ligne cliquée
-    let ligneID = ligne.getAttribute("id");
-
     // Construire la chaîne HTML dans une variable
     let htmlContent = `
         <span>Modifier l'intervenant :</span><br>
         <form id="formulaireModification" method="post" action="#">
             <div class="form-item bm15 ">
-                <input type="text" name="nom" id="nomModif" value="${listeChamps[0].innerText}" autocomplete="off" required>
+                <input type="text" name="nom" id="nomModif" value="${listeChamps[1].innerText}" autocomplete="off" required>
                 <label for="nomModif">Nom *</label>
             </div>
             <div class="form-item bm15 ">
@@ -224,7 +226,7 @@ function estCliquee(ligne) {
     // Affichage des différentes fonctions dans le select       
     for (var i = 0; i < tableauFonctions.length; i++) {
         htmlContent += `<option value="${tableauFonctions[i].fonction}"`;
-        if (listeChamps[1].innerText == tableauFonctions[i].fonction) {
+        if (listeChamps[2].innerText == tableauFonctions[i].fonction) {
             htmlContent += ` selected`;
         }
         htmlContent += `>${tableauFonctions[i].fonction}</option>`;
@@ -238,7 +240,7 @@ function estCliquee(ligne) {
     // Affichage des différentes entreprises dans le select     
     for (var i = 0; i < tableauEntreprises.length; i++) {
         htmlContent += `<option value="${tableauEntreprises[i].entreprise}"`;
-        if (listeChamps[2].innerText == tableauEntreprises[i].entreprise) {
+        if (listeChamps[3].innerText == tableauEntreprises[i].entreprise) {
             htmlContent += ` selected`;
         }
         htmlContent += `>${tableauEntreprises[i].entreprise}</option>`;
@@ -252,7 +254,7 @@ function estCliquee(ligne) {
     // Affichage des différentes filieres dans le select     
     for (var i = 0; i < tableauFilieres.length; i++) {
         htmlContent += `<option value="${tableauFilieres[i].filiere}"`;
-        if (listeChamps[3].innerText == tableauFilieres[i].filiere) {
+        if (listeChamps[4].innerText == tableauFilieres[i].filiere) {
             htmlContent += ` selected`;
         }
         htmlContent += `>${tableauFilieres[i].filiere}</option>`;
@@ -263,10 +265,14 @@ function estCliquee(ligne) {
                 <div class="form-item">
                     <input type="submit" value="Modifier">
                 </div>
+                <div class="form-item">
+                    <input type="hidden" name="idUtilisateur" id="idUtilisateur" value="${listeChamps[0].innerText}">
+                </div>
             </form>`;
 
     // Remplacez le contenu de champsModifs par la nouvelle chaîne HTML
     champsModifs.innerHTML = htmlContent;
+    console.log(listeChamps[0].innerText);
 
     // Appel de fonction mettant en place un écouteur d'évènements sur le formulaire
     ajouterEcouteurFormulaire();
@@ -277,7 +283,6 @@ function estCliquee(ligne) {
 // Fonction pour ajouter l'écouteur d'événements au formulaire
 function ajouterEcouteurFormulaire() {
     let formulaireModification = document.getElementById("formulaireModification");
-
     if (formulaireModification) {
         formulaireModification.addEventListener("submit", function (event) {
             event.preventDefault(); // Empêche le rechargement de la page
@@ -289,22 +294,25 @@ function ajouterEcouteurFormulaire() {
             let nouvelleFonction = document.getElementById("fonctionModif").value;
             let nouvelleEntreprise = document.getElementById("entrepriseModif").value;
             let nouvelleFiliere = document.getElementById("filiereModif").value;
+            let idUtilisateur = document.getElementById("idUtilisateur").value;
+            console.log(idUtilisateur);
 
             // Appel de fonction intérrogant l'api pour mettre à jour la BD
-            mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntreprise, nouvelleFiliere);
+            mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntreprise, nouvelleFiliere, idUtilisateur);
         });
     }
 }
 
 // Fonction intérrogant l'api afin de mettre à jour la BD
-function mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntreprise, nouvelleFiliere) {
-
+function mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntreprise, nouvelleFiliere, idUtilisateur) {
     let xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
             if (this.status == 200) {
                 // Traitement après la mise à jour réussie
                 console.log("Mise à jour réussie !");
+
+                window.location.reload();
             } else {
                 // Gestion des erreurs
                 console.error("Erreur lors de la mise à jour : " + this.status);
@@ -313,7 +321,7 @@ function mettreAJourBaseDeDonnees(nouveauNom, nouvelleFonction, nouvelleEntrepri
     }
     // Interrogation de l'api pour mettre à jour les informations de l'intervenant
     let requete = `http://localhost/WorkspaceWeb/sae-salon-eureka/api/mettre-a-jour-intervenant.php`;
-    requete += `?nom=${nouveauNom}&fonction=${nouvelleFonction}&entreprise=${nouvelleEntreprise}&filiere=${nouvelleFiliere}`;
+    requete += `?nom=${nouveauNom}&fonction=${nouvelleFonction}&entreprise=${nouvelleEntreprise}&filiere=${nouvelleFiliere}&id=${idUtilisateur}`;
 
     console.log(requete);
     xmlhttp.open("GET", requete, true);

@@ -8,7 +8,8 @@ try {
     $entreprise = isset($_REQUEST['entreprise']) ? $_REQUEST['entreprise'] . "%" : "";
     $params = array();
     
-    $sql = "SELECT se_intervenant.nom_intervenant AS nom, 
+    $sql = "SELECT se_intervenant.id_intervenant AS id,
+            se_intervenant.nom_intervenant AS nom, 
             IFNULL(se_intervenant.fonction_intervenant, 'Aucune fonction renseignée') AS fonction,
             se_entreprise.nom_entreprise AS entreprise, 
             se_filiere.libelle_filiere AS filiere
