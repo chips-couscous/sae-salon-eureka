@@ -1,3 +1,24 @@
+<?php
+session_start();
+if (!isset($_SESSION['idUtilisateur'])) {
+    header('Location: ../utilisateur/connexion.php');
+}
+
+/* Utilisation des fichiers PHP pour communiquer avec la base de données */
+require ('../static/module_php/base_de_donnees.php');
+require ('../static/module_php/utilisateur/utilisateur.php');
+require ('../static/module_php/utilisateur/connexion_utilisateur.php');
+require('../static/module_php/panel/g_accueil.php');
+
+/* Connexion à la base de données */
+$pdo = connexionBaseDeDonnees();
+/* Récupération de l'ID de l'utilisateur connecté */
+$idUtilisateur = $_SESSION['idUtilisateur'];
+/* Récupération de informations de l'utilisateur connecté */
+$informationsUtilisateur = informationsPrimairesUtilisateurById($pdo, $idUtilisateur);
+$informationsTotales = informationsTotalesUtilisateurById($pdo, $idUtilisateur);
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -8,9 +29,11 @@
     <title>Salon Eureka</title>
 
     <!-- css -->
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/compte.css">
+    <link rel="stylesheet" href="../static/css/utilisateur/connexion.css">
+    <link rel="stylesheet" href="../static/css/main.css">
+    <link rel="stylesheet" href="../static/css/header.css">
+    <link rel="stylesheet" href="../static/css/panel.css">
+    <link rel="stylesheet" href="../static/css/accueil.css">
 
     <!-- fontawesome link -->
     <script src="https://kit.fontawesome.com/4d6659720c.js" crossorigin="anonymous"></script>
@@ -41,21 +64,19 @@
                     </nav>
                 </div>
                 <div class="navigation-compte">
-                    <nav>
-                        <ul>
-                            <li>
-                                <i class="fa-regular fa-circle-user ic-wm-el-header"></i>
-                                <div class="header-compte">
-                                    <span class="hover-underline-active">Thomas Lemaire</span>
-                                    <!-- VIDE SI PAS CO -->
-                                    <span class="badge-status">étudiant</span>
-                                </div>
-                            </li>
-                            <!-- VIDE SI PAS CO -->
-                            <li><i class="fa-regular fa-bell"></i></li>
-                        </ul>
-                    </nav>
-                </div>
+                      <nav>
+                          <ul>
+                              <li>
+                                  <i class="fa-regular fa-circle-user ic-wm-el-header"></i>
+                                  <div class="header-compte">
+                                      <a class="hover-underline-active" href=<?php echo validerUneSessionUtilisateur($idUtilisateur) ? "\"#\">" . $informationsUtilisateur['prenom_utilisateur'] . " " . $informationsUtilisateur['nom_utilisateur'] : "\"./utilisateur/connexion.php\">" . "Se connecter" ?></a>
+                                      <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<span class='badge-status'>" . $informationsUtilisateur['libelle_statut'] . "</span>" : "" ?>
+                                  </div>
+                              </li>
+                              <?php echo validerUneSessionUtilisateur($idUtilisateur) ? "<li><i class='fa-regular fa-bell'></i></li>" : "" ?>
+                          </ul>
+                      </nav>
+                  </div>
             </div>
 
             <!-- hambuger header responsive -->
@@ -65,7 +86,22 @@
 
     <div class="container">
         <div class="container-content">
-            <span class="titre-panel-ouvert"><span>Gestion des entreprises ></span> Ajouter une entreprise</span>
+            <div class="container-info">
+                <h1 class="autreInfo">Informations sur mon compte</h1> 
+                <div class="bulleTexte">
+
+                
+                    <?php
+                    foreach ($informationsTotales as $liste) {
+                        echo "<div class='bulle'><p> Prenom : ". $liste['prenomUtilisateur'] . "</p></div>";
+                        echo "<div class='bulle'><p> Nom : ". $liste['nomUtilisateur'] . "</p></div>";
+                        echo "<div class='bulle'><p> Email : ". $liste['mailUtilisateur'] . "</p></div>";
+                        echo "<div class='bulle'><p> Mes filieres : ". $liste['libelleFiliere'] . "</p></div>";
+                        echo "<div class='bulle'><p> Mon statut : ". $liste['statutUtilisateur'] . "</p></div>";
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
 
         <div class="container-asyde">

@@ -1,0 +1,114 @@
+/* Style pour les noms de forum */
+.nomForum {
+    text-align: center; /* Centrer le texte */
+    color: #33477B; /* Couleur du texte */
+    font-size: 40px; /* Taille du texte */
+}
+
+/* Style pour le lieu du forum */
+.lieuForum {
+    text-align: center; /* Centrer le texte */
+    color: #33477B; /* Couleur du texte */
+}
+
+/* Style pour le logo Eureka */
+.logoEureka {
+    width: 225px; /* Largeur du logo */
+    height: 150px; /* Hauteur du logo */
+}
+
+/* Style pour le logo IUT */
+.logoIUT {
+    margin-left: 100px; /* Marge sur la gauche */
+    margin-top: -50px; /* Ajustement de la marge en haut */
+    width: 400px; /* Largeur du logo */
+    height: auto; /* Hauteur automatique */
+    align-items: center; /* Alignement */
+    padding-right: 75px; /* Marge à droite */
+}
+
+/* Style pour le conteneur du salon */
+.containerSalon {
+    width: 100%; /* Largeur de la div */
+    margin: 0 auto; /* Centrer la div */
+    padding: 2rem; /* Remplissage de la div */
+    background-color: #33477B; /* Couleur de fond */
+    color: white; /* Couleur du texte */
+}
+
+/* Style pour la grille d'éléments */
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Style pour les éléments de la grille */
+.grid-item {
+    flex: 1;
+    margin-right: 2rem;
+}
+
+/* Style pour le dernier élément de la grille */
+.grid-item:last-child {
+    margin-right: 0;
+}
+
+/* Style pour les images dans la grille */
+.grid-item img {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Style pour les titres de la section principale */
+main h2 {
+    margin-top: 0;
+    color: #33477B;
+}
+
+/* Style pour la séparation par un trait */
+.traitSeparation {
+    padding-top: 5px;
+    background-color: #33477B; /* Couleur du trait */
+    border: 50px; /* Taille de la bordure */
+    height: 2px; /* Hauteur du trait */
+}
+
+/* Style pour le conteneur d'informations */
+.container-info {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    color: #33477B;
+}
+
+/* Style pour les bulles de texte */
+.bulleTexte {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+/* Style pour les informations supplémentaires */
+.autreInfo {
+    text-align: center;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+/* Style pour chaque bulle */
+.bulle {
+    flex-basis: calc(33.33% - 20px);
+    margin-right: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    background-color: #f2f2f2;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Style pour les titres de chaque bulle */
+.bulle h2 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
